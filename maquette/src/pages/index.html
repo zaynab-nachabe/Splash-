@@ -2,20 +2,48 @@
 <html lang="english">
 
 <head>
-  <title>Matrio</title>
-  <link rel="stylesheet" href="./style.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Maquette - Pixel Typer</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 </head>
 
 <body>
-  <matrio path="components/template/template" class="brown">
-    <matrio path="components/card/card" class="brown">
+
+    <!-- app-navbar -->
+    <matrio path="components/app-navbar/app-navbar" class="app-navbar">
+        <a href="/" class="app-navbar-button">
+            menu
+        </a>
+        <a href="/page1.html" class="app-navbar-button">
+            config-partie
+        </a>
+        <a href="/page-enfant.html" class="app-navbar-button">
+            config-enfant
+        </a>
+        <a href="/page2.html" class="app-navbar-button">
+            jeu
+        </a>
+        <a href="/pageStatistics1.html" class="app-navbar-button">
+            statistics
+        </a>
     </matrio>
-    <matrio path="components/card/card" class="gray">
+
+
+    <!-- app-main -->
+    <matrio path="components/app-main/app-main" class="app-main">
+        <matrio path="components/app-innerbox/app-innerbox" class="blue">
+            <matrio path="components/app-user-icon/app-user-icon">
+                <img src="assets/images/child-pps/pp-1.png" alt="PP 1" />
+            </matrio>
+            <matrio path="components/app-small-user-icon/app-small-user-icon">
+                <img src="assets/images/child-pps/pp-2.png" alt="PP 2" />
+            </matrio>
+        </matrio>
     </matrio>
-    <matrio path="components/card/card" class="blue">
-    </matrio>
-  </matrio>
+
 </body>
 
 </html>

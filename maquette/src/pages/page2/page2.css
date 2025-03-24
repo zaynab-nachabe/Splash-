@@ -1,3 +1,10 @@
-.page2 {
-    color: blue;
+.game-body{
+    background-color: #FAF3E0;
+}
+
+
+
+img {
+    height: 100%;
+    width: 100%;
 }
