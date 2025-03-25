@@ -16,7 +16,11 @@ export class UserService{
     //plus tard on utilisera les requêtes https
     private loadUsers(): void {
         this.users = [
-            { name: "Eli KOPTER", age: "9", icon: "../../assets/images/child-pps/red_fish.png"}
+            { name: "Eli KOPTER", age: "9", icon: "../../assets/images/child-pps/red_fish.png"},
+            { name: "patrick KOPTER", age: "9", icon: "../../assets/images/child-pps/yellow_fish.png"},
+            { name: "lohann KOPTER", age: "9", icon: "../../assets/images/child-pps/blue_fish.png"},
+            { name: "juste KOPTER", age: "9", icon: "../../assets/images/child-pps/turtle.png"}
+
         ]
         this.users$.next(this.users);
     }
