@@ -1,6 +1,6 @@
-import {playerGameStatMock} from "./playerGameStat-mock";
+import {playerGameStatMock} from "./playerGamestat-mock";
 
-export const playerGameStatLinkMock = {
+export const playerGameStatLink = {
   player_id: 1,
   game_id: 1,
   player_stats: playerGameStatMock,

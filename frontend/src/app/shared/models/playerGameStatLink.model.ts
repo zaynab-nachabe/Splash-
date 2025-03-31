@@ -1,7 +1,6 @@
-import {playerGameStat} from "./playerGameStat.model";
 
-export type PlayerGameStatLinkModel = {
+export type PlayerGameStatLink = {
   player_id: number;
   game_id: number;
-  player_stats: playerGameStat;
+  player_stats: PlayerGameStatLink[];
 }
