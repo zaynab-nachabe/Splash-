@@ -7,4 +7,11 @@ import { playerGameStatMock } from '../../../shared/mocks/playerGamestat-mock';
 })
 export class ErgoStatSelectedPageComponent {
   gamestat = playerGameStatMock;
+
+  getGradePerNotion(): { notion: string; grade: number }[] {
+    return Object.entries(this.gamestat.gradePerNotion).map(([notion, grade]) => ({
+      notion,
+      grade
+    }));
+  }
 }

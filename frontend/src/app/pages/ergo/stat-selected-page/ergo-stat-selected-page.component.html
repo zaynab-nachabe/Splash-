@@ -20,7 +20,14 @@
             Mots par min : {{gamestat.speed}}
         </span>
         <span>
-            Assimilation des notions mathématiques : {{gamestat.gradePerNotion}}
+            Assimilation des notions mathématiques:
+            <div>
+                <ul>
+                    <li *ngFor="let item of getGradePerNotion()">
+                        {{ item.notion }}: {{ item.grade }}
+                    </li>
+                </ul>
+            </div>
         </span>
         <span>
             Mots les moins réussis : {{gamestat.wordsCommonlyMispelled}}
