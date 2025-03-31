@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {childstatMock} from '../../../shared/mocks/childstat-mock';
+import {childstatMock} from '../../../shared/mocks/childRanking-mock';
 
 @Component({
   selector: 'app-child-stat-page',
@@ -16,7 +16,7 @@ export class ChildStatPageComponent {
 
   onSession2Click(): void{
     console.log("Session 2 clicked");
-    //I don't know what to do next 
+    //I don't know what to do next
   }
 
   onSession1Click(): void{

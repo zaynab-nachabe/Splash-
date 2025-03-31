@@ -1,7 +1,3 @@
-/*
-Saved in case we need it, but I am not sure what this is all for.
-
-
 import { UserService } from "../services/user.service";
 //the weird (() => {}) is an IIFE which is a function that defines a function and invokes it immediately
 //I used it in this context because without it i would need to define a seperate function and call it explicitly
@@ -26,4 +22,4 @@ export const childstatMock = (() => {
     return mock;
 })();
 
-*/
+
