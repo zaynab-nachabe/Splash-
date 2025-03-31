@@ -5,18 +5,10 @@
 //- grade for math questions.
 
 // Mock data for gameplay
-export const gameplayMock = {
+export const playerGameStatMock = {
     accuracy: 95, //typing accuracy
     errors: 3, //errors made in one game
     speed: 72, //wpm (words per minute)
-    grade: 'B', //grade for math questions
-    heatmap: { // heatmap of used buttons
-        A: 15,
-        B: 8,
-        C: 12,
-        D: 20,
-        E: 30,
-        F: 5,
-        G: 10
-    }
+    //grade: 'B', //grade for math questions
+
 };
