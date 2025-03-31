@@ -11,8 +11,8 @@
         <app-small-button>TOTAL</app-small-button>
         <app-small-button>Dernière partie</app-small-button>
         <p>HISTORIQUE</p>
-        <app-small-button>Session 2</app-small-button>
-        <app-small-button>Session 1</app-small-button>
+        <app-small-button (click)="onSession2Click">Session 2</app-small-button>
+        <app-small-button (click)="onSession1Click">Session 1</app-small-button>
     </app-inner-box>
     
     <app-inner-box class="main-box blue little">
@@ -20,12 +20,19 @@
         <app-user-card [user]="user" class="horizontal"/>
 
         <app-user-card class="horizontal">
-            <img src="../../assets/images/child-pps/yellow_fish.png" alt="PP 1" class="icon leaderboard"/>
-            <p class="name">Test</p>
+            <img src="assets/images/child-pps/red_fish.png" alt="PP 1" class="icon leaderboard"/>
+            <p class="name">Eli KOPTER : </p>
+            <p class="rank">{{ getRank('1') }}</p>
         </app-user-card>
         <app-user-card class="horizontal">
-            <img src="../../assets/images/child-pps/blue_fish.png" alt="PP 1" class="icon leaderboard"/>
-            <p class="name">Test</p>
+            <img src="assets/images/child-pps/yellow_fish.png" alt="PP 1" class="icon leaderboard"/>
+            <p class="name">Test : </p>
+            <p class="rank">{{ getRank('2') }}</p>
+        </app-user-card>
+        <app-user-card class="horizontal">
+            <img src="assets/images/child-pps/blue_fish.png" alt="PP 1" class="icon leaderboard"/>
+            <p class="name">Test : </p>
+            <p class="rank">{{ getRank('3') }}</p>
         </app-user-card>
         
     </app-inner-box>

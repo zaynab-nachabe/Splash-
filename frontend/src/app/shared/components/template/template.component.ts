@@ -7,5 +7,4 @@ import { NavbarComponent } from '../navbar/navbar.component';
   styleUrl: './template.component.scss'
 })
 export class TemplateComponent {
-
 }
