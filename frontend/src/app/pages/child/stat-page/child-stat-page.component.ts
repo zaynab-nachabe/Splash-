@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {childstatMock} from '../../../shared/mocks/childstat-mock';
 
 @Component({
   selector: 'app-child-stat-page',
@@ -7,4 +8,18 @@ import { Component } from '@angular/core';
 })
 export class ChildStatPageComponent {
 
+  childstat = childstatMock;
+
+  getRank(userId: string) : number {
+    return this.childstat[userId] || 0; //return 0 if the userId is not found
+  }
+
+  onSession2Click(): void{
+    console.log("Session 2 clicked");
+    //I don't know what to do next 
+  }
+
+  onSession1Click(): void{
+    console.log("Session 1 clicked");
+  }
 }
