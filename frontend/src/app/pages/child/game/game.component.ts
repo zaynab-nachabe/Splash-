@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 
 import { Question, QuestionNotion } from 'src/app/shared/models/question.model';
 import { MOCK_QUESTIONS } from 'src/app/shared/mocks/question.mock';
@@ -23,7 +23,7 @@ type Input = {
     templateUrl: './game.component.html',
     styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
     private static readonly INPUTS_END: Input = {
         letter: '\xa0', status: "pending"
     };
@@ -35,16 +35,15 @@ export class GameComponent implements OnInit {
 
     public expected_answerInputs: string[] = [];
     public proposed_answerInputs: string[] = [];
+    public inputs: Input[] = [];
 
     public cursorPosition: number;
 
-    public score: number;
-
-    private hasEnded: boolean;
-
-
     @ViewChild('gameCanvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
     private gameEngine!: GameEngine;
+
+    public score: number;
+    private hasEnded: boolean;
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -61,6 +60,7 @@ export class GameComponent implements OnInit {
 
         this.expected_answerInputs = this.question.answer.split("");
         this.proposed_answerInputs = [];
+        this.inputs = [];
 
         this.cursorPosition = 0;
 
@@ -70,9 +70,8 @@ export class GameComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log(this.inputs);
-
         document.addEventListener("keydown", this.keydownHandler);
+        this.updateInputs();
     }
 
     ngAfterViewInit(): void {
@@ -92,7 +91,7 @@ export class GameComponent implements OnInit {
         return this.proposed_answerInputs.join("");
     }
 
-    public get inputs(): Input[] {
+    private updateInputs(): void {
         const userConfig = this.user.userConfig;
         const showsAnswer = (
             userConfig.showsAnswer
@@ -138,7 +137,7 @@ export class GameComponent implements OnInit {
 
         ret.push(GameComponent.INPUTS_END);
 
-        return ret;
+        this.inputs = ret;
     }
 
 
@@ -237,12 +236,12 @@ export class GameComponent implements OnInit {
                 break;
 
             default :
-                // TODO : Add some test to prevent adding unexpected character
                 if (keyPressed.length === 1) {
                     this.writeCharacter(keyPressed);
                 }
                 break;
         }
+        this.updateInputs();
     }
 }
 

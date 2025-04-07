@@ -44,11 +44,11 @@
     color: #80808065;
 }
 
-// @keyframes blink {
-//     50% {
-//         background-color: #345e7100;
-//     }
-// }
+@keyframes blink {
+    50% {
+        background-color: #345e7100;
+    }
+}
 .cursor {
     animation: blink 1s step-start 0s infinite;
     background-color: #599ab860;
