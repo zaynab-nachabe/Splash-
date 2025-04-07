@@ -1,5 +1,5 @@
-export const childstatMock = (() => {
-    const userNames = ["Eli Kopter", "Lohann Kopter", "Patrick Kopter", "Juste Kopter"];
+export const childRankingMock = (() => {
+    const userNames = ["Eli KOPTER", "Lohann KOPTER", "Patrick Kopter", "Juste Kopter"];
     const mock: { [key: string]: number } = {};
     const ranks = Array.from({ length: userNames.length }, (_, i) => i + 1);
 

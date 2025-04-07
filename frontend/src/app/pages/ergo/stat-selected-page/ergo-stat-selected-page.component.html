@@ -47,6 +47,15 @@
     </app-inner-box>
     <app-inner-box class="main-box blue little">
         <h1 class="title">CLASSEMENT</h1>
-        <app-user-card [user]="user" class="horizontal"/>         
+        <div *ngIf="user; else loading">
+            <ul>  
+                <li *ngFor="let entry of getRank()">
+                    {{entry.name }} - Rank: {{entry.rank}}
+                </li> 
+            </ul>
+        </div>
+        <ng-template #loading>
+            <p>Loading user data ...</p>
+        </ng-template>
     </app-inner-box>
 </app-template>
