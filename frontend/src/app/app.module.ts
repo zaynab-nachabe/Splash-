@@ -14,6 +14,7 @@ import { UserCardComponent } from './shared/components/user-card/user-card.compo
 import { SettingsSliderComponent } from './shared/components/settings-slider/settings-slider.component';
 import { SettingsToggleComponent } from './shared/components/settings-toggle/settings-toggle.component';
 import { UserListComponent } from './shared/components/user-list/user-list.component';
+import { ErgoStatUserListComponent } from './shared/components/ergo-stat-user-list/ergo-stat-user-list.component';  
 
 import { WelcomePageComponent } from './pages/welcome-page/welcome-page.component';
 import { ChildListPageComponent } from './pages/child/list-page/child-list-page.component';
@@ -53,7 +54,8 @@ import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/e
     ErgoStatSelectedPageComponent,
     SettingsSliderComponent,
     SettingsToggleComponent,
-    UserListComponent
+    UserListComponent,
+    ErgoStatUserListComponent
   ],
   imports: [
     BrowserModule,

@@ -47,17 +47,6 @@
     </app-inner-box>
     <app-inner-box class="main-box blue little">
         <h1 class="title">CLASSEMENT</h1>
-        <app-user-card class="horizontal">
-            <img src="assets/images/child-pps/red_fish.png" alt="PP 1" class="icon leaderboard"/>
-            <p class="name">Eli KOPTER</p>
-        </app-user-card>
-        <app-user-card class="horizontal">
-            <img src="assets/images/child-pps/yellow_fish.png" alt="PP 1" class="icon leaderboard"/>
-            <p class="name">Test</p>
-        </app-user-card>
-        <app-user-card class="horizontal">
-            <img src="assets/images/child-pps/blue_fish.png" alt="PP 1" class="icon leaderboard"/>
-            <p class="name">Test</p>
-        </app-user-card>
+        <app-user-card [user]="user" class="horizontal"/>         
     </app-inner-box>
 </app-template>
