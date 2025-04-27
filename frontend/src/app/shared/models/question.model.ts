@@ -5,7 +5,6 @@ export const QuestionNotion = {
   DIVISION: "DIVISION",
   REWRITING: "REWRITING",
   ENCRYPTION: "ENCRYPTION",
-  EQUATION: "EQUATION",
 } as const;
 export type QuestionNotion = typeof QuestionNotion[keyof typeof QuestionNotion];
 
