@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { FormsModule } from '@angular/forms';
 
 import { TemplateComponent } from './shared/components/template/template.component';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
@@ -13,7 +14,11 @@ import { SmallButtonComponent } from './shared/components/small-button/small-but
 import { UserCardComponent } from './shared/components/user-card/user-card.component';
 import { SettingsSliderComponent } from './shared/components/settings-slider/settings-slider.component';
 import { SettingsToggleComponent } from './shared/components/settings-toggle/settings-toggle.component';
+<<<<<<< Updated upstream
 import { UserListComponent } from './shared/components/user-list/user-list.component';
+=======
+import { SettingsFontComponent } from './shared/components/settings-font/settings-font.component';
+>>>>>>> Stashed changes
 
 import { WelcomePageComponent } from './pages/welcome-page/welcome-page.component';
 import { ChildListPageComponent } from './pages/child/list-page/child-list-page.component';
@@ -27,7 +32,11 @@ import { ChildLobbyGameComponent } from './pages/child/lobby-game/child-lobby-ga
 import { ErgoLobbyGameComponent } from './pages/ergo/lobby-game/ergo-lobby-game.component';
 import { ErgoConfigSelectedPageComponent} from './pages/ergo/config-selected-page/ergo-config-selected-page.component';
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
+<<<<<<< Updated upstream
 import { GameComponent } from './pages/child/game/game.component';
+=======
+import { GameMainComponent } from './pages/game-main-page/game-main-page.component';
+>>>>>>> Stashed changes
 
 @NgModule({
   declarations: [
@@ -53,12 +62,18 @@ import { GameComponent } from './pages/child/game/game.component';
     ErgoStatSelectedPageComponent,
     SettingsSliderComponent,
     SettingsToggleComponent,
+<<<<<<< Updated upstream
     UserListComponent,
     GameComponent
+=======
+    GameMainComponent,
+    SettingsFontComponent,
+>>>>>>> Stashed changes
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

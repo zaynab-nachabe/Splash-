@@ -2,7 +2,7 @@
     <!--Zone de la navbar -->
     <app-medium-button class="navbar-button red" [routerLink]="['/ergo-play']" routerLinkActive="active">Retour</app-medium-button>
     <app-medium-button class="navbar-button" [routerLink]="['/ergo-lobby']" routerLinkActive="active"> Lancement de la partie </app-medium-button>
-    <app-medium-button class="navbar-button green"> Démarrer </app-medium-button>
+    <app-medium-button class="navbar-button green" [routerLink]="['/game-main']" routerLinkActive="active"> Démarrer </app-medium-button>
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue little">
@@ -26,6 +26,11 @@
             <span>
                 Vitesse des crabes : 
                 <app-settings-slider></app-settings-slider>
+            </span>
+            <!-- pick font configuration-->
+            <span>
+                Choisir la police de la partie :
+                <app-settings-font (fontSelected)="onFontSelected($event)"></app-settings-font>
             </span>
     </app-inner-box>
 </app-template>
