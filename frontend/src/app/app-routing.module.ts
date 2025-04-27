@@ -12,11 +12,8 @@ import { ChildLobbyGameComponent } from './pages/child/lobby-game/child-lobby-ga
 import { ErgoLobbyGameComponent } from './pages/ergo/lobby-game/ergo-lobby-game.component';
 import { ErgoConfigSelectedPageComponent } from './pages/ergo/config-selected-page/ergo-config-selected-page.component';
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
-<<<<<<< Updated upstream
 import { GameComponent } from './pages/child/game/game.component';
-=======
 import { GameMainComponent } from './pages/game-main-page/game-main-page.component';
->>>>>>> Stashed changes
 
 const routes: Routes = [
   { path: "", component: WelcomePageComponent },
@@ -31,11 +28,8 @@ const routes: Routes = [
   { path: "ergo-lobby", component: ErgoLobbyGameComponent },
   { path: "ergo-config-selected", component: ErgoConfigSelectedPageComponent },
   { path: "ergo-stat-selected", component: ErgoStatSelectedPageComponent },
-<<<<<<< Updated upstream
-  { path: "game", component: GameComponent}
-=======
+  { path: "game", component: GameComponent},
   { path: "game-main", component: GameMainComponent }
->>>>>>> Stashed changes
 ];
 
 @NgModule({
