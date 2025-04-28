@@ -30,7 +30,6 @@ import { ErgoLobbyGameComponent } from './pages/ergo/lobby-game/ergo-lobby-game.
 import { ErgoConfigSelectedPageComponent} from './pages/ergo/config-selected-page/ergo-config-selected-page.component';
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
 import { GameComponent } from './pages/child/game/game.component';
-import { GameMainComponent } from './pages/game-main-page/game-main-page.component';
 import { ConfigService } from './shared/services/config.service';
 
 @NgModule({
@@ -59,7 +58,6 @@ import { ConfigService } from './shared/services/config.service';
     SettingsToggleComponent,
     UserListComponent,
     GameComponent,
-    GameMainComponent,
     SettingsFontComponent
   ],
   imports: [
