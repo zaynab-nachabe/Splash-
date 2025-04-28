@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service'
@@ -12,6 +12,8 @@ import { UserService } from '../../services/user.service'
 export class UserListComponent {
     public userList: User[] = [];
 
+    @Input() navigateTo: string = '/child-play';
+
     constructor(private userService: UserService,  private router: Router){
         this.userService.users$.subscribe((users: User[]) => {
             this.userList = users;
@@ -22,7 +24,7 @@ export class UserListComponent {
 
     selectUser(userId:User['userId']): void {
         this.userService.selectUser(userId);
-        this.router.navigate(['/child-play']);
+        this.router.navigate([this.navigateTo]);
     }
 }
 
