@@ -135,12 +135,12 @@ export class Question {
 
         case "crypted":
           const length = Math.floor(this.seededRandom() * 4) + 1;
-
           const crypt = this.generateRandomString(length);
-          questionString = "";
+          questionString = `Recopiez ${crypt} : `;
           answerString = crypt;
           notion = QuestionNotion.ENCRYPTION;
           break;
+
 
         default:
           const [op, questionNotion] = this.convertToOperand(type);

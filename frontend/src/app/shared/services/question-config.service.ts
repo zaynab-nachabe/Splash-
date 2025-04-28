@@ -1,41 +1,49 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {LocalStorageService} from "./localStorage.service";
+import { UserService } from './user.service';
+import { User } from '../models/user.model';
+
+
+export interface QuestionConfig {
+  addition: boolean;
+  rewrite: boolean;
+  crypted: boolean;
+  subtraction: boolean;
+  multiplication: boolean;
+  division: boolean;
+  equations: boolean;
+  leaderboard: boolean;
+  advancedStats: boolean;
+  showAnswers: boolean;
+}
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionConfigService {
-  private readonly STORAGE_KEY = 'question_config';
-  private configSubject: BehaviorSubject<QuestionConfig>;
+  private readonly STORAGE_KEY_PREFIX = 'question_config_user_';
+  private configSubject = new BehaviorSubject<QuestionConfig>(this.getDefaultConfig());
+  private currentUser: User | null = null;
 
-  constructor(private localStorage: LocalStorageService) {
-    const initialConfig = this.loadConfig();
-    console.log('Service Constructor - Initial config:', initialConfig);
 
-    this.configSubject = new BehaviorSubject<QuestionConfig>(initialConfig);
-    // Ensure config is saved immediately
-    this.saveConfig(initialConfig);
+  constructor(private localStorage: LocalStorageService,
+              private userService: UserService)
+  {
+
+    this.userService.selectedUser$.subscribe(user => {
+      if (user) {
+        this.currentUser = user;
+        // Load the configuration for this specific user
+        this.loadConfigForUser(user.userId);
+      }
+    });
   }
 
-
-  private loadConfig(): QuestionConfig {
-    try {
-      const savedConfig = this.localStorage.getData(this.STORAGE_KEY);
-      console.log('Loading from localStorage:', savedConfig);
-
-      if (savedConfig) {
-        const parsedConfig = JSON.parse(savedConfig);
-        console.log('Parsed saved config:', parsedConfig);
-
-        if (this.isValidConfig(parsedConfig)) {
-          return parsedConfig;
-        }
-      }
-    } catch (error) {
-      console.error('Error loading config:', error);
-    }
-    const defaultConfig = {
+  private getDefaultConfig(): QuestionConfig {
+    return {
       addition: false,
       rewrite: true,
       crypted: false,
@@ -47,98 +55,110 @@ export class QuestionConfigService {
       advancedStats: false,
       showAnswers: false
     };
-
-    console.log('Using default config:', defaultConfig);
-    return defaultConfig;
-
   }
 
-  private isValidConfig(config: any): config is QuestionConfig {
-    return typeof config === 'object' &&
-      typeof config.addition === 'boolean' &&
-      typeof config.rewrite === 'boolean' &&
-      typeof config.crypted === 'boolean' &&
-      typeof config.subtraction === 'boolean' &&
-      typeof config.multiplication === 'boolean' &&
-      typeof config.division === 'boolean' &&
-      typeof config.equations === 'boolean' &&
-      typeof config.leaderboard === 'boolean' &&
-      typeof config.advancedStats === 'boolean' &&
-      typeof config.showAnswers === 'boolean';
+  private getStorageKey(userId: string): string {
+    return `${this.STORAGE_KEY_PREFIX}${userId}`;
   }
 
 
-
-  private saveConfig(config: QuestionConfig): void {
+  private loadConfigForUser(userId: string): void {
     try {
-      console.log('Saving config to localStorage:', config);
-      this.localStorage.saveData(this.STORAGE_KEY, JSON.stringify(config));
-      this.configSubject.next({ ...config });
+      const storageKey = this.getStorageKey(userId);
+      const savedConfig = this.localStorage.getData(storageKey);
+      console.log(`Loading configuration for user ${userId}:`, savedConfig);
 
-      // Verify the save
-      const savedConfig = this.localStorage.getData(this.STORAGE_KEY);
-      console.log('Verified saved config:', savedConfig);
+      if (savedConfig) {
+        const parsedConfig = JSON.parse(savedConfig);
+        if (this.isValidConfig(parsedConfig)) {
+          this.configSubject.next(parsedConfig);
+          return;
+        }
+      }
 
+      // If no valid saved config, convert from user's existing config if available
+      if (this.currentUser?.userConfig) {
+        const convertedConfig = this.convertFromUserConfig(this.currentUser.userConfig);
+        this.configSubject.next(convertedConfig);
+        return;
+      }
 
+      // Use default config as fallback
+      this.configSubject.next(this.getDefaultConfig());
     } catch (error) {
-      console.error('Error saving config:', error);
+      console.error('Error loading user configuration:', error);
+      this.configSubject.next(this.getDefaultConfig());
     }
+  }
 
+// Convert from the user's existing config structure to QuestionConfig format
+  private convertFromUserConfig(userConfig: any): QuestionConfig {
+    return {
+      addition: userConfig.addition || false,
+      subtraction: userConfig.substraction || false, // Note the spelling difference
+      multiplication: userConfig.multiplication || false,
+      division: userConfig.division || false,
+      rewrite: userConfig.rewriting || false, // Name difference
+      crypted: userConfig.encryption || false, // Name difference
+      showAnswers: userConfig.showsAnswer || false, // Name difference
+      equations: false, // Default values for fields not in userConfig
+      leaderboard: false,
+      advancedStats: false
+    };
+  }
+
+  private isValidConfig(config: any): boolean {
+    // Check if the object has all required properties
+    const requiredProps = [
+      'addition', 'rewrite', 'crypted', 'subtraction',
+      'multiplication', 'division', 'equations',
+      'leaderboard', 'advancedStats', 'showAnswers'
+    ];
+
+    return requiredProps.every(prop => typeof config[prop] === 'boolean');
   }
 
 
-  // Get the current configuration as an Observable
-  getConfig(): Observable<QuestionConfig> {
+
+
+  public getConfig(): Observable<QuestionConfig> {
     return this.configSubject.asObservable();
   }
 
-  // Get the current configuration value
-  getCurrentConfig(): QuestionConfig {
+  public getCurrentConfig(): QuestionConfig {
+    return this.configSubject.getValue();
+  }
+
+  public updateNotion(notion: keyof QuestionConfig, value: boolean): void {
+    if (!this.currentUser) {
+      console.error('Cannot update configuration: No user selected');
+      return;
+    }
+
     const currentConfig = this.configSubject.getValue();
-    console.log('Getting current config:', currentConfig);
-    return currentConfig;
+    const newConfig = { ...currentConfig, [notion]: value };
 
-  }
-
-  updateConfig(config: Partial<QuestionConfig>): void {
-    console.log('Updating config with:', config);
-
-    const currentConfig = this.getCurrentConfig();
-    const newConfig = {
-      ...currentConfig,
-      ...config
-    };
-    console.log('New merged config:', newConfig);
-
+    this.configSubject.next(newConfig);
     this.saveConfig(newConfig);
   }
 
+  public updateConfig(config: QuestionConfig): void {
+    if (!this.currentUser) {
+      console.error('Cannot update configuration: No user selected');
+      return;
+    }
 
-
-  updateNotion(notion: keyof QuestionConfig, value: boolean): void {
-    console.log(`Updating notion ${notion} to:`, value);
-
-    const currentConfig = this.getCurrentConfig();
-    const newConfig = {
-      ...currentConfig,
-      [notion]: value
-    };
-    console.log('New config after notion update:', newConfig);
-
-    this.saveConfig(newConfig);
+    this.configSubject.next(config);
+    this.saveConfig(config);
   }
 
+  private saveConfig(config: QuestionConfig): void {
+    if (!this.currentUser) return;
+
+    const storageKey = this.getStorageKey(this.currentUser.userId);
+    console.log(`Saving configuration for user ${this.currentUser.userId}:`, config);
+    this.localStorage.saveData(storageKey, JSON.stringify(config));
+  }
 }
 
-export interface QuestionConfig {
-  showAnswers: boolean;
-  advancedStats: boolean;
-  leaderboard: boolean;
-  addition: boolean;
-  rewrite: boolean;
-  crypted: boolean;
-  subtraction: boolean;
-  multiplication: boolean;
-  division: boolean;
-  equations: boolean;
-}
+
