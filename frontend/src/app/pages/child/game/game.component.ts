@@ -1,10 +1,12 @@
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
-
-import { Question, QuestionNotion } from 'src/app/shared/models/question.model';
-import { MOCK_QUESTIONS } from 'src/app/shared/mocks/question.mock';
+import { Question } from 'src/app/shared/models/question.model';
+import { QuestionNotion } from 'src/app/shared/models/QuestionGenerationUtils/QuestionNotionEnum';
+//import { MOCK_QUESTIONS } from 'src/app/shared/mocks/question.mock';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
+import {QuestionConfig, QuestionConfigService} from "../../../shared/services/question-config.service";
+import {Subscription} from "rxjs";
 
 
 type Input = {
@@ -24,13 +26,16 @@ type Input = {
     styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit, OnDestroy {
-    private static readonly INPUTS_END: Input = {
-        letter: '\xa0', status: "pending"
-    };
+  private static readonly INPUTS_END: Input = {
+    letter: '\xa0', status: "pending"
+  };
 
-    public user!: User;
+  private configSubscription: Subscription;
 
-    public question: Question;
+
+  public user!: User;
+
+    public question!: Question;
     private keydownHandler: (event: KeyboardEvent) => void;
 
     public expected_answerInputs: string[] = [];
@@ -49,14 +54,37 @@ export class GameComponent implements OnInit, OnDestroy {
     ////////////////////////////////////////////////////////////////////////////
     // Constructors & Destructors :
 
-    constructor(private userService: UserService) {
+    constructor(private userService: UserService, private questionConfigService: QuestionConfigService) {
         this.userService.selectedUser$.subscribe((user: User) => {
             this.user = user;
         });
 
-        this.question = QuestionsGenerator.genNewQuestion();
+      // Subscribe to config changes
+      this.configSubscription = this.questionConfigService.getConfig().subscribe(() => {
+        // Regenerate question when config changes
+        QuestionsGenerator.init(this.questionConfigService);
+        const newQuestion = QuestionsGenerator.genNewQuestion();
+        if (!newQuestion) {
+          this.hasEnded = true;
+          throw new Error("No questions could be generated");
+        }
+        this.question = newQuestion;
+        this.expected_answerInputs = this.question.answer.split("");
+        this.proposed_answerInputs = [];
+        this.updateInputs();
+      });
 
-        this.keydownHandler = this.checkInput.bind(this);
+      // Initial setup
+      QuestionsGenerator.init(this.questionConfigService);
+      const newQuestion = QuestionsGenerator.genNewQuestion();
+      if (!newQuestion) {
+        this.hasEnded = true;
+        throw new Error("No questions could be generated");
+      }
+      this.question = newQuestion;
+
+
+      this.keydownHandler = this.checkInput.bind(this);
 
         this.expected_answerInputs = this.question.answer.split("");
         this.proposed_answerInputs = [];
@@ -81,6 +109,10 @@ export class GameComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         document.removeEventListener("keydown", this.keydownHandler);
+      if (this.configSubscription) {
+        this.configSubscription.unsubscribe();
+      }
+
     }
 
 
@@ -185,9 +217,16 @@ export class GameComponent implements OnInit, OnDestroy {
             this.gameEngine.answerCorrectly();
         }
 
-        this.question = QuestionsGenerator.genNewQuestion();
+      const newQuestion = QuestionsGenerator.genNewQuestion();
+      if (!newQuestion) {
+        this.hasEnded = true;
+        return;
+      }
 
-        if (this.question === undefined) {
+      this.question = newQuestion;
+
+
+      if (this.question === undefined) {
             this.hasEnded = true;
             return;
         }
@@ -251,18 +290,43 @@ export class GameComponent implements OnInit, OnDestroy {
 // Backend Simulator :
 ////////////////////////////////////////////////////////////////////////////////
 
+
 class QuestionsGenerator {
-    private static next_question_idx = 0;
-    private static questions = MOCK_QUESTIONS;
+  private static questionCount = 10; // Number of questions to generate
+  private static currentIndex = 0;
+  private static configService: QuestionConfigService;
+  private static currentConfig: QuestionConfig;
 
-    private constructor() {}
+  private constructor() {}
 
-    public static genNewQuestion(): Question {
-        return QuestionsGenerator.questions[
-            QuestionsGenerator.next_question_idx++
-        ];
+  public static init(configService: QuestionConfigService) {
+    QuestionsGenerator.configService = configService;
+    QuestionsGenerator.currentIndex = 0;
+    QuestionsGenerator.currentConfig = configService.getCurrentConfig();
+
+    // Subscribe to config changes
+    QuestionsGenerator.configService.getConfig().subscribe(config => {
+      QuestionsGenerator.currentConfig = config;
+    });
+
+
+    const randomSeed = Math.floor(Math.random() * 1000000);
+    Question.resetSeed(randomSeed);
+
+  }
+
+  public static genNewQuestion(): Question | undefined {
+    if (QuestionsGenerator.currentIndex >= QuestionsGenerator.questionCount) {
+      return undefined;
     }
+
+    QuestionsGenerator.currentIndex++;
+    const config = QuestionsGenerator.currentConfig;
+
+    return new Question(QuestionsGenerator.configService);
+  }
 }
+
 
 
 class AnswerChecker {

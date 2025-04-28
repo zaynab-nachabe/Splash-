@@ -1,4 +1,7 @@
-<label class="settings-toggle">
-    <input type="checkbox">
-    <span class="settings-toggle-switch"></span>
+<label #toggleLabel class="settings-toggle" [class.activate]="checked">
+  <input
+    type="checkbox"
+    [checked]="checked"
+    (change)="onInputChange($event)">
+  <span class="settings-toggle-switch"></span>
 </label>

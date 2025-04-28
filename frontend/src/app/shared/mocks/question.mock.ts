@@ -1,3 +1,5 @@
+/*
+
 import { Question } from '../models/question.model';
 
 export function generateQuestions(count: number = 10): Question[] {
@@ -5,15 +7,17 @@ export function generateQuestions(count: number = 10): Question[] {
   Question.resetSeed(randomSeed);
 
   return Array.from({ length: count }, () => new Question(
-        true,  // addition
+        false,  // addition
         true,  // rewrite
-        true,  // crypted
-        true,  // subtraction
-        true,  // multiplication
-        true,  // division
-        false  // equations
+        false,  // crypted
+        false,  // subtraction
+        false,  // multiplication
+        false //division
     ));
 }
 
 // You can then use this instead of MOCK_QUESTIONS
 export const MOCK_QUESTIONS = generateQuestions();
+
+
+*/

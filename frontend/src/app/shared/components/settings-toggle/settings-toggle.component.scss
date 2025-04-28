@@ -37,27 +37,24 @@
 /* Disactivated Toggle's Style :                                              */
 
 .settings-toggle-switch {
-    background-color: #ccc;
-    /*To animate :*/
-    transition: 0.4s;
+  background-color: #ccc;
+  transition: 0.4s;
 }
 
 .settings-toggle-switch::before {
-    background-color: #858585;
-    /*To animate :*/
-    transition: 0.4s;
+  background-color: #858585;
+  transition: 0.4s;
 }
+
 
 
 /******************************************************************************/
 /* Activated Toggle's Style :                                              */
-
-input:checked + .settings-toggle-switch {
-    background-color: #FFD466;
+.settings-toggle.activate .settings-toggle-switch {
+  background-color: #FFD466;
 }
 
-input:checked + .settings-toggle-switch::before {
-    background-color: #E5B672;
-    /*To animate :*/
-    transform: translateX(24px);
+.settings-toggle.activate .settings-toggle-switch::before {
+  background-color: #E5B672;
+  transform: translateX(24px);
 }
