@@ -33,7 +33,6 @@ import { GameComponent } from './pages/child/game/game.component';
 import { ConfigService } from './shared/services/config.service';
 import { QuestionConfigService } from './shared/services/question-config.service';
 import {RouterModule} from "@angular/router";
-import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -61,14 +60,14 @@ import {FormsModule} from "@angular/forms";
     SettingsToggleComponent,
     UserListComponent,
     GameComponent,
-    SettingsFontComponent
+    SettingsFontComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule
   ],
-  providers: [ConfigService],
+  providers: [ConfigService,
     RouterModule,
     FormsModule, 
   [QuestionConfigService]
