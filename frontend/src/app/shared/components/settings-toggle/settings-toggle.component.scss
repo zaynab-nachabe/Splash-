@@ -1,60 +1,48 @@
+/* settings-toggle.component.scss */
 .settings-toggle {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 25px;
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 25px;
 }
 
-/* Hiding the toggle's input : */
+/* Hiding the toggle's input */
 .settings-toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
 .settings-toggle-switch {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 25px;
-}
-
-.settings-toggle-switch::before {
-    content: "";
-    position: absolute;
-    height: 18px;
-    width: 18px;
-    left: 4px;
-    bottom: 3.5px;
-    border-radius: 50%;
-}
-
-
-/******************************************************************************/
-/* Disactivated Toggle's Style :                                              */
-
-.settings-toggle-switch {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: #ccc;
+  border-radius: 25px;
   transition: 0.4s;
 }
 
 .settings-toggle-switch::before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 3.5px;
   background-color: #858585;
+  border-radius: 50%;
   transition: 0.4s;
 }
 
-
-
-/******************************************************************************/
-/* Activated Toggle's Style :                                              */
+/* Activated state with higher specificity */
 .settings-toggle.activate .settings-toggle-switch {
-  background-color: #FFD466;
+  background-color: #FFD466 !important;
 }
 
 .settings-toggle.activate .settings-toggle-switch::before {
-  background-color: #E5B672;
-  transform: translateX(24px);
+  background-color: #E5B672 !important;
+  transform: translateX(24px) !important;
 }

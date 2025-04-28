@@ -1,4 +1,4 @@
-<label #toggleLabel class="settings-toggle" [class.activate]="checked">
+<label class="settings-toggle" [ngClass]="{'activate': checked}">
   <input
     type="checkbox"
     [checked]="checked"

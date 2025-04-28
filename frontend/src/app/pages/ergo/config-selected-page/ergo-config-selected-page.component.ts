@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {QuestionConfig, QuestionConfigService} from 'src/app/shared/services/question-config.service';
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
@@ -15,8 +15,10 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
 
   constructor(
     private questionConfigService: QuestionConfigService,
-    private router: Router
-  ) {
+    private router: Router,
+  private cdr: ChangeDetectorRef
+
+) {
     this.currentConfig = this.questionConfigService.getCurrentConfig();
     console.log('Constructor - Initial config:', this.currentConfig);
 
@@ -27,7 +29,13 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
 
     this.subscription = this.questionConfigService.getConfig().subscribe(config => {
       this.currentConfig = { ...config };
+      this.cdr.detectChanges();
+
     });
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    }, 0);
+
   }
   private loadSavedConfig() {
     // Explicitly load the saved config from localStorage
@@ -51,13 +59,25 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
     };
     this.questionConfigService.updateNotion(notion, value);
     console.log('After toggle - Current config:', this.currentConfig);
+// Force UI update - with proper type casting
+    const allToggles = document.querySelectorAll('.settings-toggle');
+    allToggles.forEach(toggle => {
+      // Properly cast to HTMLElement to access style property
+      const toggleEl = toggle as HTMLElement;
+      const display = toggleEl.style.display;
+      toggleEl.style.display = 'none';
+      setTimeout(() => toggleEl.style.display = display, 0);
+    });
+
+    // Also force Angular change detection
+    this.cdr.detectChanges();
+
 
   }
 
 
   onSaveConfig(): void {
     console.log('Saving config:', this.currentConfig);
-
     this.questionConfigService.updateConfig(this.currentConfig);
     this.router.navigate(['/ergo-config']);
 
