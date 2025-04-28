@@ -11,6 +11,7 @@ export class ConfigService {
     constructor() {}
     
     setSelectedFont(font: string){
+        console.log('font updated to ', font);
         this.selectedFontSubject.next(font);
     }
 }

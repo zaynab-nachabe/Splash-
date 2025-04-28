@@ -5,6 +5,7 @@ import { MOCK_QUESTIONS } from 'src/app/shared/mocks/question.mock';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 
 type Input = {
@@ -49,7 +50,7 @@ export class GameComponent implements OnInit, OnDestroy {
     ////////////////////////////////////////////////////////////////////////////
     // Constructors & Destructors :
 
-    constructor(private userService: UserService) {
+    constructor(private userService: UserService, private configService: ConfigService) {
         this.userService.selectedUser$.subscribe((user: User) => {
             this.user = user;
         });
@@ -76,7 +77,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     ngAfterViewInit(): void {
         const canvas = this.canvasRef.nativeElement;
-        this.gameEngine = new GameEngine(this, canvas);
+        this.gameEngine = new GameEngine(this, canvas, this.configService);
     }
 
     ngOnDestroy(): void {

@@ -14,15 +14,14 @@ export class GameEngine {
     private Ui: Ui;
     private score: number = 0;
     private enemies: Enemy[];
-    private configService: ConfigService;
 
-    constructor(private gameComponent: GameComponent, private canvas: HTMLCanvasElement) {
+    constructor(private gameComponent: GameComponent, private canvas: HTMLCanvasElement, private configService: ConfigService) {
         this.ctx = canvas.getContext('2d')!;
         this.adjustCanvaResolution();
         this.player = new Player(this, canvas);
         this.enemies = [new Crab(this, canvas)];
-        this.configService = new ConfigService();
         this.Ui = new Ui(this, canvas, this.configService);
+        this.Ui.ngOnInit();
         this.score = 0;
         this.startGameLoop();
     }
