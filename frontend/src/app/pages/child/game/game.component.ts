@@ -127,10 +127,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     private updateInputs(): void {
         const userConfig = this.user.userConfig;
-        const showsAnswer = (
-            userConfig.showsAnswer
-            || this.question.notion == QuestionNotion.ENCRYPTION
-        );
+        const showsAnswer = this.questionConfigService.getCurrentConfig().showAnswers;
 
         const PENDING_SPACE: Input = {letter: '\xa0', status: "pending"};
         const CORRECT_SPACE: Input = {letter: '\xa0', status: "correct"};
