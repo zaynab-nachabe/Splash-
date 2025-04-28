@@ -2,7 +2,7 @@
     <!--Zone de la navbar -->
     <app-medium-button class="navbar-button red" [routerLink]="['/ergo-play']" routerLinkActive="active">Retour</app-medium-button>
     <app-medium-button class="navbar-button" [routerLink]="['/ergo-lobby']" routerLinkActive="active"> Lancement de la partie </app-medium-button>
-    <app-medium-button class="navbar-button green"> Démarrer </app-medium-button>
+    <app-medium-button class="navbar-button green" [routerLink]="['/game']"> Démarrer </app-medium-button>
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue little">
@@ -16,15 +16,15 @@
                 Temps de la partie : 20min
             </span>
             <span>
-                Fréquence d'apparition des méduses : 
+                Fréquence d'apparition des méduses :
                 <app-settings-slider></app-settings-slider>
             </span>
             <span>
-                Fréquence d'apparition des crabes : 
+                Fréquence d'apparition des crabes :
                 <app-settings-slider></app-settings-slider>
             </span>
             <span>
-                Vitesse des crabes : 
+                Vitesse des crabes :
                 <app-settings-slider></app-settings-slider>
             </span>
     </app-inner-box>
