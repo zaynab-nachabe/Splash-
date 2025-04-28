@@ -5,6 +5,8 @@ import { QuestionNotion } from 'src/app/shared/models/QuestionGenerationUtils/Qu
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
+import { ConfigService } from 'src/app/shared/services/config.service';
+
 import {QuestionConfig, QuestionConfigService} from "../../../shared/services/question-config.service";
 import {Subscription} from "rxjs";
 
@@ -54,7 +56,7 @@ export class GameComponent implements OnInit, OnDestroy {
     ////////////////////////////////////////////////////////////////////////////
     // Constructors & Destructors :
 
-    constructor(private userService: UserService, private questionConfigService: QuestionConfigService) {
+    constructor(private userService: UserService, private questionConfigService: QuestionConfigService, private configService: ConfigService) {
         this.userService.selectedUser$.subscribe((user: User) => {
             this.user = user;
         });
@@ -104,7 +106,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     ngAfterViewInit(): void {
         const canvas = this.canvasRef.nativeElement;
-        this.gameEngine = new GameEngine(this, canvas);
+        this.gameEngine = new GameEngine(this, canvas, this.configService);
     }
 
     ngOnDestroy(): void {

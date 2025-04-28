@@ -27,7 +27,7 @@ const routes: Routes = [
   { path: "ergo-lobby", component: ErgoLobbyGameComponent },
   { path: "ergo-config-selected", component: ErgoConfigSelectedPageComponent },
   { path: "ergo-stat-selected", component: ErgoStatSelectedPageComponent },
-  { path: "game", component: GameComponent}
+  { path: "game", component: GameComponent},
 ];
 
 @NgModule({
