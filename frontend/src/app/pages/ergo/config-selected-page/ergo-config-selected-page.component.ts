@@ -2,6 +2,9 @@ import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {QuestionConfig, QuestionConfigService} from 'src/app/shared/services/question-config.service';
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
+import {User} from "../../../shared/models/user.model";
+import {UserService} from "../../../shared/services/user.service";
+
 
 @Component({
   selector: 'app-ergo-config-selected-page',
@@ -10,46 +13,60 @@ import {Subscription} from "rxjs";
 })
 export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
   public currentConfig: QuestionConfig;
-  private subscription!: Subscription;
+  public selectedUser?: User;
+  private configSubscription!: Subscription;
+  private userSubscription!: Subscription;
+
 
 
   constructor(
     private questionConfigService: QuestionConfigService,
+    private userService: UserService,
     private router: Router,
-  private cdr: ChangeDetectorRef
-
-) {
+    private cdr: ChangeDetectorRef
+  ) {
     this.currentConfig = this.questionConfigService.getCurrentConfig();
     console.log('Constructor - Initial config:', this.currentConfig);
 
 
   }
   ngOnInit() {
-    this.loadSavedConfig();
+    // First, get the selected user
+    this.userSubscription = this.userService.selectedUser$.subscribe(user => {
+      if (!user) {
+        console.error('No user selected, navigating back to user selection');
+        this.router.navigate(['/ergo-config']);
+        return;
+      }
 
-    this.subscription = this.questionConfigService.getConfig().subscribe(config => {
-      this.currentConfig = { ...config };
-      this.cdr.detectChanges();
-
+      this.selectedUser = user;
+      console.log('Selected user for configuration:', this.selectedUser);
     });
+
+    // Subscribe to config changes
+    this.configSubscription = this.questionConfigService.getConfig().subscribe(config => {
+      this.currentConfig = { ...config };
+      console.log('Config loaded:', this.currentConfig);
+      this.cdr.detectChanges();
+    });
+
+    // Force change detection after a small delay
     setTimeout(() => {
       this.cdr.detectChanges();
     }, 0);
-
   }
-  private loadSavedConfig() {
-    // Explicitly load the saved config from localStorage
-    const config = this.questionConfigService.getCurrentConfig();
-    console.log('OnInit subscription - Received config:', config);
 
-    this.currentConfig = { ...config };
-  }
+
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this.configSubscription) {
+      this.configSubscription.unsubscribe();
+    }
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
     }
   }
+
 
   onToggleChange(notion: keyof QuestionConfig, value: boolean): void {
     console.log(`Toggle change - ${notion}:`, value);
@@ -81,6 +98,11 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
     this.questionConfigService.updateConfig(this.currentConfig);
     this.router.navigate(['/ergo-config']);
 
+  }
+
+
+  get userIconPath(): string {
+    return `assets/images/child-pps/${this.selectedUser?.icon || 'pp-9.png'}`;
   }
 
 
