@@ -31,6 +31,9 @@ import { ErgoConfigSelectedPageComponent} from './pages/ergo/config-selected-pag
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
 import { GameComponent } from './pages/child/game/game.component';
 import { ConfigService } from './shared/services/config.service';
+import { QuestionConfigService } from './shared/services/question-config.service';
+import {RouterModule} from "@angular/router";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -66,6 +69,10 @@ import { ConfigService } from './shared/services/config.service';
     FormsModule
   ],
   providers: [ConfigService],
+    RouterModule,
+    FormsModule, 
+  [QuestionConfigService]
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

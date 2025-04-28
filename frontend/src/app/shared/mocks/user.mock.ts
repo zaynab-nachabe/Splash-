@@ -7,7 +7,13 @@ export const MOCK_USER: User[] = [
         age: "9",
         icon: "red_fish.png",
         userConfig: {
-            showsAnswer: true
+          showsAnswer: true,
+          addition: true,
+          substraction: true,
+          multiplication: true,
+          division: true,
+          rewriting: true,
+          encryption: true,
         }
     }, {
         userId:"2",
@@ -15,7 +21,13 @@ export const MOCK_USER: User[] = [
         age: "9",
         icon: "yellow_fish.png",
         userConfig: {
-            showsAnswer: false
+          showsAnswer: true,
+          addition: true,
+          substraction: true,
+          multiplication: false,
+          division: false,
+          rewriting: true,
+          encryption: false,
         }
     }, {
         userId:"3",
@@ -23,7 +35,13 @@ export const MOCK_USER: User[] = [
         age: "9",
         icon: "blue_fish.png",
         userConfig: {
-            showsAnswer: false
+          showsAnswer: false,
+          addition: true,
+          substraction: true,
+          multiplication: true,
+          division: true,
+          rewriting: true,
+          encryption: true,
         }
     }, {
         userId:"4",
@@ -31,7 +49,13 @@ export const MOCK_USER: User[] = [
         age: "9",
         icon: "turtle.png",
         userConfig: {
-            showsAnswer: false
+          showsAnswer: true,
+          addition: false,
+          substraction: false,
+          multiplication: false,
+          division: false,
+          rewriting: true,
+          encryption: false,
         }
     }
 ]

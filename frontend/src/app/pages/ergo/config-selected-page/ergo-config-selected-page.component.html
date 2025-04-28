@@ -5,7 +5,7 @@
     </app-user-card>
     <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active"><p class="name">Eli KOPTER</p></app-medium-button>
     <app-medium-button class="navbar-button red" [routerLink]="['/ergo-config']"> Retour </app-medium-button>
-    <app-medium-button class="navbar-button green" [routerLink]="['/ergo-config']"> Sauvegarder </app-medium-button>
+    <app-medium-button class="navbar-button green" (click) = "onSaveConfig()"> Sauvegarder </app-medium-button>
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue">
@@ -14,51 +14,72 @@
         <span>Prénom : Eli</span>
         <span>Âge : 7ans</span>
         <span>Troubles: Dysgraphie</span>
-        <span>
-            LeaderBoard :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Statistiques avancées :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Aide à la lecture :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Son :
-            <app-settings-slider></app-settings-slider>
-        </span>
-        <span>
-            Réponses affichées :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
+
+      <span>
+    LeaderBoard :
+    <app-settings-toggle
+      [checked]="currentConfig.leaderboard"
+      (valueChange)="onToggleChange('leaderboard', $event)"
+    ></app-settings-toggle>
+</span>
+      <span>
+    Statistiques avancées :
+    <app-settings-toggle
+      [checked]="currentConfig.advancedStats"
+      (valueChange)="onToggleChange('advancedStats', $event)"
+    ></app-settings-toggle>
+</span>
+      <span>
+    Réponses affichées :
+    <app-settings-toggle
+      [checked]="currentConfig.showAnswers"
+      (valueChange)="onToggleChange('showAnswers', $event)"
+    ></app-settings-toggle>
+</span>
+
         <span>
             Réécriture des nombres :
-            <app-settings-toggle></app-settings-toggle>
+                        <app-settings-toggle
+                          [checked]="currentConfig.rewrite"
+                          (valueChange)="onToggleChange('rewrite', $event)"
+
+                        ></app-settings-toggle>
         </span>
         <span>
             Addition :
-            <app-settings-toggle></app-settings-toggle>
+            <app-settings-toggle
+              [checked]="currentConfig.addition"
+              (valueChange)="onToggleChange('addition', $event)"
+            ></app-settings-toggle>
+
         </span>
         <span>
             Soustraction :
-            <app-settings-toggle></app-settings-toggle>
+                        <app-settings-toggle
+                          [checked]="currentConfig.subtraction"
+                          (valueChange)="onToggleChange('subtraction', $event)"
+                        ></app-settings-toggle>
         </span>
         <span>
-            Multiplication : 
-            <app-settings-toggle></app-settings-toggle>
+            Multiplication :
+                        <app-settings-toggle
+                          [checked]="currentConfig.multiplication"
+                          (valueChange)="onToggleChange('multiplication', $event)"
+                        ></app-settings-toggle>
         </span>
         <span>
             Division :
-            <app-settings-toggle></app-settings-toggle>
+                        <app-settings-toggle
+                          [checked]="currentConfig.division"
+                          (valueChange)="onToggleChange('division', $event)"
+                        ></app-settings-toggle>
         </span>
         <span>
-            Font :
-            <app-settings-font></app-settings-font>
+            Encryption :
+                        <app-settings-toggle
+                          [checked]="currentConfig.crypted"
+                          (valueChange)="onToggleChange('crypted', $event)"
+                        ></app-settings-toggle>
         </span>
-        
-
     </app-inner-box>
 </app-template>
