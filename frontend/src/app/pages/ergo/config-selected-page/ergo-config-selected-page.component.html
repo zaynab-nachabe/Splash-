@@ -24,44 +24,33 @@
       <span>Troubles: {{selectedUser?.conditions}}</span>
 
 
-      <div class="config-toggles">
-        <!-- Addition toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Addition</span>
-          <app-settings-toggle
-            [checked]="currentConfig.addition"
-            (valueChange)="onToggleChange('addition', $event)">
-          </app-settings-toggle>
+
+      <div class="config-item operation-selector">
+        <h3>Opérations</h3>
+
+        <!-- Selected operations pills (similar to ergo-input-child-page) -->
+        <div class="selected-operations" *ngIf="getSelectedOperations().length > 0">
+          <div *ngFor="let operation of getSelectedOperations()" class="operation-pill">
+            {{getOperationLabel(operation)}}
+            <span class="remove-operation" (click)="toggleOperation(operation)">×</span>
+          </div>
         </div>
 
-        <!-- Subtraction toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Soustraction</span>
-          <app-settings-toggle
-            [checked]="currentConfig.subtraction"
-            (valueChange)="onToggleChange('subtraction', $event)">
-          </app-settings-toggle>
+        <!-- Dropdown for operations -->
+        <div class="dropdown-wrapper">
+          <select #operationSelect class="operations-dropdown" (change)="handleOperationSelection(operationSelect.value)">
+            <option value="" disabled selected>Sélectionner une opération</option>
+            <option *ngFor="let op of availableOperations"
+                    [value]="op.key"
+                    [disabled]="isOperationSelected(op.key)">
+              {{op.label}}
+            </option>
+          </select>
         </div>
+      </div>
 
-        <!-- Multiplication toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Multiplication</span>
-          <app-settings-toggle
-            [checked]="currentConfig.multiplication"
-            (valueChange)="onToggleChange('multiplication', $event)">
-          </app-settings-toggle>
-        </div>
 
-        <!-- Division toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Division</span>
-          <app-settings-toggle
-            [checked]="currentConfig.division"
-            (valueChange)="onToggleChange('division', $event)">
-          </app-settings-toggle>
-        </div>
-
-        <!-- Rewrite toggle -->
+      <!-- Rewrite toggle -->
         <div class="toggle-row">
           <span class="toggle-label">Réécrire</span>
           <app-settings-toggle
@@ -114,7 +103,7 @@
             (valueChange)="onToggleChange('advancedStats', $event)">
           </app-settings-toggle>
         </div>
-      </div>
+
 
     </app-inner-box>
 </app-template>

@@ -94,13 +94,11 @@ span {
 
 // Styling for the words list
 .words-list {
-  list-style-type: none;
-  padding-left: 10px;
   margin-top: 5px;
+  padding-left: 20px;
 
   li {
     margin-bottom: 5px;
-    font-size: 14px;
   }
 }
 
@@ -109,20 +107,19 @@ span {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  margin-top: 5px;
-  max-width: 400px;
+  margin-top: 10px;
 }
 
 .heatmap-key {
   width: 30px;
   height: 30px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   border-radius: 4px;
-  color: white;
   font-weight: bold;
-  text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+  color: white;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
 }
 
 /* Make sure the strong tags stand out */
@@ -131,3 +128,55 @@ strong {
   font-size: 1.1em;
 }
 
+.stat-box {
+  width: 80% !important; /* Ensure inner box takes 80% width */
+}
+
+.tab-container {
+  margin-bottom: 20px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+
+  p {
+    font-size: 18px;
+    color: #666;
+  }
+}
+
+// For navbar elements
+.name {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// Make span elements display as block with proper spacing
+:host ::ng-deep app-inner-box span {
+  display: block;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+:host ::ng-deep app-inner-box strong {
+  font-weight: 600;
+}
