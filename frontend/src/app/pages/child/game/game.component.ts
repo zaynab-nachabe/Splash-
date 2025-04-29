@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Question } from 'src/app/shared/models/question.model';
 import { QuestionNotion } from 'src/app/shared/models/QuestionGenerationUtils/QuestionNotionEnum';
-//import { MOCK_QUESTIONS } from 'src/app/shared/mocks/question.mock';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
@@ -9,6 +8,7 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 
 import {QuestionConfig, QuestionConfigService} from "../../../shared/services/question-config.service";
 import {Subscription} from "rxjs";
+import { Router } from '@angular/router';
 
 
 type Input = {
@@ -56,7 +56,11 @@ export class GameComponent implements OnInit, OnDestroy {
     ////////////////////////////////////////////////////////////////////////////
     // Constructors & Destructors :
 
-    constructor(private userService: UserService, private questionConfigService: QuestionConfigService, private configService: ConfigService) {
+    constructor(private userService: UserService, 
+                private questionConfigService: QuestionConfigService,
+                private configService: ConfigService,
+                private router: Router) {
+
         this.userService.selectedUser$.subscribe((user: User) => {
             this.user = user;
         });
@@ -212,13 +216,21 @@ export class GameComponent implements OnInit, OnDestroy {
 
     private submitAnswer(): void {
         if (AnswerChecker.checkAnswer(this.proposed_answer, this.question)){
-            this.score++;
+            this.score += 10;
             this.gameEngine.answerCorrectly();
         }
 
       const newQuestion = QuestionsGenerator.genNewQuestion();
       if (!newQuestion) {
         this.hasEnded = true;
+
+        this.userService.setScore(this.score);
+        this.router.navigate(['/game-podium'], {
+            queryParams: {
+                user: JSON.stringify(this.user),
+                score: this.score
+            }
+        });
         return;
       }
 
@@ -283,7 +295,9 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
+// Eng Game :
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 // Backend Simulator :
