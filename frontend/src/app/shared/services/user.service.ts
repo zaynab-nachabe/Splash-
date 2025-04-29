@@ -14,6 +14,7 @@ import { MOCK_USER } from "../mocks/user.mock";
  *      Confirmer la bonne utilisation de BehaviorSubject, plûtot que Observable
  */
 export class UserService{
+    private userScore: number = 0;
     private users: User[] = [];
     public users$: BehaviorSubject<User[]> = new BehaviorSubject(this.users);
 
@@ -71,6 +72,14 @@ export class UserService{
         JSON.stringify(this.selectedUser)
       );
     }
+  }
+
+  public setScore(score: number): void{
+      this.userScore = score;
+  }
+
+  public getScore(): number{
+      return this.userScore;
   }
 
   public addUser(user: User): void {

@@ -30,7 +30,8 @@ import { ErgoLobbyGameComponent } from './pages/ergo/lobby-game/ergo-lobby-game.
 import { ErgoConfigSelectedPageComponent} from './pages/ergo/config-selected-page/ergo-config-selected-page.component';
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
 import { GameComponent } from './pages/child/game/game.component';
-import { ConfigService } from './shared/services/config.service';
+import { GamePodiumComponent } from './pages/child/game/game-podium.component';
+import { ConfigService } from './shared/services/font.service';
 import { QuestionConfigService } from './shared/services/question-config.service';
 import {RouterModule} from "@angular/router";
 import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
@@ -62,6 +63,7 @@ import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
     SettingsToggleComponent,
     UserListComponent,
     GameComponent,
+    GamePodiumComponent,
     SettingsFontComponent,
     ErgoInputChildComponent,
     TabBoxComponent

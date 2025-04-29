@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import {ConfigService} from '../../services/config.service';
+import {ConfigService} from '../../services/font.service';
 import { OnInit } from '@angular/core';
 @Component({
   selector: 'app-settings-font',

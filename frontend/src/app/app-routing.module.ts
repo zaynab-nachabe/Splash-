@@ -13,6 +13,7 @@ import { ErgoLobbyGameComponent } from './pages/ergo/lobby-game/ergo-lobby-game.
 import { ErgoConfigSelectedPageComponent } from './pages/ergo/config-selected-page/ergo-config-selected-page.component';
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
 import { GameComponent } from './pages/child/game/game.component';
+import { GamePodiumComponent } from './pages/child/game/game-podium.component';
 import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
 
 const routes: Routes = [
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: "ergo-config-selected", component: ErgoConfigSelectedPageComponent },
   { path: 'ergo-stat-selected', component: ErgoStatSelectedPageComponent },
   { path: "game", component: GameComponent},
+  { path: "game-podium", component: GamePodiumComponent },
   { path: 'ergo-input-child', component: ErgoInputChildComponent }
 ];
 
