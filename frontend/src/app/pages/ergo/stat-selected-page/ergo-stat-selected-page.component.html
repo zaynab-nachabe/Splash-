@@ -1,14 +1,14 @@
 <app-template>
     <!--Zone de la navbar -->
-    <app-user-card class="navbar-profile-image">
-        <img src="assets/images/child-pps/red_fish.png" alt="PP 1" class="icon"/>
+    <app-user-card class="navbar-profile-image" *ngIf="selectedUser">
+        <img [src]="userIconPath" [alt]="selectedUser.name">
     </app-user-card>
-    <app-medium-button class="navbar-button" [routerLink]="['/ergo-stat-selected']" routerLinkActive="active"><p class ="name">Eli KOPTER</p></app-medium-button>
+    <app-medium-button class="navbar-button" *ngIf="selectedUser"><p class="name">{{selectedUser.name}}</p></app-medium-button>
     <app-medium-button class="navbar-button red" [routerLink]="['/ergo-stats']"> Retour </app-medium-button>
     <app-medium-button class="navbar-button invisible"/>
 
     <!--Zone du main -->
-    <div class="stats-container main-box">
+    <div class="stats-container main-box" *ngIf="currentStatistic">
       <app-tab-box
         [tabs]="mainTabs"
         [sections]="sections"
@@ -17,44 +17,48 @@
         class="tab-container">
       </app-tab-box>
 
-        <app-inner-box class="main-box blue">
-            <span>
-                Mots par min :
-            </span>
-            <span>
-                Assimilation des notions mathématiques
-            </span>
-            <span>
-                Mots les moins réussis :
-            </span>
-            <span>
-                Précision :
-            </span>
-            <span>
-                HeatMap
-            </span>
-            <span>
-                Nombre de corrections :
-            </span>
-            <span>
-                Réponses affichées :
-            </span>
-        </app-inner-box>
-        <app-inner-box class="main-box blue little">
-            <h1 class="title">CLASSEMENT</h1>
-            <app-user-card class="horizontal">
-                <img src="assets/images/child-pps/red_fish.png" alt="PP 1" class="icon leaderboard"/>
-                <p class="name">Eli KOPTER</p>
-            </app-user-card>
-            <app-user-card class="horizontal">
-                <img src="assets/images/child-pps/yellow_fish.png" alt="PP 1" class="icon leaderboard"/>
-                <p class="name">Test</p>
-            </app-user-card>
-            <app-user-card class="horizontal">
-                <img src="assets/images/child-pps/blue_fish.png" alt="PP 1" class="icon leaderboard"/>
-                <p class="name">Test</p>
-            </app-user-card>
-        </app-inner-box>
+      <app-inner-box class="main-box blue">
+        <span>
+            Classement: <strong>{{ currentStatistic.ranking }}</strong>
+        </span>
+        <span>
+            Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong>
+        </span>
+        <span>
+            Assimilation des notions mathématiques: <strong>{{ currentStatistic.mathNotionUnderstanding }}%</strong>
+        </span>
+        <span>
+            Mots les moins réussis:
+            <ul class="words-list">
+                <li *ngFor="let word of currentStatistic.wordsLeastSuccessful">
+                    {{ word.word }} ({{ word.successRate }}%)
+                </li>
+            </ul>
+        </span>
+        <span>
+            Précision: <strong>{{ currentStatistic.precision }}%</strong>
+        </span>
+        <span>
+            HeatMap:
+            <div class="heatmap-container">
+                <div *ngFor="let key of currentStatistic.heatmapData"
+                     class="heatmap-key"
+                     [style.background-color]="'rgba(255, 0, 0, ' + (key.errorFrequency / 100) + ')'">
+                    {{ key.keyCode.replace('Key', '') }}
+                </div>
+            </div>
+        </span>
+        <span>
+            Nombre de corrections: <strong>{{ currentStatistic.numberOfCorrections }}</strong>
+        </span>
+        <span>
+            Réponses affichées: <strong>{{ currentStatistic.answersShown }}</strong>
+        </span>
+      </app-inner-box>
+    </div>
 
+    <!-- Show a loading message or placeholder when statistics aren't loaded yet -->
+    <div *ngIf="!currentStatistic" class="loading-container">
+        <p>Chargement des statistiques en cours...</p>
     </div>
 </app-template>

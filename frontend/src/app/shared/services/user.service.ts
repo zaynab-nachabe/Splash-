@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, of, map } from "rxjs";
 import { LocalStorageService } from "./localStorage.service";
 
 import { User } from "../models/user.model";
@@ -92,4 +92,24 @@ export class UserService{
       JSON.stringify(users)
     );
   }
+
+
+
+// Get currently selected user
+  getSelectedUser(): User | undefined {
+    return this.selectedUser;
+  }
+
+  getUsers(): Observable<User[]> {
+    return of(this.users$.getValue());
+  }
+
+// Update the getUserById method with proper typing
+  getUserById(userId: string): Observable<User | undefined> {
+    return this.getUsers().pipe(
+      map((users: User[]) => users.find((user: User) => user.userId === userId))
+    );
+  }
+
+
 }

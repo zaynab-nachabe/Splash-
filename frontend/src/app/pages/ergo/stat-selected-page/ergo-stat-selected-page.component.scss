@@ -26,7 +26,7 @@ span {
 /* Stats container layout */
 .stats-container {
   display: flex;
-  width: 90%;
+  width: 50%;
   height: 80%;
   position: relative;
   margin: 0 auto; /* Center horizontally */
@@ -37,8 +37,8 @@ span {
 /* Tab container positioning */
 .tab-container {
   position: absolute;
-  left: -180px; /* Position tabs to the left of content box */
-  top: 20px;
+  left: 0; /* Position tabs to the left of content box */
+  top: 0;
   width: 200px;
   z-index: 10;
 }
@@ -65,41 +65,12 @@ span {
   background-color: #75d4ff;
 }
 
-/* Content boxes */
-.main-box {
-  padding: 0px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 5;
-}
-
-.main-box.blue {
-  background-color: #75d4ff;
-  flex: 2;
-  min-width: 400px;
-}
-
-.main-box.blue.little {
-  flex: 1;
-  max-width: 300px;
-  margin-left: 20px;
-  padding: 15px;
-}
-
-/* Main content layout */
-.main-content-area {
-  display: flex;
-  width: 100%;
-  gap: 20px;
-}
-
 /* Icon styling */
 .icon.leaderboard {
   width: 40px;
   height: 40px;
   margin-right: 10px;
 }
-
 
 /* Make sure the inner-box components work with our new layout */
 :host ::ng-deep app-inner-box {
@@ -117,4 +88,46 @@ span {
   overflow-y: auto;
 }
 
+
+
+
+
+// Styling for the words list
+.words-list {
+  list-style-type: none;
+  padding-left: 10px;
+  margin-top: 5px;
+
+  li {
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+}
+
+// Simplified heatmap visualization
+.heatmap-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+  max-width: 400px;
+}
+
+.heatmap-key {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Make sure the strong tags stand out */
+strong {
+  font-weight: bold;
+  font-size: 1.1em;
+}
 

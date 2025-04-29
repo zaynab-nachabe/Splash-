@@ -20,14 +20,14 @@ const routes: Routes = [
   { path: "child-list", component: ChildListPageComponent },
   { path: "ergo-play", component: ErgoPlayPageComponent },
   { path: "ergo-config", component: ErgoConfigPageComponent },
-  { path: "ergo-stats", component: ErgoStatPageComponent },
+  { path: 'ergo-stats', component: ErgoStatPageComponent },
   { path: "child-play", component: ChildPlayPageComponent },
   { path: "child-config", component: ChildConfigPageComponent },
   { path: "child-stats", component: ChildStatPageComponent },
   { path: "child-lobby", component: ChildLobbyGameComponent },
   { path: "ergo-lobby", component: ErgoLobbyGameComponent },
   { path: "ergo-config-selected", component: ErgoConfigSelectedPageComponent },
-  { path: "ergo-stat-selected", component: ErgoStatSelectedPageComponent },
+  { path: 'ergo-stat-selected', component: ErgoStatSelectedPageComponent },
   { path: "game", component: GameComponent},
   { path: 'ergo-input-child', component: ErgoInputChildComponent }
 ];
