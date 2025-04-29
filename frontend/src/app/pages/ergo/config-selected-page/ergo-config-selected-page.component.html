@@ -7,8 +7,17 @@
     <app-medium-button class="navbar-button red" [routerLink]="['/ergo-config']"> Retour </app-medium-button>
     <app-medium-button class="navbar-button green" (click) = "onSaveConfig()"> Sauvegarder </app-medium-button>
 
+
+
+
     <!--Zone du main -->
     <app-inner-box class="main-box blue">
+      <!-- Save confirmation message -->
+      <div class="save-confirmation-container">
+        <div class="save-confirmation" *ngIf="saveConfirmationVisible">
+          Configuration sauvegardée automatiquement a chaque modification.
+        </div>
+      </div>
 
       <span>NOM : {{ selectedUser?.name }}</span>
       <span>Âge : {{selectedUser?.age}} ans</span>

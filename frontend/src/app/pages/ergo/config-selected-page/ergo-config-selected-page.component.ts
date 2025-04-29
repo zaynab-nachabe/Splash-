@@ -76,7 +76,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
     };
     this.questionConfigService.updateNotion(notion, value);
     console.log('After toggle - Current config:', this.currentConfig);
-// Force UI update - with proper type casting
+    // Force UI update - with proper type casting
     const allToggles = document.querySelectorAll('.settings-toggle');
     allToggles.forEach(toggle => {
       // Properly cast to HTMLElement to access style property
@@ -92,11 +92,15 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
 
   }
 
+  saveConfirmationVisible: boolean = false;
 
   onSaveConfig(): void {
     console.log('Saving config:', this.currentConfig);
     this.questionConfigService.updateConfig(this.currentConfig);
-    this.router.navigate(['/ergo-config']);
+    this.saveConfirmationVisible = true;
+    setTimeout(() => {
+      this.saveConfirmationVisible = false;
+    }, 3000);
 
   }
 
