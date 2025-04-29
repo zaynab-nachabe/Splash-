@@ -15,12 +15,20 @@ export class UserListComponent {
   @Input() navigateTo: string = '/child-play';
   @Input() showAddButton: boolean = false; // New property
   @Input() addButtonRoute: string = ''; // Route to navigate to when add button is clicked
+  @Input() showDeleteButtons: boolean = false; //
+
+
+  showConfirmDeletePopup: boolean = false;
+  userToDelete?: User;
+
 
   constructor(private userService: UserService,  private router: Router){
     this.userService.users$.subscribe((users: User[]) => {
       this.userList = users;
     });
   }
+
+
 
   ngOnInit(): void {}
 
@@ -34,5 +42,27 @@ export class UserListComponent {
       this.router.navigate([this.addButtonRoute]);
     }
   }
+
+
+  promptDeleteUser(event: Event, user: User): void {
+    event.stopPropagation(); // Prevent navigation when clicking the X
+    this.userToDelete = user;
+    this.showConfirmDeletePopup = true;
+  }
+
+
+  confirmDeleteUser(): void {
+    if (this.userToDelete) {
+      this.userService.deleteUser(this.userToDelete.userId);
+      this.showConfirmDeletePopup = false;
+      this.userToDelete = undefined;
+    }
+  }
+
+  cancelDeleteUser(): void {
+    this.showConfirmDeletePopup = false;
+    this.userToDelete = undefined;
+  }
+
 
 }

@@ -1,13 +1,28 @@
-<div class="user-list">
-  <div class="user" *ngFor="let user of userList">
-    <app-user-card [user]="user" (click)="selectUser(user.userId)"></app-user-card>
+<div class="user-list-container">
+  <div class="user-grid">
+    <div *ngFor="let user of userList" class="user-card-container" (click)="selectUser(user.userId)">
+      <!-- X mark for deletion -->
+      <div *ngIf="showDeleteButtons" class="delete-btn" (click)="promptDeleteUser($event, user)">
+        <span>×</span>
+      </div>
+      <app-user-card [user]="user"></app-user-card>
+    </div>
+
+    <!-- Add button -->
+    <div *ngIf="showAddButton" class="add-user-button" (click)="navigateToAddUser()">
+      <div class="plus-icon">+</div>
+    </div>
   </div>
 
-  <!-- Add New Child Button - Only shown when showAddButton is true -->
-  <div *ngIf="showAddButton" class="user add-button" (click)="navigateToAddUser()">
-    <app-user-card>
-      <!-- The + symbol will be passed as content to the ng-content in the user-card -->
-      <div class="plus-icon">+</div>
-    </app-user-card>
+  <!-- Confirmation popup -->
+  <div *ngIf="showConfirmDeletePopup" class="confirm-delete-overlay">
+    <div class="confirm-delete-popup">
+      <h3>Confirmer la suppression</h3>
+      <p>Êtes-vous sûr de vouloir supprimer {{ userToDelete?.name }} ?</p>
+      <div class="confirm-buttons">
+        <button class="cancel-btn" (click)="cancelDeleteUser()">Annuler</button>
+        <button class="confirm-btn" (click)="confirmDeleteUser()">Supprimer</button>
+      </div>
+    </div>
   </div>
 </div>
