@@ -6,6 +6,7 @@
         <span
             *ngFor="let input of inputs; let i = index"
             [ngClass]="[input.status, i === cursorPosition ? 'cursor' : '']"
+            [ngStyle]="{ 'font-family': fontFamily}"
         >
             {{ input.letter }}
         </span>
