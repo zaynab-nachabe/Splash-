@@ -13,6 +13,7 @@ import { ErgoLobbyGameComponent } from './pages/ergo/lobby-game/ergo-lobby-game.
 import { ErgoConfigSelectedPageComponent } from './pages/ergo/config-selected-page/ergo-config-selected-page.component';
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
 import { GameComponent } from './pages/child/game/game.component';
+import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
 
 const routes: Routes = [
   { path: "", component: WelcomePageComponent },
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: "ergo-config-selected", component: ErgoConfigSelectedPageComponent },
   { path: "ergo-stat-selected", component: ErgoStatSelectedPageComponent },
   { path: "game", component: GameComponent},
+  { path: 'ergo-input-child', component: ErgoInputChildComponent }
 ];
 
 @NgModule({

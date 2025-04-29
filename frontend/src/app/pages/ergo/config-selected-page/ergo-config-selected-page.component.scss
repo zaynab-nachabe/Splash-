@@ -90,3 +90,24 @@ span {
 :host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+
+.save-confirmation {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}

@@ -6,6 +6,11 @@
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue">
-        <app-user-list [navigateTo]="'/ergo-config-selected'"></app-user-list>
+      <app-user-list
+        [navigateTo]="'/ergo-config-selected'"
+        [showAddButton]="true"
+        [addButtonRoute]="'/ergo-input-child'">
+      </app-user-list>
+
     </app-inner-box>
 </app-template>

@@ -1,0 +1,22 @@
+<div class="tab-box">
+  <!-- Regular tabs -->
+  <div *ngFor="let tab of tabs">
+    <app-small-button
+      [ngClass]="{'active': tab.id === activeTabId}"
+      (click)="onTabClick(tab.id)">
+      {{ tab.label }}
+    </app-small-button>
+  </div>
+
+  <!-- Sections with tabs -->
+  <div *ngFor="let section of sections">
+    <p class="section-title">{{ section.title }}</p>
+    <div *ngFor="let tab of section.tabs">
+      <app-small-button
+        [ngClass]="{'active': tab.id === activeTabId}"
+        (click)="onTabClick(tab.id)">
+        {{ tab.label }}
+      </app-small-button>
+    </div>
+  </div>
+</div>

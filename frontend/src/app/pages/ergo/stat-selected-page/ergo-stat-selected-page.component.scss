@@ -12,8 +12,8 @@ app-small-button{
 span {
     font-size: 15px;
     width: 100%;
-    display: flex; 
-    flex-direction: row; 
+    display: flex;
+    flex-direction: row;
     gap: 15px;
     margin-bottom: 15px;
 }
@@ -21,3 +21,100 @@ span {
 .title{
     font-size: 30px;
 }
+
+
+/* Stats container layout */
+.stats-container {
+  display: flex;
+  width: 90%;
+  height: 80%;
+  position: relative;
+  margin: 0 auto; /* Center horizontally */
+  padding-left: 200px; /* Add padding to make room for tabs */
+
+}
+
+/* Tab container positioning */
+.tab-container {
+  position: absolute;
+  left: -180px; /* Position tabs to the left of content box */
+  top: 20px;
+  width: 200px;
+  z-index: 10;
+}
+
+/* Content box */
+.content-box {
+  flex: 2;
+  padding: 0px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #75d4ff;
+  z-index: 5;
+  margin-left: 10px; /* Add space for the tabs */
+}
+
+/* Leaderboard box */
+.leaderboard-box {
+  flex: 1;
+  max-width: 100px;
+  margin-left: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #75d4ff;
+}
+
+/* Content boxes */
+.main-box {
+  padding: 0px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.main-box.blue {
+  background-color: #75d4ff;
+  flex: 2;
+  min-width: 400px;
+}
+
+.main-box.blue.little {
+  flex: 1;
+  max-width: 300px;
+  margin-left: 20px;
+  padding: 15px;
+}
+
+/* Main content layout */
+.main-content-area {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+}
+
+/* Icon styling */
+.icon.leaderboard {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+
+/* Make sure the inner-box components work with our new layout */
+:host ::ng-deep app-inner-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep app-inner-box.blue {
+  background-color: #75d4ff;
+}
+
+:host ::ng-deep app-inner-box .box-content {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+

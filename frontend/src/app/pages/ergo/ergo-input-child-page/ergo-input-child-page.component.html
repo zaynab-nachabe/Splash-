@@ -1,0 +1,82 @@
+<app-template>
+  <!--Zone de la navbar -->
+  <app-user-card class="navbar-profile-image">
+    <img src="assets/images/child-pps/{{selectedIcon}}" alt="Profile Icon" class="icon"/>
+  </app-user-card>
+  <app-medium-button class="navbar-button"><p class="name">Nouvel Enfant</p></app-medium-button>
+  <app-medium-button class="navbar-button red" (click)="onCancel()"> Annuler </app-medium-button>
+  <app-medium-button class="navbar-button green" (click)="onSaveChild()"> Sauvegarder </app-medium-button>
+
+  <!--Zone du main -->
+  <app-inner-box class="main-box blue">
+    <form [formGroup]="childForm" class="child-form">
+      <div class="form-group">
+        <label for="name">NOM et Prénom:</label>
+        <input type="text" id="name" formControlName="name" class="form-control">
+        <div *ngIf="childForm.get('name')?.invalid && childForm.get('name')?.touched" class="error-message">
+          Nom requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="age">Âge:</label>
+        <input type="text" id="age" formControlName="age" class="form-control">
+        <div *ngIf="childForm.get('age')?.invalid && childForm.get('age')?.touched" class="error-message">
+          Âge requis (valeur numérique)
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Troubles:</label>
+
+        <div class="troubles-container">
+          <!-- Selected troubles pills -->
+          <div class="selected-troubles" *ngIf="selectedConditions.length > 0">
+            <div *ngFor="let condition of selectedConditions" class="trouble-pill">
+              {{condition}}
+              <span class="remove-trouble" (click)="toggleCondition(condition)">×</span>
+            </div>
+          </div>
+
+          <!-- Dropdown for existing troubles -->
+          <div class="dropdown-wrapper">
+            <select #troubleSelect class="troubles-dropdown" (change)="handleTroubleSelection(troubleSelect.value)">
+              <option value="" disabled selected>Sélectionner une condition</option>
+              <option value="reset">↺ Réinitialiser la liste par défaut</option>
+              <option *ngFor="let condition of availableConditions"
+                      [value]="condition"
+                      [disabled]="selectedConditions.includes(condition)">
+                {{condition}}
+              </option>
+              <option value="add">+ Ajouter une nouvelle condition</option>
+            </select>
+          </div>
+
+
+          <!-- Add new condition input (shown when "Add new" is selected) -->
+          <div class="add-new-trouble" *ngIf="showNewConditionInput">
+            <input type="text" [(ngModel)]="newCondition" [ngModelOptions]="{standalone: true}"
+                   class="form-control new-trouble-input" placeholder="Nouvelle condition...">
+            <div class="trouble-actions">
+              <button type="button" class="trouble-btn add" (click)="addNewCondition()">Ajouter</button>
+              <button type="button" class="trouble-btn cancel" (click)="cancelAddNewCondition()">Annuler</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label>Icône:</label>
+        <div class="icon-selector">
+          <div *ngFor="let icon of ['pp-1.png', 'pp-2.png', 'pp-3.png', 'pp-4.png', 'pp-5.png', 'red_fish.png', 'blue_fish.png', 'yellow_fish.png', 'turtle.png']"
+               class="icon-option"
+               [class.selected]="selectedIcon === icon"
+               (click)="selectIcon(icon)">
+            <img src="assets/images/child-pps/{{icon}}" alt="Icon option">
+          </div>
+        </div>
+      </div>
+    </form>
+  </app-inner-box>
+</app-template>
