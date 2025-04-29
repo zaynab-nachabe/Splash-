@@ -11,6 +11,7 @@ import { BigButtonComponent } from './shared/components/big-button/big-button.co
 import { MediumButtonComponent } from './shared/components/medium-button/medium-button.component';
 import { InnerBoxComponent } from './shared/components/inner-box/inner-box.component';
 import { SmallButtonComponent } from './shared/components/small-button/small-button.component';
+import { HomeButtonComponent } from './shared/components/home-button/home-button.component';
 import { UserCardComponent } from './shared/components/user-card/user-card.component';
 import { SettingsSliderComponent } from './shared/components/settings-slider/settings-slider.component';
 import { SettingsToggleComponent } from './shared/components/settings-toggle/settings-toggle.component';
@@ -47,6 +48,7 @@ import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
     BigButtonComponent,
     MediumButtonComponent,
     SmallButtonComponent,
+    HomeButtonComponent,
     InnerBoxComponent,
     ErgoPlayPageComponent,
     ErgoConfigPageComponent,

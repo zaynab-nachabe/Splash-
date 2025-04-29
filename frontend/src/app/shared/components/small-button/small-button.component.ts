@@ -8,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './small-button.component.scss'
 })
 export class SmallButtonComponent {
-
+  
 }
