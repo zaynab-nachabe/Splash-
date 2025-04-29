@@ -14,6 +14,8 @@ export class GameEngine {
     private Ui: Ui;
     private score: number = 0;
     private enemies: Enemy[];
+    private correctAnswers: number = 0;
+    private incorrectAnswers: number = 0;
 
     constructor(private gameComponent: GameComponent, private canvas: HTMLCanvasElement, private fontService: FontService) {
         this.ctx = canvas.getContext('2d')!;

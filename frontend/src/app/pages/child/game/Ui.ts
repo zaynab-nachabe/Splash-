@@ -16,7 +16,7 @@ export class Ui implements OnInit{
     constructor(private gameEngine: GameEngine, private fontService: FontService) {
         this.gameEngine = gameEngine;
         
-        this.fontSize = 50;
+        this.fontSize = 70;
         this.fontFamily = 'Arial';
         this.fontColor = '#000000';
     }
@@ -51,8 +51,7 @@ export class Ui implements OnInit{
         ctx.save();
         ctx.fillStyle = this.fontColor;
         ctx.font = this.fontSize + 'px ' + this.fontFamily;
-        console.log('Drawing text with font ', ctx.font);
-        ctx.fillText(`Score: ${this.gameEngine.scoreValue}`, this.canvas.width/2 - 75, 350);
+        ctx.fillText(`Score: ${this.gameEngine.scoreValue}`, this.canvas.width-350, this.canvas.height-70);
 
         ctx.restore();
     }
