@@ -2,15 +2,17 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GameStatistics } from 'src/app/shared/models/game-statistics.model';
+import {childRankingMock} from '../../../shared/mocks/childRanking-mock';
+import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/shared/models/user.model';
 import { GameStatisticsService } from 'src/app/shared/services/game-statistics.service';
-import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-child-stat-page',
   templateUrl: './child-stat-page.component.html',
-  styleUrl: './child-stat-page.component.scss'
+  styleUrls: ['./child-stat-page.component.scss']
 })
+
 export class ChildStatPageComponent implements OnInit, OnDestroy {
   activeTab: string = 'total';
   selectedUser?: User;
