@@ -1,4 +1,3 @@
-
 // inner-box.component.scss
 :host {
   border-radius: 20px;
@@ -6,7 +5,7 @@
   flex-wrap: wrap;
   align-content: flex-start;
   height: 70vh;
-  width: 77vh;
+  width: 80%;
   padding: 1%;
   margin: 1%;
   background-color: #E0E7FA; // Blue background for the host
@@ -38,6 +37,11 @@
   font-size: large;
   font-weight: bold;
   overflow-x: hidden;
+}
+
+// When using user-list component, don't add scroll to box-content
+:host(.user-list-container) .box-content {
+  overflow-y: hidden;
 }
 
 .box-content {

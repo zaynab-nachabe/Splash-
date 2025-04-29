@@ -16,7 +16,14 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
   public selectedUser?: User;
   private configSubscription!: Subscription;
   private userSubscription!: Subscription;
+  saveConfirmationVisible: boolean = false;
 
+  availableOperations = [
+    { key: 'addition', label: 'Addition' },
+    { key: 'subtraction', label: 'Soustraction' },
+    { key: 'multiplication', label: 'Multiplication' },
+    { key: 'division', label: 'Division' }
+  ];
 
 
   constructor(
@@ -85,14 +92,50 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
       toggleEl.style.display = 'none';
       setTimeout(() => toggleEl.style.display = display, 0);
     });
-
     // Also force Angular change detection
     this.cdr.detectChanges();
-
-
   }
 
-  saveConfirmationVisible: boolean = false;
+  getSelectedOperations(): string[] {
+    return Object.entries(this.currentConfig)
+      .filter(([key, value]) => {
+        // Only include operation-related config items that are true
+        return value === true && this.availableOperations.some(op => op.key === key);
+      })
+      .map(([key]) => key);
+  }
+
+  isOperationSelected(key: string): boolean {
+    return this.currentConfig[key as keyof QuestionConfig] === true;
+  }
+
+  getOperationLabel(key: string): string {
+    const operation = this.availableOperations.find(op => op.key === key);
+    return operation ? operation.label : key;
+  }
+
+  // Handle when an operation is selected from the dropdown
+  handleOperationSelection(value: string): void {
+    if (!value) return;
+
+    // Toggle the operation state using the same callback as toggles
+    const isCurrentlySelected = this.isOperationSelected(value);
+    this.onToggleChange(value as keyof QuestionConfig, !isCurrentlySelected);
+
+    // Reset the dropdown to placeholder
+    setTimeout(() => {
+      const select = document.querySelector('.operations-dropdown') as HTMLSelectElement;
+      if (select) {
+        select.value = '';
+      }
+    }, 0);
+  }
+
+  toggleOperation(key: string): void {
+    // Set it to false (because clicking an active pill means removing it)
+    this.onToggleChange(key as keyof QuestionConfig, false);
+  }
+
 
   onSaveConfig(): void {
     console.log('Saving config:', this.currentConfig);
