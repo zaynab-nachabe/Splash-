@@ -1,38 +1,69 @@
+
+// inner-box.component.scss
 :host {
-    border-radius: 20px;
-    display:flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    overflow-y: hidden;
-    height: 70vh;
-    width: 77vh;
-    padding:1%;
-    margin: 1%;
+  border-radius: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  height: 70vh;
+  width: 77vh;
+  padding: 1%;
+  margin: 1%;
+  background-color: #E0E7FA; // Blue background for the host
+  overflow: hidden; // Hide overflow on the host element
 }
 
 :host(.blue) {
-    background-color: #E0E7FA;
-    color: black;
+  background-color: #E0E7FA;
+  color: black;
 }
 
 :host(.little) {
-    width: 35vh;
-    flex-direction: column;
-    align-items: center;
-    align-content: normal;
+  width: 35vh;
+  flex-direction: column;
+  align-items: center;
+  align-content: normal;
 }
 
 :host(.medium) {
-    width: 50vh;
+  width: 50vh;
 }
 
 :host(.button-list) {
-    flex-direction: column;
-    align-items: center;
-    height: 70vh;
-    width: 20vh;
-    color: #000000;
-    font-size: large;
-    font-weight: bold;
-    overflow-x: hidden;
+  flex-direction: column;
+  align-items: center;
+  height: 70vh;
+  width: 20vh;
+  color: #000000;
+  font-size: large;
+  font-weight: bold;
+  overflow-x: hidden;
+}
+
+.box-content {
+  background-color: white;
+  border-radius: 15px;
+  width: 100%; /* Take full width of parent */
+  height: 100%; /* Take full height of parent */
+  overflow-y: auto; /* Add vertical scrolling */
+  padding: 20px;
+
+  /* Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
 }

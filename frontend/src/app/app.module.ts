@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { TemplateComponent } from './shared/components/template/template.component';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
@@ -34,6 +34,8 @@ import { GamePodiumComponent } from './pages/child/game/game-podium.component';
 import { ConfigService } from './shared/services/font.service';
 import { QuestionConfigService } from './shared/services/question-config.service';
 import {RouterModule} from "@angular/router";
+import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
+import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
 
 @NgModule({
   declarations: [
@@ -63,15 +65,18 @@ import {RouterModule} from "@angular/router";
     GameComponent,
     GamePodiumComponent,
     SettingsFontComponent,
+    ErgoInputChildComponent,
+    TabBoxComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [ConfigService,
     RouterModule,
-    FormsModule, 
+    FormsModule,
   [QuestionConfigService]
   ],
   bootstrap: [AppComponent]

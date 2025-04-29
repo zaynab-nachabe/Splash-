@@ -1,85 +1,120 @@
 <app-template>
     <!--Zone de la navbar -->
     <app-user-card class="navbar-profile-image">
-        <img src="assets/images/child-pps/red_fish.png" alt="PP 1" class="icon"/>
+      <img [src]="userIconPath" alt="PP 1" class="icon"/>
     </app-user-card>
-    <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active"><p class="name">Eli KOPTER</p></app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active"><p class="name">{{ selectedUser?.name }}</p></app-medium-button>
     <app-medium-button class="navbar-button red" [routerLink]="['/ergo-config']"> Retour </app-medium-button>
     <app-medium-button class="navbar-button green" (click) = "onSaveConfig()"> Sauvegarder </app-medium-button>
 
+
+
+
     <!--Zone du main -->
     <app-inner-box class="main-box blue">
+      <!-- Save confirmation message -->
+      <div class="save-confirmation-container">
+        <div class="save-confirmation" *ngIf="saveConfirmationVisible">
+          Configuration sauvegardée automatiquement a chaque modification.
+        </div>
+      </div>
 
-        <span>NOM : KOPTER</span>
-        <span>Prénom : Eli</span>
-        <span>Âge : 7ans</span>
-        <span>Troubles: Dysgraphie</span>
+      <span>NOM : {{ selectedUser?.name }}</span>
+      <span>Âge : {{selectedUser?.age}} ans</span>
+      <span>Troubles: {{selectedUser?.conditions}}</span>
 
-      <span>
-    LeaderBoard :
-    <app-settings-toggle
-      [checked]="currentConfig.leaderboard"
-      (valueChange)="onToggleChange('leaderboard', $event)"
-    ></app-settings-toggle>
-</span>
-      <span>
-    Statistiques avancées :
-    <app-settings-toggle
-      [checked]="currentConfig.advancedStats"
-      (valueChange)="onToggleChange('advancedStats', $event)"
-    ></app-settings-toggle>
-</span>
-      <span>
-    Réponses affichées :
-    <app-settings-toggle
-      [checked]="currentConfig.showAnswers"
-      (valueChange)="onToggleChange('showAnswers', $event)"
-    ></app-settings-toggle>
-</span>
 
-        <span>
-            Réécriture des nombres :
-                        <app-settings-toggle
-                          [checked]="currentConfig.rewrite"
-                          (valueChange)="onToggleChange('rewrite', $event)"
+      <div class="config-toggles">
+        <!-- Addition toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Addition</span>
+          <app-settings-toggle
+            [checked]="currentConfig.addition"
+            (valueChange)="onToggleChange('addition', $event)">
+          </app-settings-toggle>
+        </div>
 
-                        ></app-settings-toggle>
-        </span>
-        <span>
-            Addition :
-            <app-settings-toggle
-              [checked]="currentConfig.addition"
-              (valueChange)="onToggleChange('addition', $event)"
-            ></app-settings-toggle>
+        <!-- Subtraction toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Soustraction</span>
+          <app-settings-toggle
+            [checked]="currentConfig.subtraction"
+            (valueChange)="onToggleChange('subtraction', $event)">
+          </app-settings-toggle>
+        </div>
 
-        </span>
-        <span>
-            Soustraction :
-                        <app-settings-toggle
-                          [checked]="currentConfig.subtraction"
-                          (valueChange)="onToggleChange('subtraction', $event)"
-                        ></app-settings-toggle>
-        </span>
-        <span>
-            Multiplication :
-                        <app-settings-toggle
-                          [checked]="currentConfig.multiplication"
-                          (valueChange)="onToggleChange('multiplication', $event)"
-                        ></app-settings-toggle>
-        </span>
-        <span>
-            Division :
-                        <app-settings-toggle
-                          [checked]="currentConfig.division"
-                          (valueChange)="onToggleChange('division', $event)"
-                        ></app-settings-toggle>
-        </span>
-        <span>
-            Encryption :
-                        <app-settings-toggle
-                          [checked]="currentConfig.crypted"
-                          (valueChange)="onToggleChange('crypted', $event)"
-                        ></app-settings-toggle>
-        </span>
+        <!-- Multiplication toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Multiplication</span>
+          <app-settings-toggle
+            [checked]="currentConfig.multiplication"
+            (valueChange)="onToggleChange('multiplication', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Division toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Division</span>
+          <app-settings-toggle
+            [checked]="currentConfig.division"
+            (valueChange)="onToggleChange('division', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Rewrite toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Réécrire</span>
+          <app-settings-toggle
+            [checked]="currentConfig.rewrite"
+            (valueChange)="onToggleChange('rewrite', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Encryption toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Chiffrement</span>
+          <app-settings-toggle
+            [checked]="currentConfig.crypted"
+            (valueChange)="onToggleChange('crypted', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Show Answers toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Montrer les réponses</span>
+          <app-settings-toggle
+            [checked]="currentConfig.showAnswers"
+            (valueChange)="onToggleChange('showAnswers', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Additional features -->
+        <div class="toggle-row">
+          <span class="toggle-label">Équations</span>
+          <app-settings-toggle
+            [checked]="currentConfig.equations"
+            (valueChange)="onToggleChange('equations', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Leaderboard toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Tableau des scores</span>
+          <app-settings-toggle
+            [checked]="currentConfig.leaderboard"
+            (valueChange)="onToggleChange('leaderboard', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Advanced Stats toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Statistiques avancées</span>
+          <app-settings-toggle
+            [checked]="currentConfig.advancedStats"
+            (valueChange)="onToggleChange('advancedStats', $event)">
+          </app-settings-toggle>
+        </div>
+      </div>
+
     </app-inner-box>
 </app-template>

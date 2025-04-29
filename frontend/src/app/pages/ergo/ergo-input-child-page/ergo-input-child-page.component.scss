@@ -1,0 +1,222 @@
+.name {
+  text-align: left;
+  width: 55%;
+  position: relative;
+  left: 3rem;
+}
+
+.child-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: #f0f0f0;
+    color: #000;
+    font-size: 16px;
+
+    &:focus {
+      outline: none;
+      border-color: #ff9918;
+    }
+  }
+
+  .error-message {
+    color: #ff5252;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+}
+
+.conditions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  .condition-item {
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      cursor: pointer;
+
+      input {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.icon-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  .icon-option {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+
+    &.selected {
+      border-color: #ff9918;
+      transform: scale(1.1);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+:host ::ng-deep app-inner-box .box-content {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* Customize the scrollbar appearance */
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.troubles-container {
+  margin-top: 10px;
+}
+
+.selected-troubles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.trouble-pill {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 153, 24, 0.2);
+  border: 1px solid rgba(255, 153, 24, 0.5);
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 14px;
+  color: #000;
+}
+
+.remove-trouble {
+  margin-left: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+
+  &:hover {
+    color: #ff5252;
+  }
+}
+
+.troubles-dropdown {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: #f0f0f0;
+  color: #000;
+  font-size: 16px;
+
+  &:focus {
+    outline: none;
+    border-color: #ff9918;
+  }
+}
+
+.add-new-trouble {
+  margin-top: 10px;
+}
+
+.new-trouble-input {
+  margin-bottom: 8px;
+}
+
+.trouble-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.trouble-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+
+  &.add {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  &.cancel {
+    background-color: #f44336;
+    color: white;
+  }
+}
+
+// Update the form-control style
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: #f0f0f0;
+  color: #000;
+  font-size: 16px;
+
+  &:focus {
+    outline: none;
+    border-color: #ff9918;
+  }
+}
+
+.troubles-dropdown option[value="reset"] {
+  font-style: italic;
+  color: #666;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}

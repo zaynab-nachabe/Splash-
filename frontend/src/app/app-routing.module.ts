@@ -14,22 +14,24 @@ import { ErgoConfigSelectedPageComponent } from './pages/ergo/config-selected-pa
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
 import { GameComponent } from './pages/child/game/game.component';
 import { GamePodiumComponent } from './pages/child/game/game-podium.component';
+import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
 
 const routes: Routes = [
   { path: "", component: WelcomePageComponent },
   { path: "child-list", component: ChildListPageComponent },
   { path: "ergo-play", component: ErgoPlayPageComponent },
   { path: "ergo-config", component: ErgoConfigPageComponent },
-  { path: "ergo-stats", component: ErgoStatPageComponent },
+  { path: 'ergo-stats', component: ErgoStatPageComponent },
   { path: "child-play", component: ChildPlayPageComponent },
   { path: "child-config", component: ChildConfigPageComponent },
   { path: "child-stats", component: ChildStatPageComponent },
   { path: "child-lobby", component: ChildLobbyGameComponent },
   { path: "ergo-lobby", component: ErgoLobbyGameComponent },
   { path: "ergo-config-selected", component: ErgoConfigSelectedPageComponent },
-  { path: "ergo-stat-selected", component: ErgoStatSelectedPageComponent },
+  { path: 'ergo-stat-selected', component: ErgoStatSelectedPageComponent },
   { path: "game", component: GameComponent},
-  { path: "game-podium", component: GamePodiumComponent }
+  { path: "game-podium", component: GamePodiumComponent },
+  { path: 'ergo-input-child', component: ErgoInputChildComponent }
 ];
 
 @NgModule({

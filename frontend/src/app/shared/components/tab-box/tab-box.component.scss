@@ -1,0 +1,43 @@
+.tab-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  padding: 10px 0;
+  background-color: transparent;
+  width: 100%;
+
+  // Make tabs appear connected to main content
+  position: relative;
+  right: -25px; // Overlap with main content box
+}
+
+.section-title {
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  color: white;
+  font-size: 14px;
+}
+
+:host ::ng-deep app-small-button {
+  width: 100%;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  transition: all 0.3s ease;
+  background-color: #dbdbdb;
+
+  &.active {
+    background-color: #75d4ff; // Match the main content box color
+    color: white;
+    box-shadow: -3px 3px 6px rgba(0, 0, 0, 0.1);
+    transform: translateX(3px); // Slight overlap effect
+    z-index: 2;
+  }
+
+  &:hover:not(.active) {
+    background-color: #c0c0c0;
+  }
+}

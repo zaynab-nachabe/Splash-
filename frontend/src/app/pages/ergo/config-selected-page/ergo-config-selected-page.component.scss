@@ -9,8 +9,8 @@
 span {
     font-size: 15px;
     width: 100%;
-    display: flex; 
-    flex-direction: row; 
+    display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
     gap: 15px;
     margin-bottom: 15px;
@@ -18,4 +18,96 @@ span {
         flex-grow: 1;
         width: 200px
     }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h3 {
+    margin-right: 15px;
+    font-size: 20px;
+  }
+
+  .user-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+.config-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+
+  .toggle-label {
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+:host ::ng-deep app-inner-box .box-content {
+  max-height: 70vh; /* Adjust this value based on your needs */
+  overflow-y: auto;
+  padding-right: 10px; /* Add some padding for the scrollbar */
+}
+
+/* Customize the scrollbar appearance */
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.save-confirmation {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
 }
