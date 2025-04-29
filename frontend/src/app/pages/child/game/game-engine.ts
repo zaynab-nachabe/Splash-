@@ -20,7 +20,8 @@ export class GameEngine {
         this.adjustCanvaResolution();
         this.player = new Player(this, canvas);
         this.enemies = [new Crab(this, canvas)];
-        this.Ui = new Ui(this, canvas, this.fontService);
+        this.Ui = new Ui(this, this.fontService);
+        this.Ui.setCanvas(canvas);
         this.Ui.ngOnInit();
         this.score = 0;
         this.startGameLoop();

@@ -12,7 +12,8 @@ export class Ui implements OnInit{
     private fontFamily: string;
     private fontColor: string;
 
-    constructor(private gameEngine: GameEngine, private canvas: HTMLCanvasElement , private fontService: FontService) {
+    //constructor has private canvas: HTMLCanvasElement before
+    constructor(private gameEngine: GameEngine, private fontService: FontService) {
         this.gameEngine = gameEngine;
         
         this.fontSize = 50;
@@ -20,6 +21,11 @@ export class Ui implements OnInit{
         this.fontColor = '#000000';
     }
 
+    private canvas!: HTMLCanvasElement;
+
+    public setCanvas(canvas: HTMLCanvasElement): void{
+        this.canvas = canvas;
+    }
     
     ngOnInit(){
         console.log('ui intialized a subscribing to configService');

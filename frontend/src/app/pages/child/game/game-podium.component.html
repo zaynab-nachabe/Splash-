@@ -1,5 +1,6 @@
 <app-template>
   <app-medium-button class="navbar-button red" [routerLink]="['/']" routerLinkActive="active">Retour</app-medium-button>
+  <app-medium-button class="navbar-button" [routerLink]="['/ergo-stat-selected']" routerLinkActive="active">Détail de la partie</app-medium-button>
   <app-inner-box class="main-box blue">
     <div class="podium-container">
       <div class="score">
@@ -9,5 +10,6 @@
         <app-user-card [user]="user"></app-user-card>
       </div>
     </div>
+    <canvas id="confetti-canvas"></canvas>
   </app-inner-box>
 </app-template>
