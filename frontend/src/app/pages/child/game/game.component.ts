@@ -4,7 +4,7 @@ import { QuestionNotion } from 'src/app/shared/models/QuestionGenerationUtils/Qu
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
-import { ConfigService } from 'src/app/shared/services/config.service';
+import { ConfigService } from 'src/app/shared/services/font.service';
 
 import {QuestionConfig, QuestionConfigService} from "../../../shared/services/question-config.service";
 import {Subscription} from "rxjs";
@@ -33,7 +33,7 @@ export class GameComponent implements OnInit, OnDestroy {
   };
 
   private configSubscription: Subscription;
-
+  public fontFamily: string='Arial';
 
   public user!: User;
 
@@ -63,6 +63,11 @@ export class GameComponent implements OnInit, OnDestroy {
 
         this.userService.selectedUser$.subscribe((user: User) => {
             this.user = user;
+        });
+
+        this.configService.selectedFont$.subscribe((font)=>{
+            console.log('Font updated in GameComponent:', font);
+            this.fontFamily = font;
         });
 
       // Subscribe to config changes
@@ -227,8 +232,7 @@ export class GameComponent implements OnInit, OnDestroy {
         this.userService.setScore(this.score);
         this.router.navigate(['/game-podium'], {
             queryParams: {
-                user: JSON.stringify(this.user),
-                score: this.score
+                user: JSON.stringify(this.user)
             }
         });
         return;

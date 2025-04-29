@@ -31,7 +31,7 @@ import { ErgoConfigSelectedPageComponent} from './pages/ergo/config-selected-pag
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
 import { GameComponent } from './pages/child/game/game.component';
 import { GamePodiumComponent } from './pages/child/game/game-podium.component';
-import { ConfigService } from './shared/services/config.service';
+import { ConfigService } from './shared/services/font.service';
 import { QuestionConfigService } from './shared/services/question-config.service';
 import {RouterModule} from "@angular/router";
 

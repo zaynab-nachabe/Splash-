@@ -6,7 +6,7 @@ import { Player } from "./Player";
 import { HiveCrab } from "./HiveCrab";
 import { Drone } from "./Drone";
 import { Ui } from "./Ui";
-import {ConfigService} from "../../../shared/services/config.service"
+import {ConfigService} from "../../../shared/services/font.service"
 
 export class GameEngine {
     private ctx: CanvasRenderingContext2D;

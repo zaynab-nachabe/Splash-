@@ -1,5 +1,5 @@
 import { GameEngine } from "./game-engine";
-import { ConfigService} from "../../../shared/services/config.service"
+import { ConfigService} from "../../../shared/services/font.service"
 import {Injectable, OnInit} from '@angular/core';
 
 @Injectable({
