@@ -4,7 +4,7 @@ import { QuestionNotion } from 'src/app/shared/models/QuestionGenerationUtils/Qu
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
-import { ConfigService } from 'src/app/shared/services/font.service';
+import { FontService } from 'src/app/shared/services/font.service';
 
 import {QuestionConfig, QuestionConfigService} from "../../../shared/services/question-config.service";
 import {Subscription} from "rxjs";
@@ -58,14 +58,14 @@ export class GameComponent implements OnInit, OnDestroy {
 
     constructor(private userService: UserService, 
                 private questionConfigService: QuestionConfigService,
-                private configService: ConfigService,
+                private fontService: FontService,
                 private router: Router) {
 
         this.userService.selectedUser$.subscribe((user: User) => {
             this.user = user;
         });
 
-        this.configService.selectedFont$.subscribe((font)=>{
+        this.fontService.selectedFont$.subscribe((font)=>{
             console.log('Font updated in GameComponent:', font);
             this.fontFamily = font;
         });
@@ -115,7 +115,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     ngAfterViewInit(): void {
         const canvas = this.canvasRef.nativeElement;
-        this.gameEngine = new GameEngine(this, canvas, this.configService);
+        this.gameEngine = new GameEngine(this, canvas, this.fontService);
     }
 
     ngOnDestroy(): void {

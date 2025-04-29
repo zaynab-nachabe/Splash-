@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable ({
     providedIn: 'root'
 })
-export class ConfigService {
+export class FontService {
     private selectedFontSubject = new BehaviorSubject<string>('Arial');
     selectedFont$ = this.selectedFontSubject.asObservable();
 

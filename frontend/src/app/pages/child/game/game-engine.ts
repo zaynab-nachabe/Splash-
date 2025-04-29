@@ -6,7 +6,7 @@ import { Player } from "./Player";
 import { HiveCrab } from "./HiveCrab";
 import { Drone } from "./Drone";
 import { Ui } from "./Ui";
-import {ConfigService} from "../../../shared/services/font.service"
+import {FontService} from "../../../shared/services/font.service"
 
 export class GameEngine {
     private ctx: CanvasRenderingContext2D;
@@ -15,12 +15,12 @@ export class GameEngine {
     private score: number = 0;
     private enemies: Enemy[];
 
-    constructor(private gameComponent: GameComponent, private canvas: HTMLCanvasElement, private configService: ConfigService) {
+    constructor(private gameComponent: GameComponent, private canvas: HTMLCanvasElement, private fontService: FontService) {
         this.ctx = canvas.getContext('2d')!;
         this.adjustCanvaResolution();
         this.player = new Player(this, canvas);
         this.enemies = [new Crab(this, canvas)];
-        this.Ui = new Ui(this, canvas, this.configService);
+        this.Ui = new Ui(this, canvas, this.fontService);
         this.Ui.ngOnInit();
         this.score = 0;
         this.startGameLoop();

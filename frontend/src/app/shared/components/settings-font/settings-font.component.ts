@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import {ConfigService} from '../../services/font.service';
+import {FontService} from '../../services/font.service';
 import { OnInit } from '@angular/core';
 @Component({
   selector: 'app-settings-font',
@@ -9,7 +9,7 @@ import { OnInit } from '@angular/core';
 export class SettingsFontComponent implements OnInit{
   fonts : string[] = ['Arial', 'Courier New', 'Times New Roman', 'Verdana', 'Cursive'];
 
-  constructor(private configService: ConfigService){}
+  constructor(private fontService: FontService){}
 
   //i no know if we need this
   @Output() fontSelected = new EventEmitter<string>();
@@ -17,7 +17,7 @@ export class SettingsFontComponent implements OnInit{
   onFontChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     const selectedFont = target.value;
-    this.configService.setSelectedFont(selectedFont);
+    this.fontService.setSelectedFont(selectedFont);
   }
 
   ngOnInit(){

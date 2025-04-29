@@ -1,5 +1,5 @@
 import { GameEngine } from "./game-engine";
-import { ConfigService} from "../../../shared/services/font.service"
+import { FontService} from "../../../shared/services/font.service"
 import {Injectable, OnInit} from '@angular/core';
 
 @Injectable({
@@ -12,7 +12,7 @@ export class Ui implements OnInit{
     private fontFamily: string;
     private fontColor: string;
 
-    constructor(private gameEngine: GameEngine, private canvas: HTMLCanvasElement , private configService: ConfigService) {
+    constructor(private gameEngine: GameEngine, private canvas: HTMLCanvasElement , private fontService: FontService) {
         this.gameEngine = gameEngine;
         
         this.fontSize = 50;
@@ -23,7 +23,7 @@ export class Ui implements OnInit{
     
     ngOnInit(){
         console.log('ui intialized a subscribing to configService');
-        this.configService.selectedFont$.subscribe((font) => {
+        this.fontService.selectedFont$.subscribe((font) => {
             console.log('Font received in Ui: ', font);
             this.fontFamily = font;
             this.redraw();
