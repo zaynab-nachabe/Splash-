@@ -68,7 +68,11 @@ import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
     GamePodiumComponent,
     SettingsFontComponent,
     ErgoInputChildComponent,
-    TabBoxComponent
+    TabBoxComponent,
+    MediumButtonComponent,
+    InnerBoxComponent,
+    SettingsToggleComponent,
+    ErgoLobbyGameComponent
   ],
   imports: [
     BrowserModule,
