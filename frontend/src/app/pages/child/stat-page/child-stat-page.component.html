@@ -3,7 +3,7 @@
   <app-home-button>Home</app-home-button>
   <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"><p class="name">
     <app-user-card [user]="user" class="horizontal navbar"/>
-  </app-medium-button>
+  </p></app-medium-button>
   <app-medium-button class="navbar-button" [routerLink]="['/child-play']" routerLinkActive="active"> Jouer </app-medium-button>
   <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon classement </app-medium-button>
 
@@ -17,16 +17,14 @@
       class="tab-container">
     </app-tab-box>
 
-    <app-inner-box class="main-box blue">
+    <app-inner-box class="main-box blue stat-box">
         <span>
             Classement: <strong>{{ currentStatistic.ranking }}</strong>
         </span>
       <span>
             Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong>
         </span>
-      <span>
-            Assimilation des notions mathématiques: <strong>{{ currentStatistic.mathNotionUnderstanding }}%</strong>
-        </span>
+
       <span>
             Mots les moins réussis:
             <ul class="words-list">
@@ -35,25 +33,7 @@
                 </li>
             </ul>
         </span>
-      <span>
-            Précision: <strong>{{ currentStatistic.precision }}%</strong>
-        </span>
-      <span>
-            HeatMap:
-            <div class="heatmap-container">
-                <div *ngFor="let key of currentStatistic.heatmapData"
-                     class="heatmap-key"
-                     [style.background-color]="'rgba(255, 0, 0, ' + (key.errorFrequency / 100) + ')'">
-                    {{ key.keyCode.replace('Key', '') }}
-                </div>
-            </div>
-        </span>
-      <span>
-            Nombre de corrections: <strong>{{ currentStatistic.numberOfCorrections }}</strong>
-        </span>
-      <span>
-            Réponses affichées: <strong>{{ currentStatistic.answersShown }}</strong>
-        </span>
+
     </app-inner-box>
   </div>
 

@@ -1,109 +1,109 @@
 <app-template>
-    <!--Zone de la navbar -->
-    <app-home-button></app-home-button>
-    <app-user-card class="navbar-profile-image">
-      <img [src]="userIconPath" alt="PP 1" class="icon"/>
-    </app-user-card>
-    <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active"><p class="name">{{ selectedUser?.name }}</p></app-medium-button>
-    <app-medium-button class="navbar-button red" [routerLink]="['/ergo-config']"> Retour </app-medium-button>
-    <app-medium-button class="navbar-button green" (click) = "onSaveConfig()"> Sauvegarder </app-medium-button>
+  <!--Zone de la navbar -->
+  <app-home-button></app-home-button>
+  <app-user-card class="navbar-profile-image">
+    <img [src]="userIconPath" alt="PP 1" class="icon"/>
+  </app-user-card>
+  <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active"><p class="name">{{ selectedUser?.name }}</p></app-medium-button>
+  <app-medium-button class="navbar-button red" [routerLink]="['/ergo-config']"> Retour </app-medium-button>
+  <app-medium-button class="navbar-button green" (click) = "onSaveConfig()"> Sauvegarder </app-medium-button>
 
 
 
 
-    <!--Zone du main -->
-    <app-inner-box class="main-box blue">
-      <!-- Save confirmation message -->
-      <div class="save-confirmation-container">
-        <div class="save-confirmation" *ngIf="saveConfirmationVisible">
-          Configuration sauvegardée automatiquement a chaque modification.
+  <!--Zone du main -->
+  <app-inner-box class="main-box blue">
+    <!-- Save confirmation message -->
+    <div class="save-confirmation-container">
+      <div class="save-confirmation" *ngIf="saveConfirmationVisible">
+        Configuration sauvegardée automatiquement a chaque modification.
+      </div>
+    </div>
+
+    <span>NOM : {{ selectedUser?.name }}</span>
+    <span>Âge : {{selectedUser?.age}} ans</span>
+    <span>Troubles: {{selectedUser?.conditions}} </span>
+
+
+
+    <div class="config-item operation-selector">
+      <h3>Opérations</h3>
+
+      <!-- Selected operations pills (similar to ergo-input-child-page) -->
+      <div class="selected-operations" *ngIf="getSelectedOperations().length > 0">
+        <div *ngFor="let operation of getSelectedOperations()" class="operation-pill">
+          {{getOperationLabel(operation)}}
+          <span class="remove-operation" (click)="toggleOperation(operation)">×</span>
         </div>
       </div>
 
-      <span>NOM : {{ selectedUser?.name }}</span>
-      <span>Âge : {{selectedUser?.age}} ans</span>
-      <span>Troubles: {{selectedUser?.conditions}} </span>
+      <!-- Dropdown for operations -->
+      <div class="dropdown-wrapper">
+        <select #operationSelect class="operations-dropdown" (change)="handleOperationSelection(operationSelect.value)">
+          <option value="" disabled selected>Sélectionner une opération</option>
+          <option *ngFor="let op of availableOperations"
+                  [value]="op.key"
+                  [disabled]="isOperationSelected(op.key)">
+            {{op.label}}
+          </option>
+        </select>
+      </div>
+    </div>
 
-
-
-      <div class="config-item operation-selector">
-        <h3>Opérations</h3>
-
-        <!-- Selected operations pills (similar to ergo-input-child-page) -->
-        <div class="selected-operations" *ngIf="getSelectedOperations().length > 0">
-          <div *ngFor="let operation of getSelectedOperations()" class="operation-pill">
-            {{getOperationLabel(operation)}}
-            <span class="remove-operation" (click)="toggleOperation(operation)">×</span>
-          </div>
+    <!-- Settings in columns -->
+    <div class="settings-columns">
+      <!-- Column 1 -->
+      <div class="settings-column">
+        <!-- Rewrite toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Réécrire</span>
+          <app-settings-toggle
+            [checked]="currentConfig.rewrite"
+            (valueChange)="onToggleChange('rewrite', $event)">
+          </app-settings-toggle>
         </div>
 
-        <!-- Dropdown for operations -->
-        <div class="dropdown-wrapper">
-          <select #operationSelect class="operations-dropdown" (change)="handleOperationSelection(operationSelect.value)">
-            <option value="" disabled selected>Sélectionner une opération</option>
-            <option *ngFor="let op of availableOperations"
-                    [value]="op.key"
-                    [disabled]="isOperationSelected(op.key)">
-              {{op.label}}
-            </option>
-          </select>
+        <!-- Encryption toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Chiffrement</span>
+          <app-settings-toggle
+            [checked]="currentConfig.crypted"
+            (valueChange)="onToggleChange('crypted', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Show Answers toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Montrer les réponses</span>
+          <app-settings-toggle
+            [checked]="currentConfig.showAnswers"
+            (valueChange)="onToggleChange('showAnswers', $event)">
+          </app-settings-toggle>
         </div>
       </div>
 
-      <!-- Settings in columns -->
-      <div class="settings-columns">
-        <!-- Column 1 -->
-        <div class="settings-column">
-          <!-- Rewrite toggle -->
-          <div class="toggle-row">
-            <span class="toggle-label">Réécrire</span>
-            <app-settings-toggle
-              [checked]="currentConfig.rewrite"
-              (valueChange)="onToggleChange('rewrite', $event)">
-            </app-settings-toggle>
-          </div>
-
-          <!-- Encryption toggle -->
-          <div class="toggle-row">
-            <span class="toggle-label">Chiffrement</span>
-            <app-settings-toggle
-              [checked]="currentConfig.crypted"
-              (valueChange)="onToggleChange('crypted', $event)">
-            </app-settings-toggle>
-          </div>
-
-          <!-- Show Answers toggle -->
-          <div class="toggle-row">
-            <span class="toggle-label">Montrer les réponses</span>
-            <app-settings-toggle
-              [checked]="currentConfig.showAnswers"
-              (valueChange)="onToggleChange('showAnswers', $event)">
-            </app-settings-toggle>
-          </div>
+      <!-- Column 2 -->
+      <div class="settings-column">
+        <!-- Additional features -->
+        <div class="toggle-row">
+          <span class="toggle-label">Équations</span>
+          <app-settings-toggle
+            [checked]="currentConfig.equations"
+            (valueChange)="onToggleChange('equations', $event)">
+          </app-settings-toggle>
         </div>
 
-        <!-- Column 2 -->
-        <div class="settings-column">
-          <!-- Additional features -->
-          <div class="toggle-row">
-            <span class="toggle-label">Équations</span>
-            <app-settings-toggle
-              [checked]="currentConfig.equations"
-              (valueChange)="onToggleChange('equations', $event)">
-            </app-settings-toggle>
-          </div>
-
-          <!-- Leaderboard toggle -->
-          <div class="toggle-row">
-            <span class="toggle-label">Tableau des scores</span>
-            <app-settings-toggle
-              [checked]="currentConfig.leaderboard"
-              (valueChange)="onToggleChange('leaderboard', $event)">
-            </app-settings-toggle>
-          </div>
-
-
+        <!-- Leaderboard toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Tableau des scores</span>
+          <app-settings-toggle
+            [checked]="currentConfig.leaderboard"
+            (valueChange)="onToggleChange('leaderboard', $event)">
+          </app-settings-toggle>
         </div>
+
+
       </div>
-    </app-inner-box>
+    </div>
+  </app-inner-box>
 </app-template>
