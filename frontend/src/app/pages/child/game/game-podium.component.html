@@ -1,8 +1,12 @@
+<audio #gameMusic src="assets/audio/victory.mp3"></audio>
 <app-template>
   <app-medium-button class="navbar-button red" [routerLink]="['/']" routerLinkActive="active">Retour</app-medium-button>
-  <app-medium-button class="navbar-button" [routerLink]="['/ergo-stat-selected']" routerLinkActive="active">Détail de la partie</app-medium-button>
+  <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active">Détail de la partie</app-medium-button>
   <app-inner-box class="main-box blue">
     <div class="podium-container">
+      <div class="toast-message">
+        <p>🎉 Félicitations ! Vous avez terminé la partie avec un score de {{ userScore }} points ! 🎉</p>
+      </div>
       <div class="score">
         <p>Score: {{ userScore }}</p>
       </div>

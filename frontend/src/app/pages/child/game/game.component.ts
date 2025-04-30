@@ -28,6 +28,9 @@ type Input = {
     styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit, OnDestroy {
+  @ViewChild('gameMusic', { static: false }) gameMusicRef!: ElementRef<HTMLAudioElement>;
+  @ViewChild('gameCanvas', { static: false }) canvasRed! : ElementRef<HTMLCanvasElement>;
+
   private static readonly INPUTS_END: Input = {
     letter: '\xa0', status: "pending"
   };
@@ -116,17 +119,29 @@ export class GameComponent implements OnInit, OnDestroy {
     ngAfterViewInit(): void {
         const canvas = this.canvasRef.nativeElement;
         this.gameEngine = new GameEngine(this, canvas, this.fontService);
+        this.startMusic();
     }
 
     ngOnDestroy(): void {
         document.removeEventListener("keydown", this.keydownHandler);
-      if (this.configSubscription) {
-        this.configSubscription.unsubscribe();
-      }
-
+        if (this.configSubscription) {
+            this.configSubscription.unsubscribe();
+        }
+        this.stopMusic();
     }
 
+    private startMusic(): void {
+        const audioElement = this.gameMusicRef.nativeElement;
+        audioElement.play().catch((error) => {
+            console.error('Error playing music:', error);
+        });
+    }
 
+    private stopMusic(): void {
+        const audioElement = this.gameMusicRef.nativeElement;
+        audioElement.pause();
+        audioElement.currentTime = 0;
+    }
     ////////////////////////////////////////////////////////////////////////////
     // Getters :
 
@@ -228,7 +243,7 @@ export class GameComponent implements OnInit, OnDestroy {
       const newQuestion = QuestionsGenerator.genNewQuestion();
       if (!newQuestion) {
         this.hasEnded = true;
-
+        this.stopMusic();
         this.userService.setScore(this.score);
         this.router.navigate(['/game-podium'], {
             queryParams: {
@@ -243,6 +258,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
       if (this.question === undefined) {
             this.hasEnded = true;
+            this.stopMusic();
             return;
         }
 

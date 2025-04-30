@@ -8,6 +8,12 @@
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue little">
+        <app-user-list 
+            [navigateTo]="'/ergo-config-selected'"
+            [showAddButton]="true"
+            [addButtonRoute]="'/ergo-input-child'"
+            [showDeleteButtons]="true">
+        </app-user-list>
     </app-inner-box>
     <app-inner-box class="main-box blue medium">
             <span>
