@@ -8,27 +8,14 @@
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue little">
+        <app-user-list 
+            [navigateTo]="'/ergo-config-selected'"
+            [showAddButton]="true"
+            [addButtonRoute]="'/ergo-input-child'"
+            [showDeleteButtons]="true">
+        </app-user-list>
     </app-inner-box>
     <app-inner-box class="main-box blue medium">
-            <span>
-                Encyrptage des questions :
-                <app-settings-toggle></app-settings-toggle>
-            </span>
-            <span>
-                Temps de la partie : 20min
-            </span>
-            <span>
-                Fréquence d'apparition des méduses :
-                <app-settings-slider></app-settings-slider>
-            </span>
-            <span>
-                Fréquence d'apparition des crabes :
-                <app-settings-slider></app-settings-slider>
-            </span>
-            <span>
-                Vitesse des crabes :
-                <app-settings-slider></app-settings-slider>
-            </span>
             <span>
                 Font:
                 <app-settings-font></app-settings-font>
