@@ -25,34 +25,10 @@
             Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong>
         </span>
       <span>
-            Assimilation des notions mathématiques: <strong>{{ currentStatistic.mathNotionUnderstanding }}%</strong>
-        </span>
-      <span>
-            Mots les moins réussis:
-            <ul class="words-list">
-                <li *ngFor="let word of currentStatistic.wordsLeastSuccessful">
-                    {{ word.word }} ({{ word.successRate }}%)
-                </li>
-            </ul>
-        </span>
-      <span>
             Précision: <strong>{{ currentStatistic.precision }}%</strong>
         </span>
       <span>
-            HeatMap:
-            <div class="heatmap-container">
-                <div *ngFor="let key of currentStatistic.heatmapData"
-                     class="heatmap-key"
-                     [style.background-color]="'rgba(255, 0, 0, ' + (key.errorFrequency / 100) + ')'">
-                    {{ key.keyCode.replace('Key', '') }}
-                </div>
-            </div>
-        </span>
-      <span>
             Nombre de corrections: <strong>{{ currentStatistic.numberOfCorrections }}</strong>
-        </span>
-      <span>
-            Réponses affichées: <strong>{{ currentStatistic.answersShown }}</strong>
         </span>
     </app-inner-box>
   </div>
