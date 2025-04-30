@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {User} from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -9,6 +9,8 @@ import { UserService } from 'src/app/shared/services/user.service';
     styleUrls: ['./game-podium.component.scss']
 })
 export class GamePodiumComponent implements OnInit{
+    @ViewChild('gameMusic', { static: false }) gameMusicRef!: ElementRef<HTMLAudioElement>;
+
     public  user?: User;
     public userScore: number = 0;
 
@@ -18,5 +20,16 @@ export class GamePodiumComponent implements OnInit{
         const state = this.route.snapshot.queryParams;
         this.user = JSON.parse(state['user'] || '{}');
         this.userScore = this.userService.getScore();
+    }
+
+    ngAfterViewInit(): void {
+        this.startMusic();
+    }
+
+    private startMusic(): void {
+        const audioElement = this.gameMusicRef.nativeElement;
+        audioElement.play().catch((error) => {
+            console.error('Error playing music:', error);
+        });
     }
 }
