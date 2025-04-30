@@ -22,7 +22,7 @@
 
       <span>NOM : {{ selectedUser?.name }}</span>
       <span>Âge : {{selectedUser?.age}} ans</span>
-      <span>Troubles: {{selectedUser?.conditions}}</span>
+      <span>Troubles: {{selectedUser?.conditions}} </span>
 
 
 
@@ -50,61 +50,60 @@
         </div>
       </div>
 
+      <!-- Settings in columns -->
+      <div class="settings-columns">
+        <!-- Column 1 -->
+        <div class="settings-column">
+          <!-- Rewrite toggle -->
+          <div class="toggle-row">
+            <span class="toggle-label">Réécrire</span>
+            <app-settings-toggle
+              [checked]="currentConfig.rewrite"
+              (valueChange)="onToggleChange('rewrite', $event)">
+            </app-settings-toggle>
+          </div>
 
-      <!-- Rewrite toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Réécrire</span>
-          <app-settings-toggle
-            [checked]="currentConfig.rewrite"
-            (valueChange)="onToggleChange('rewrite', $event)">
-          </app-settings-toggle>
+          <!-- Encryption toggle -->
+          <div class="toggle-row">
+            <span class="toggle-label">Chiffrement</span>
+            <app-settings-toggle
+              [checked]="currentConfig.crypted"
+              (valueChange)="onToggleChange('crypted', $event)">
+            </app-settings-toggle>
+          </div>
+
+          <!-- Show Answers toggle -->
+          <div class="toggle-row">
+            <span class="toggle-label">Montrer les réponses</span>
+            <app-settings-toggle
+              [checked]="currentConfig.showAnswers"
+              (valueChange)="onToggleChange('showAnswers', $event)">
+            </app-settings-toggle>
+          </div>
         </div>
 
-        <!-- Encryption toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Chiffrement</span>
-          <app-settings-toggle
-            [checked]="currentConfig.crypted"
-            (valueChange)="onToggleChange('crypted', $event)">
-          </app-settings-toggle>
+        <!-- Column 2 -->
+        <div class="settings-column">
+          <!-- Additional features -->
+          <div class="toggle-row">
+            <span class="toggle-label">Équations</span>
+            <app-settings-toggle
+              [checked]="currentConfig.equations"
+              (valueChange)="onToggleChange('equations', $event)">
+            </app-settings-toggle>
+          </div>
+
+          <!-- Leaderboard toggle -->
+          <div class="toggle-row">
+            <span class="toggle-label">Tableau des scores</span>
+            <app-settings-toggle
+              [checked]="currentConfig.leaderboard"
+              (valueChange)="onToggleChange('leaderboard', $event)">
+            </app-settings-toggle>
+          </div>
+
+
         </div>
-
-        <!-- Show Answers toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Montrer les réponses</span>
-          <app-settings-toggle
-            [checked]="currentConfig.showAnswers"
-            (valueChange)="onToggleChange('showAnswers', $event)">
-          </app-settings-toggle>
-        </div>
-
-        <!-- Additional features -->
-        <div class="toggle-row">
-          <span class="toggle-label">Équations</span>
-          <app-settings-toggle
-            [checked]="currentConfig.equations"
-            (valueChange)="onToggleChange('equations', $event)">
-          </app-settings-toggle>
-        </div>
-
-        <!-- Leaderboard toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Tableau des scores</span>
-          <app-settings-toggle
-            [checked]="currentConfig.leaderboard"
-            (valueChange)="onToggleChange('leaderboard', $event)">
-          </app-settings-toggle>
-        </div>
-
-        <!-- Advanced Stats toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Statistiques avancées</span>
-          <app-settings-toggle
-            [checked]="currentConfig.advancedStats"
-            (valueChange)="onToggleChange('advancedStats', $event)">
-          </app-settings-toggle>
-        </div>
-
-
+      </div>
     </app-inner-box>
 </app-template>

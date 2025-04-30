@@ -2,14 +2,18 @@
 :host {
   border-radius: 20px;
   display: flex;
-  flex-wrap: wrap;
   align-content: flex-start;
-  height: 70vh;
+  height: 70vh; // Set to exactly 50% of viewport height
   width: 80%;
   padding: 1%;
   margin: 1%;
   background-color: #E0E7FA; // Blue background for the host
   overflow: hidden; // Hide overflow on the host element
+  box-sizing: border-box; // Include padding in width calculation
+
+  // Add min and max height constraints for better responsiveness
+  min-height: 400px; // Minimum height to ensure usability on small screens
+  max-height: 800px; // Maximum height to prevent excessive size on large screens
 }
 
 :host(.blue) {
@@ -31,7 +35,7 @@
 :host(.button-list) {
   flex-direction: column;
   align-items: center;
-  height: 70vh;
+  height: 70vh; // Also update this to match the new standard height
   width: 20vh;
   color: #000000;
   font-size: large;
@@ -39,9 +43,12 @@
   overflow-x: hidden;
 }
 
-// When using user-list component, don't add scroll to box-content
+// Special styling for user-list container
 :host(.user-list-container) .box-content {
-  overflow-y: hidden;
+  overflow: hidden; // Disable scrolling on the box-content itself
+  padding: 20px;
+  padding-left: 5px;
+  padding-right: 20px;
 }
 
 .box-content {
@@ -49,25 +56,6 @@
   border-radius: 15px;
   width: 100%; /* Take full width of parent */
   height: 100%; /* Take full height of parent */
-  overflow-y: auto; /* Add vertical scrolling */
   padding: 20px;
-
-  /* Scrollbar styling */
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
+  box-sizing: border-box; /* Include padding in width calculation */
 }
