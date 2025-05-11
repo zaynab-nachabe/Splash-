@@ -1,5 +1,6 @@
 const { Router } = require('express');
-const User = require('../../models/user.model');
+const User = require('../../../../shared/models/user.model');
+const UserConfig = require('../../../../shared/config/user.config');
 
 const router = new Router();
 
@@ -16,6 +17,20 @@ router.get('/', (req, res) => {
 });
 
 
+////////////////////////////////////////////////////////////////////////////////
+// UPDATE A USER :
+router.put('/:userId', (req, res) => {
+    try {
+        const updatedUser = User.update(req.params.userId, { ...req.body });
+        res.status(200).json(updatedUser);
+    } catch (err) {
+        if (err.name === 'ValidationError') {
+            res.status(400).json(err.extra);
+        } else {
+            res.status(500).json(err);
+        }
+    }
+});
 ////////////////////////////////////////////////////////////////////////////////
 // CREER UN USER :
 
