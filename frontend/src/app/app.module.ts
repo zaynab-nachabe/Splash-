@@ -37,6 +37,7 @@ import { QuestionConfigService } from './shared/services/question-config.service
 import {RouterModule} from "@angular/router";
 import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
 import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
+import { SearchBarComponent } from './shared/components/search-bar/search-bar.component';
 
 @NgModule({
   declarations: [
@@ -72,13 +73,15 @@ import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
     MediumButtonComponent,
     InnerBoxComponent,
     SettingsToggleComponent,
-    ErgoLobbyGameComponent
+    ErgoLobbyGameComponent, 
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, 
+    FormsModule
   ],
   providers: [FontService,
     RouterModule,

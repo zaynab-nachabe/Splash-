@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service'
@@ -9,26 +9,27 @@ import { UserService } from '../../services/user.service'
   styleUrl: './user-list.component.scss'
 })
 
-export class UserListComponent {
+export class UserListComponent implements OnChanges{
   public userList: User[] = [];
 
   @Input() navigateTo: string = '/child-play';
-  @Input() showAddButton: boolean = false; // New property
-  @Input() addButtonRoute: string = ''; // Route to navigate to when add button is clicked
-  @Input() showDeleteButtons: boolean = false; //
+  @Input() showAddButton: boolean = false;
+  @Input() addButtonRoute: string = '';
+  @Input() showDeleteButtons: boolean = false;
+  @Input() users: User[] = [];
 
 
   showConfirmDeletePopup: boolean = false;
   userToDelete?: User;
 
 
-  constructor(private userService: UserService,  private router: Router){
-    this.userService.users$.subscribe((users: User[]) => {
-      this.userList = users;
-    });
+  constructor(private userService: UserService,  private router: Router){}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['users']){
+      this.userList = [... this.users];
+    }
   }
-
-
 
   ngOnInit(): void {}
 
