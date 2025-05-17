@@ -7,6 +7,7 @@ module.exports = {
   rules: {
     'max-len': ['error', 200, { 'ignoreStrings': true }],
     'no-underscore-dangle': ['error', { 'allow': ['_id'] }],
-    'semi': ['error', 'never'],
+    'semi': ['error', 'always'],
+    "indent": ["error", 4],
   }
 };

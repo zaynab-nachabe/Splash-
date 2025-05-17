@@ -1,4 +1,6 @@
+
 export enum QuestionNotion {
+
   MULTIPLICATION = 'MULTIPLICATION',
   ENCRYPTION = 'ENCRYPTION',
   ADDITION = 'ADDITION',

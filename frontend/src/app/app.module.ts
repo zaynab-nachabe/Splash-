@@ -37,6 +37,7 @@ import { QuestionConfigService } from './shared/services/question-config.service
 import {RouterModule} from "@angular/router";
 import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
 import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [FontService,
     RouterModule,
