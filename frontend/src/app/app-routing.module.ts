@@ -17,7 +17,8 @@ import { GamePodiumComponent } from './pages/child/game/game-podium.component';
 import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
 
 const routes: Routes = [
-  { path: "", component: WelcomePageComponent },
+  { path: "", component: WelcomePageComponent }, // Homepage
+  { path: "home", component: WelcomePageComponent }, // Redirect /home to WelcomePageComponent
   { path: "child-list", component: ChildListPageComponent },
   { path: "ergo-play", component: ErgoPlayPageComponent },
   { path: "ergo-config", component: ErgoConfigPageComponent },

@@ -1,8 +1,20 @@
-import {FrenchNumberConverter} from "./QuestionGenerationUtils/FrenchNumberConverter";
-import {QuestionNotion} from "./QuestionGenerationUtils/QuestionNotionEnum";
-import {QuestionAndAnswer} from "./QuestionGenerationUtils/QuestionAndAnswer.model";
-import { Injectable } from '@angular/core';
+/*
+import { FrenchNumberConverter } from "../../../../backend/app/questiongeneration/FrenchNumberConverter";
+import { QuestionNotion } from "../../../../backend/app/questiongeneration/QuestionNotionEnum";
+import { QuestionAndAnswer } from "../../../../backend/app/questiongeneration/QuestionAndAnswer.model";
 import { QuestionConfigService } from '../services/question-config.service';
+
+ */
+import { Injectable } from '@angular/core';
+import { QuestionNotion } from "./QuestionGenerationUtils/QuestionNotionEnum";
+
+export type Question = {
+  question: string;
+  answer: string;
+  notion: QuestionNotion;
+}
+
+/*
 
 
 @Injectable({
@@ -13,6 +25,8 @@ export class Question {
   question: string;
   answer: string;
   notion: QuestionNotion;
+
+
   private static seed = 1;
 
   constructor(private questionConfigService: QuestionConfigService) {
@@ -165,4 +179,8 @@ export class Question {
   static resetSeed(seed: number = 1) {
     Question.seed = seed;
   }
+
+
 }
+
+ */
