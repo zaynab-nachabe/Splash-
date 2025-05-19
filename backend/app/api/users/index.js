@@ -1,8 +1,6 @@
 const { Router } = require('express');
-const User = require('../../../../shared/models/user.model');
-
+const User = require('../../models/user.model');
 const router = new Router();
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // AFFICHER TOUT LES USERS :

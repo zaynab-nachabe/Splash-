@@ -9,7 +9,7 @@ import {HttpClient} from '@angular/common/http';
   providedIn: 'root'
 })
 export class GameStatisticsService {
-  private apiUrl = 'https://localhost:9428/api/game-statistics';
+  private apiUrl = 'http://localhost:9428/api/game-statistics';
   private readonly STATS_STORAGE_KEY = 'game_statistics';
   private statisticsSubject = new BehaviorSubject<GameStatistics[]>([]);
   public statistics$ = this.statisticsSubject.asObservable();

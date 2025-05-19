@@ -11,12 +11,11 @@ import {FontService} from "../../../shared/services/font.service"
 export class GameEngine {
     private ctx: CanvasRenderingContext2D;
     private Ui: Ui;
-    private enemies: Enemy[];
-    private closestEnemy: Enemy | null = null;
+    public enemies: Enemy[];
 
     //statistics 
-    private player : Player;
-    private score: number = 0;
+    public player : Player;
+    public score: number = 0;
     private correctAnswers: number = 0;
     private incorrectAnswers: number = 0;
     private startTime: Date = new Date();
@@ -61,19 +60,29 @@ export class GameEngine {
         this.enemies.push(newEnemy);
     }
 
+    public findClosestEnemy(fromX: number, fromY: number): Enemy | null {
+        let closestEnemy: Enemy | null = null;
+        let minDistance = Infinity;
+
+        this.enemies.forEach(enemy => {
+            const dx = fromX - enemy.position.x;
+            const dy = fromY - enemy.position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestEnemy = enemy;
+            }
+        });
+    
+        return closestEnemy;
+    }
+
     private update(): void {
         this.player.update();
-        this.closestEnemy = null;
         let minDistance = Infinity;
 
         this.enemies.forEach(enemy =>{
-            const dx = enemy.position.x-this.player.position.x;
-            const dy = enemy.position.y-this.player.position.y;
-            const distance = Math.sqrt(dx*dx+dy*dy);
-            if (distance < minDistance) {
-                minDistance = distance;
-                this.closestEnemy = enemy;
-            }
             enemy.update();
             this.player.projectiles.forEach(projectile => {
                 if(this.checkCollision(enemy, projectile)) {
@@ -121,13 +130,13 @@ export class GameEngine {
     public answerCorrectly(): void {
         this.correctAnswers++;
         this.totalQuestions++;
-
-        let closestEnemy = this.closestEnemy;
+        let closestEnemy: Enemy | null = null;
         let minDistance = Infinity;
 
         this.enemies.forEach(enemy => {
-            const dx = enemy.position.x - this.player.position.x;
-            const dy = enemy.position.y - this.player.position.y;
+            const dx = this.player.position.x - enemy.position.x;
+            const dy = this.player.position.y - enemy.position.y;
+
             const distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < minDistance) {
                 minDistance = distance;
@@ -135,7 +144,7 @@ export class GameEngine {
             }
         });
         
-        if(this.closestEnemy){
+        if(closestEnemy){
             this.player.shoot();
         }
         

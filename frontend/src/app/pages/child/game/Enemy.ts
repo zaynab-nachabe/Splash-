@@ -37,8 +37,9 @@ export class Enemy {
     }
     
     public update(): void {
-        const dx = this.gameEngine.playerPosition.x - this.x;
-        const dy = this.gameEngine.playerPosition.y - this.y;
+        const dx = this.gameEngine.player.position.x - this.x;
+        const dy = this.gameEngine.player.position.y - this.y;
+    
         const distance = Math.sqrt(dx * dx + dy * dy);
         
         if (distance > 0) {

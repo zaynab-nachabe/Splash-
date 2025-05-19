@@ -11,7 +11,7 @@ module.exports = new BaseModel('User', {
         showsAnswer: Joi.boolean().optional().default(false),
         addition: Joi.boolean().optional().default(false),
         substraction: Joi.boolean().optional().default(false),
-        multiplication: Joi.boolean().optoinal().default(false),
+        multiplication: Joi.boolean().optional().default(false),
         division: Joi.boolean().optional().default(false),
         rewriting: Joi.boolean().optional().default(false),
         encryption: Joi.boolean().optional().default(false),

@@ -51,7 +51,7 @@ export class Ui implements OnInit{
         ctx.save();
         ctx.fillStyle = this.fontColor;
         ctx.font = this.fontSize + 'px ' + this.fontFamily;
-        ctx.fillText(`Score: ${this.gameEngine.scoreValue}`, this.canvas.width-350, this.canvas.height-70);
+        ctx.fillText(`Score: ${this.gameEngine.score}`, this.canvas.width-350, this.canvas.height-70);
 
         ctx.restore();
     }

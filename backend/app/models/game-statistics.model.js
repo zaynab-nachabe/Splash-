@@ -1,11 +1,11 @@
-const BaseModel = require('./base.model');
+const BaseModel = require('../utils/base-model');
 const Joi = require('joi');
 
 module.exports = new BaseModel('GameStatistics', {
   id: Joi.string().required(),
   childId: Joi.string().required(),
   sessionName: Joi.string().required(),
-  date: Joi.date().default(Date.now),
+  date: Joi.date().default(Date.now, 'current timestamp'),
   score: Joi.number().default(0),
   ranking: Joi.number().default(0),
   wordsPerMinute: Joi.number().default(0),
