@@ -4,8 +4,9 @@ import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
 import { FontService } from 'src/app/shared/services/font.service';
-import { QuestionConfigService } from "../../../shared/services/question-config.service";
-import { Subscription } from "rxjs";
+import { GameStatisticsService } from '../../../shared/services/game-statistics.service';
+import {QuestionConfig, QuestionConfigService} from "../../../shared/services/question-config.service";
+import {Subscription} from "rxjs";
 import { Router } from '@angular/router';
 import { QuestionService } from 'src/app/shared/services/question.service';
 import { UserConfig } from 'src/app/shared/models/user-config.model';
@@ -57,7 +58,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private fontService: FontService,
     private router: Router,
     private questionService: QuestionService // Inject QuestionService
-  ) {
+  ,
+                private gameStatisticsService: GameStatisticsService) {
     this.userService.selectedUser$.subscribe((user: User) => {
       this.user = user;
     });
@@ -157,55 +159,197 @@ export class GameComponent implements OnInit, OnDestroy {
     this.inputs = ret;
   }
 
-  private submitAnswer(): void {
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Actions :
+
+    private gotoStart(): void {
+        this.cursorPosition = 0;
+    }
+
+    private gotoEnd(): void {
+        this.cursorPosition = this.proposed_answerInputs.length;
+    }
+
+    private moveToTheLeft(): void {
+        if (this.cursorPosition == 0)
+            return;
+        this.cursorPosition--;
+    }
+
+    private moveToTheRight(): void {
+        if (this.cursorPosition == this.proposed_answerInputs.length)
+            return;
+        this.cursorPosition++;
+    }
+
+
+    private deleteCurrentCharacter(): void {
+        if (this.cursorPosition == this.proposed_answerInputs.length)
+            return;
+        this.proposed_answerInputs.splice(this.cursorPosition, 1);
+    }
+
+    private deletePreviousCharacter(): void {
+        if (this.cursorPosition == 0)
+            return;
+
+        this.cursorPosition--;
+        this.proposed_answerInputs.splice(this.cursorPosition, 1);
+    }
+
+    private submitAnswer(): void {
     if (AnswerChecker.checkAnswer(this.proposed_answer, this.question)) {
       this.score += 10;
       this.gameEngine.answerCorrectly();
+    } else {
+      this.gameEngine.answerIncorrectly(this.proposed_answer);
     }
-    this.loadNewQuestion(); // Fetch a new question after submitting the answer
+    
+    const newQuestion = QuestionsGenerator.genNewQuestion();
+    if (!newQuestion) {
+      this.endGame();
+      return;
+    }
+    
+    this.question = newQuestion;
+    
+    // Reset answer inputs
+    this.expected_answerInputs = this.question.answer.split("");
+    this.proposed_answerInputs = [];
+    this.cursorPosition = 0;
   }
+
+    private writeCharacter(c: string): void {
+        this.proposed_answerInputs.splice(
+            this.cursorPosition++, 0, c
+        );
+    }
 
   private checkInput(event: KeyboardEvent): void {
     const keyPressed = event.key;
 
-    switch (keyPressed) {
-      case "Home":
-        this.cursorPosition = 0;
-        break;
-      case "End":
-        this.cursorPosition = this.proposed_answerInputs.length;
-        break;
-      case "ArrowLeft":
-        if (this.cursorPosition > 0) this.cursorPosition--;
-        break;
-      case "ArrowRight":
-        if (this.cursorPosition < this.proposed_answerInputs.length) this.cursorPosition++;
-        break;
-      case "Delete":
-        if (this.cursorPosition < this.proposed_answerInputs.length) {
-          this.proposed_answerInputs.splice(this.cursorPosition, 1);
+        switch (keyPressed) {
+            case "Home" :
+                this.gotoStart();
+                break;
+
+            case "End" :
+                this.gotoEnd();
+                break;
+
+            case "ArrowLeft" :
+                this.moveToTheLeft();
+                break;
+
+            case "ArrowRight" :
+                this.moveToTheRight();
+                break;
+
+            case "Delete" :
+                this.deleteCurrentCharacter();
+                break;
+
+            case "Backspace" :
+                this.deletePreviousCharacter();
+                break;
+
+            case "Enter" :
+                this.submitAnswer();
+                break;
+
+            default :
+                if (keyPressed.length === 1) {
+                    this.writeCharacter(keyPressed);
+                }
+                break;
         }
-        break;
-      case "Backspace":
-        if (this.cursorPosition > 0) {
-          this.cursorPosition--;
-          this.proposed_answerInputs.splice(this.cursorPosition, 1);
-        }
-        break;
-      case "Enter":
-        this.submitAnswer();
-        break;
-      default:
-        if (keyPressed.length === 1) {
-          this.proposed_answerInputs.splice(this.cursorPosition++, 0, keyPressed);
-        }
-        break;
+        this.updateInputs();
     }
-    this.updateInputs();
+
+    private showAnswer(): void {
+        // Whatever logic you use to show answers
+        this.gameEngine.showAnswer();
+    }
+
+    private endGame(): void {
+    this.hasEnded = true;
+    this.stopMusic();
+    
+    // Get statistics from game engine
+    const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
+    
+    // Save to statistics service
+    this.gameStatisticsService.saveGameSession(gameStats).subscribe(
+      (savedStats) => {
+        console.log('Game statistics saved successfully', savedStats);
+        
+        // Set score in user service
+        this.userService.setScore(this.score);
+        
+        // Navigate to podium
+        this.router.navigate(['/game-podium'], {
+          queryParams: {
+            user: JSON.stringify(this.user)
+          }
+        });
+      },
+      (error) => {
+        console.error('Failed to save game statistics', error);
+        
+        // Navigate to podium anyway
+        this.userService.setScore(this.score);
+        this.router.navigate(['/game-podium'], {
+          queryParams: {
+            user: JSON.stringify(this.user)
+          }
+        });
+      }
+    );
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
+// Eng Game :
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// Backend Simulator :
+////////////////////////////////////////////////////////////////////////////////
+
+
+class QuestionsGenerator {
+  private static questionCount = 10; // Number of questions to generate
+  private static currentIndex = 0;
+  private static configService: QuestionConfigService;
+  private static currentConfig: QuestionConfig;
+
+  private constructor() {}
+
+  public static init(configService: QuestionConfigService) {
+    QuestionsGenerator.configService = configService;
+    QuestionsGenerator.currentIndex = 0;
+    QuestionsGenerator.currentConfig = configService.getCurrentConfig();
+
+    // Subscribe to config changes
+    QuestionsGenerator.configService.getConfig().subscribe(config => {
+      QuestionsGenerator.currentConfig = config;
+    });
+
+
+    const randomSeed = Math.floor(Math.random() * 1000000);
+    Question.resetSeed(randomSeed);
+
   }
 
-  public get proposed_answer(): string {
-    return this.proposed_answerInputs.join("");
+  public static genNewQuestion(): Question | undefined {
+    if (QuestionsGenerator.currentIndex >= QuestionsGenerator.questionCount) {
+      return undefined;
+    }
+
+    QuestionsGenerator.currentIndex++;
+    const config = QuestionsGenerator.currentConfig;
+
+    return new Question(QuestionsGenerator.configService);
   }
 }
 

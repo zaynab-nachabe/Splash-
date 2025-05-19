@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -37,7 +37,7 @@ import { QuestionConfigService } from './shared/services/question-config.service
 import {RouterModule} from "@angular/router";
 import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
 import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
-import {HttpClientModule} from "@angular/common/http";
+import { SearchBarComponent } from './shared/components/search-bar/search-bar.component';
 
 @NgModule({
   declarations: [
@@ -73,14 +73,16 @@ import {HttpClientModule} from "@angular/common/http";
     MediumButtonComponent,
     InnerBoxComponent,
     SettingsToggleComponent,
-    ErgoLobbyGameComponent
+    ErgoLobbyGameComponent, 
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
+    ReactiveFormsModule, 
+    FormsModule,
+    HttpClientModule
   ],
   providers: [FontService,
     RouterModule,

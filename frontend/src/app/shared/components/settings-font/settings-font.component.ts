@@ -7,12 +7,10 @@ import { OnInit } from '@angular/core';
   styleUrl: './settings-font.component.scss'
 })
 export class SettingsFontComponent implements OnInit{
-  fonts : string[] = ['Arial', 'Courier New', 'Times New Roman', 'Verdana', 'Cursive'];
+  fonts : string[] = [];
 
   constructor(private fontService: FontService){}
 
-  //i no know if we need this
-  @Output() fontSelected = new EventEmitter<string>();
 
   onFontChange(event: Event) {
     const target = event.target as HTMLSelectElement;
@@ -21,6 +19,7 @@ export class SettingsFontComponent implements OnInit{
   }
 
   ngOnInit(){
+    this.fonts = this.fontService.getFonts();
     console.log("Available fonts: ", this.fonts);
   }
 }

@@ -34,7 +34,7 @@ export class Projectile {
     }
 
     public update(): void {
-        const target = this.gameEngine.closestEnemy;
+        const target = this.gameEngine.findClosestEnemy(this.x, this.y);
         if (!target) return;
     
         const dx = target.position.x - this.x;

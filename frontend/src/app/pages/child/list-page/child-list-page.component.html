@@ -5,6 +5,7 @@
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue user-list-container">
-        <app-user-list [navigateTo]="'/child-play'"></app-user-list>
+        <app-search-bar (searchText)="filterUsers($event)"></app-search-bar>
+        <app-user-list [users]="filteredUsers" [navigateTo]="'/child-play'"></app-user-list>
     </app-inner-box>
 </app-template>

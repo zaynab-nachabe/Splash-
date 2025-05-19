@@ -1,39 +1,80 @@
 // src/app/shared/services/game-statistics.service.ts
-
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { GameStatistics } from '../models/game-statistics.model';
-import {
-  GAME_STATISTICS_MOCK,
-  getChildStatistics,
-  getChildSession,
-  getChildTotal
-} from '../mocks/game-statistics.mock';
+import {tap, catchError, map} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameStatisticsService {
+  private apiUrl = 'http://localhost:9428/api/game-statistics';
+  private readonly STATS_STORAGE_KEY = 'game_statistics';
+  private statisticsSubject = new BehaviorSubject<GameStatistics[]>([]);
+  public statistics$ = this.statisticsSubject.asObservable();
+  
+  constructor(private http: HttpClient) {
+    this.loadStatistics();
+  }
 
-  constructor() { }
-
-  // Get all statistics
+  private loadStatistics(): void {
+    this.http.get<GameStatistics[]>(this.apiUrl)
+      .pipe(
+        tap(statistics => {
+          statistics.forEach(stat => {
+            if (stat.date) {
+              stat.date = new Date(stat.date);
+            }
+          });
+          this.statisticsSubject.next(statistics);
+        }),
+        catchError(error => {
+          console.error('Error loading statistics:', error);
+          return of([]);
+        })
+      )
+      .subscribe();
+  }
+  
+  saveGameSession(gameStats: GameStatistics): Observable<GameStatistics> {
+    return this.http.post<GameStatistics>(this.apiUrl, gameStats)
+      .pipe(
+        tap(savedStats => {
+          const currentStats = this.statisticsSubject.value;
+          this.statisticsSubject.next([...currentStats, savedStats]);
+        }),
+        catchError(error => {
+          console.error('Error saving game session:', error);
+          return of(gameStats);
+        })
+      );
+  }
+  
   getAllStatistics(): Observable<GameStatistics[]> {
-    return of(GAME_STATISTICS_MOCK);
+    return this.statistics$;
   }
-
-  // Get all statistics for a specific child
+  
   getStatisticsForChild(childId: string): Observable<GameStatistics[]> {
-    return of(getChildStatistics(childId));
+    return this.http.get<GameStatistics[]>(`${this.apiUrl}/child/${childId}`)
+      .pipe(
+        tap(statistics => {
+          statistics.forEach(stat => {
+            if (stat.date) {
+              stat.date = new Date(stat.date);
+            }
+          });
+        }),
+        catchError(error => {
+          console.error(`Error loading statistics for child ${childId}:`, error);
+          return of([]);
+        })
+      );
   }
-
-  // Get a specific session for a child
-  getSessionForChild(childId: string, sessionName: string): Observable<GameStatistics | undefined> {
-    return of(getChildSession(childId, sessionName));
-  }
-
-  // Get the total/average statistics for a child
+  
   getTotalForChild(childId: string): Observable<GameStatistics | undefined> {
-    return of(getChildTotal(childId));
+    return this.getStatisticsForChild(childId).pipe(
+      map(stats => stats.find(stat => stat.isTotal))
+    );
   }
 }
