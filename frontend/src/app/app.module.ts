@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -81,7 +81,8 @@ import { SearchBarComponent } from './shared/components/search-bar/search-bar.co
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule, 
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [FontService,
     RouterModule,

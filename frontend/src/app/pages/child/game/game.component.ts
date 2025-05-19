@@ -5,7 +5,7 @@ import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
 import { FontService } from 'src/app/shared/services/font.service';
-
+import { GameStatisticsService } from '../../../shared/services/game-statistics.service';
 import {QuestionConfig, QuestionConfigService} from "../../../shared/services/question-config.service";
 import {Subscription} from "rxjs";
 import { Router } from '@angular/router';
@@ -62,7 +62,8 @@ export class GameComponent implements OnInit, OnDestroy {
     constructor(private userService: UserService, 
                 private questionConfigService: QuestionConfigService,
                 private fontService: FontService,
-                private router: Router) {
+                private router: Router,
+                private gameStatisticsService: GameStatisticsService) {
 
         this.userService.selectedUser$.subscribe((user: User) => {
             this.user = user;
@@ -235,37 +236,26 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
     private submitAnswer(): void {
-        if (AnswerChecker.checkAnswer(this.proposed_answer, this.question)){
-            this.score += 10;
-            this.gameEngine.answerCorrectly();
-        }
-
-      const newQuestion = QuestionsGenerator.genNewQuestion();
-      if (!newQuestion) {
-        this.hasEnded = true;
-        this.stopMusic();
-        this.userService.setScore(this.score);
-        this.router.navigate(['/game-podium'], {
-            queryParams: {
-                user: JSON.stringify(this.user)
-            }
-        });
-        return;
-      }
-
-      this.question = newQuestion;
-
-
-      if (this.question === undefined) {
-            this.hasEnded = true;
-            this.stopMusic();
-            return;
-        }
-
-        this.expected_answerInputs = this.question.answer.split("");
-        this.proposed_answerInputs = [];
-        this.cursorPosition = 0;
+    if (AnswerChecker.checkAnswer(this.proposed_answer, this.question)) {
+      this.score += 10;
+      this.gameEngine.answerCorrectly();
+    } else {
+      this.gameEngine.answerIncorrectly(this.proposed_answer);
     }
+    
+    const newQuestion = QuestionsGenerator.genNewQuestion();
+    if (!newQuestion) {
+      this.endGame();
+      return;
+    }
+    
+    this.question = newQuestion;
+    
+    // Reset answer inputs
+    this.expected_answerInputs = this.question.answer.split("");
+    this.proposed_answerInputs = [];
+    this.cursorPosition = 0;
+  }
 
     private writeCharacter(c: string): void {
         this.proposed_answerInputs.splice(
@@ -313,8 +303,48 @@ export class GameComponent implements OnInit, OnDestroy {
         }
         this.updateInputs();
     }
-}
 
+    private showAnswer(): void {
+        // Whatever logic you use to show answers
+        this.gameEngine.showAnswer();
+    }
+
+    private endGame(): void {
+    this.hasEnded = true;
+    this.stopMusic();
+    
+    // Get statistics from game engine
+    const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
+    
+    // Save to statistics service
+    this.gameStatisticsService.saveGameSession(gameStats).subscribe(
+      (savedStats) => {
+        console.log('Game statistics saved successfully', savedStats);
+        
+        // Set score in user service
+        this.userService.setScore(this.score);
+        
+        // Navigate to podium
+        this.router.navigate(['/game-podium'], {
+          queryParams: {
+            user: JSON.stringify(this.user)
+          }
+        });
+      },
+      (error) => {
+        console.error('Failed to save game statistics', error);
+        
+        // Navigate to podium anyway
+        this.userService.setScore(this.score);
+        this.router.navigate(['/game-podium'], {
+          queryParams: {
+            user: JSON.stringify(this.user)
+          }
+        });
+      }
+    );
+  }
+}
 ////////////////////////////////////////////////////////////////////////////////
 // Eng Game :
 ////////////////////////////////////////////////////////////////////////////////

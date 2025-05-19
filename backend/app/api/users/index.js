@@ -1,6 +1,5 @@
 const { Router } = require('express');
 const User = require('../../../../shared/models/user.model');
-const UserConfig = require('../../../../shared/config/user.config');
 
 const router = new Router();
 

@@ -10,12 +10,21 @@ import {FontService} from "../../../shared/services/font.service"
 
 export class GameEngine {
     private ctx: CanvasRenderingContext2D;
-    private player : Player;
     private Ui: Ui;
-    private score: number = 0;
     private enemies: Enemy[];
+    private closestEnemy: Enemy | null = null;
+
+    //statistics 
+    private player : Player;
+    private score: number = 0;
     private correctAnswers: number = 0;
     private incorrectAnswers: number = 0;
+    private startTime: Date = new Date();
+    private totalQuestions: number = 0;
+    private wordsTyped: string[] = [];
+    private errorsByKey: Map<string, number> = new Map();
+    private difficultWords: Map<string, {attempts: number, successes: number}> = new Map();
+    private answersShown: number = 0;
 
     constructor(private gameComponent: GameComponent, private canvas: HTMLCanvasElement, private fontService: FontService) {
         this.ctx = canvas.getContext('2d')!;
@@ -27,30 +36,6 @@ export class GameEngine {
         this.Ui.ngOnInit();
         this.score = 0;
         this.startGameLoop();
-    }
-
-    public answerCorrectly(): void {
-        if(this.closestEnemy){
-            this.player.shoot();
-        }
-    }
-    public get scoreValue(): number {
-        return this.score;
-    }
-
-    public get playerPosition(): {x:number, y:number} {
-        return this.player.position;
-    }
-
-    public get closestEnemy(): Enemy | undefined {
-        if(!this.enemies[0]){
-            return undefined;
-        }
-        let closest = this.enemies[0];
-        this.enemies.forEach(enemy=>{
-            if(enemy.position.y > closest.position.y) closest = enemy;
-        });
-        return closest;
     }
 
     private checkCollision(obj1: any, obj2: any): boolean {
@@ -78,7 +63,17 @@ export class GameEngine {
 
     private update(): void {
         this.player.update();
+        this.closestEnemy = null;
+        let minDistance = Infinity;
+
         this.enemies.forEach(enemy =>{
+            const dx = enemy.position.x-this.player.position.x;
+            const dy = enemy.position.y-this.player.position.y;
+            const distance = Math.sqrt(dx*dx+dy*dy);
+            if (distance < minDistance) {
+                minDistance = distance;
+                this.closestEnemy = enemy;
+            }
             enemy.update();
             this.player.projectiles.forEach(projectile => {
                 if(this.checkCollision(enemy, projectile)) {
@@ -122,4 +117,110 @@ export class GameEngine {
         };
         setInterval(loop, 10);
     }
-  }
+
+    public answerCorrectly(): void {
+        this.correctAnswers++;
+        this.totalQuestions++;
+
+        let closestEnemy = this.closestEnemy;
+        let minDistance = Infinity;
+
+        this.enemies.forEach(enemy => {
+            const dx = enemy.position.x - this.player.position.x;
+            const dy = enemy.position.y - this.player.position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestEnemy = enemy;
+            }
+        });
+        
+        if(this.closestEnemy){
+            this.player.shoot();
+        }
+        
+        // Record the successfully answered word
+        if (this.gameComponent.question) {
+            const answer = this.gameComponent.question.answer;
+            this.wordsTyped.push(answer);
+            
+            // Track word success rate
+            if (!this.difficultWords.has(answer)) {
+                this.difficultWords.set(answer, {attempts: 1, successes: 1});
+            } else {
+                const stats = this.difficultWords.get(answer)!;
+                stats.attempts++;
+                stats.successes++;
+                this.difficultWords.set(answer, stats);
+            }
+        }
+    }
+
+    public answerIncorrectly(proposedAnswer: string): void {
+        this.incorrectAnswers++;
+        this.totalQuestions++;
+        
+        
+        if (this.gameComponent.question) {
+            const correctAnswer = this.gameComponent.question.answer;
+            if (!this.difficultWords.has(correctAnswer)) {
+                this.difficultWords.set(correctAnswer, {attempts: 1, successes: 0});
+            } else {
+                const stats = this.difficultWords.get(correctAnswer)!;
+                stats.attempts++;
+                this.difficultWords.set(correctAnswer, stats);
+            }
+        }
+        
+        // Track key errors (simplified)
+        // This would be more complex in a real implementation
+        for (let i = 0; i < proposedAnswer.length; i++) {
+            const key = `Key${proposedAnswer[i].toUpperCase()}`;
+            this.errorsByKey.set(key, (this.errorsByKey.get(key) || 0) + 1);
+        }
+    }
+
+
+    public showAnswer(): void {
+        this.answersShown++;
+    }
+    
+    public getGameStatistics(userId: string): any {
+        const endTime = new Date();
+        const gameTimeMinutes = (endTime.getTime() - this.startTime.getTime()) / 60000;
+        
+        // Calculate statistics
+        const wordsPerMinute = Math.round(this.wordsTyped.length / gameTimeMinutes) || 0;
+        const precision = this.totalQuestions > 0 
+            ? Math.round((this.correctAnswers / this.totalQuestions) * 100) 
+            : 0;
+        
+        // Format difficult words
+        const wordsLeastSuccessful = Array.from(this.difficultWords.entries())
+            .map(([word, stats]) => ({
+                word,
+                successRate: Math.round((stats.successes / stats.attempts) * 100)
+            }))
+            .sort((a, b) => a.successRate - b.successRate)
+            .slice(0, 5);
+            
+        // Format heatmap data
+        const heatmapData = Array.from(this.errorsByKey.entries())
+            .map(([keyCode, errorFrequency]) => ({ keyCode, errorFrequency }));
+            
+        return {
+            childId: userId,
+            sessionName: `Session ${new Date().toLocaleString()}`,
+            date: new Date(),
+            score: this.score,
+            ranking: 0,
+            wordsPerMinute,
+            mathNotionUnderstanding: Math.round(precision * 0.8), // Simplified estimation
+            wordsLeastSuccessful,
+            precision,
+            heatmapData,
+            numberOfCorrections: this.incorrectAnswers,
+            answersShown: this.answersShown
+        };
+    }
+}
