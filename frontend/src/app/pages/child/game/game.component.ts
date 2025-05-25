@@ -57,9 +57,9 @@ export class GameComponent implements OnInit, OnDestroy {
     private questionConfigService: QuestionConfigService,
     private fontService: FontService,
     private router: Router,
-    private questionService: QuestionService // Inject QuestionService
-  ,
-                private gameStatisticsService: GameStatisticsService) {
+    private questionService: QuestionService,
+    private gameStatisticsService: GameStatisticsService
+  ) {
     this.userService.selectedUser$.subscribe((user: User) => {
       this.user = user;
     });
@@ -159,15 +159,10 @@ export class GameComponent implements OnInit, OnDestroy {
     this.inputs = ret;
   }
 
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Actions :
-
     private gotoStart(): void {
-        this.cursorPosition = 0;
+        this.cursorPosition = 0;  
     }
-
-    private gotoEnd(): void {
+    private goToEnd(): void {
         this.cursorPosition = this.proposed_answerInputs.length;
     }
 
@@ -199,20 +194,19 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
     private submitAnswer(): void {
-    if (AnswerChecker.checkAnswer(this.proposed_answer, this.question)) {
+    if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
       this.score += 10;
       this.gameEngine.answerCorrectly();
     } else {
-      this.gameEngine.answerIncorrectly(this.proposed_answer);
+      //this.gameEngine.answerIncorrectly(this.proposed_answerInputs);
     }
-    
-    const newQuestion = QuestionsGenerator.genNewQuestion();
-    if (!newQuestion) {
+    //review logic
+   this.loadNewQuestion();
+    if (!this.question) {
       this.endGame();
       return;
     }
-    
-    this.question = newQuestion;
+
     
     // Reset answer inputs
     this.expected_answerInputs = this.question.answer.split("");
@@ -226,8 +220,8 @@ export class GameComponent implements OnInit, OnDestroy {
         );
     }
 
-  private checkInput(event: KeyboardEvent): void {
-    const keyPressed = event.key;
+    private checkInput(event: KeyboardEvent): void {
+        const keyPressed = event.key;
 
         switch (keyPressed) {
             case "Home" :
@@ -235,7 +229,7 @@ export class GameComponent implements OnInit, OnDestroy {
                 break;
 
             case "End" :
-                this.gotoEnd();
+                this.goToEnd();
                 break;
 
             case "ArrowLeft" :
@@ -264,7 +258,7 @@ export class GameComponent implements OnInit, OnDestroy {
                 }
                 break;
         }
-        this.updateInputs();
+        //break;
     }
 
     private showAnswer(): void {
@@ -308,56 +302,14 @@ export class GameComponent implements OnInit, OnDestroy {
     );
   }
 }
-////////////////////////////////////////////////////////////////////////////////
-// Eng Game :
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-// Backend Simulator :
-////////////////////////////////////////////////////////////////////////////////
 
 
-class QuestionsGenerator {
-  private static questionCount = 10; // Number of questions to generate
-  private static currentIndex = 0;
-  private static configService: QuestionConfigService;
-  private static currentConfig: QuestionConfig;
-
-  private constructor() {}
-
-  public static init(configService: QuestionConfigService) {
-    QuestionsGenerator.configService = configService;
-    QuestionsGenerator.currentIndex = 0;
-    QuestionsGenerator.currentConfig = configService.getCurrentConfig();
-
-    // Subscribe to config changes
-    QuestionsGenerator.configService.getConfig().subscribe(config => {
-      QuestionsGenerator.currentConfig = config;
-    });
-
-
-    const randomSeed = Math.floor(Math.random() * 1000000);
-    Question.resetSeed(randomSeed);
-
-  }
-
-  public static genNewQuestion(): Question | undefined {
-    if (QuestionsGenerator.currentIndex >= QuestionsGenerator.questionCount) {
-      return undefined;
-    }
-
-    QuestionsGenerator.currentIndex++;
-    const config = QuestionsGenerator.currentConfig;
-
-    return new Question(QuestionsGenerator.configService);
-  }
-}
 
 
 
 class AnswerChecker {
-    public static checkAnswer(proposed_answer: string, question: Question): boolean {
-        return proposed_answer === question.answer;
+    public static checkAnswer(proposed_answer: string[], expected_answer: string[]): boolean {
+        return proposed_answer === expected_answer;
     }
 }
 

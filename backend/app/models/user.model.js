@@ -17,14 +17,3 @@ module.exports = new BaseModel('User', {
         encryption: Joi.boolean().optional().default(false),
     }).required(),
 });
-
-// Export a validation function for user objects
-const validateUser = (user) => {
-    const { error, value } = userSchema.validate(user);
-    if (error) {
-        throw new Error(`Invalid user input: ${error.message}`);
-    }
-    return value;
-};
-
-module.exports = { userSchema, validateUser };
