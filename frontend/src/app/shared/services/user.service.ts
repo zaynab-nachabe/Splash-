@@ -13,26 +13,27 @@ export class UserService {
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
+  private readonly apiUrl = 'http://localhost:9428/api/users';
+
   constructor(private http: HttpClient) {
     this.fetchUsersFromBackend();
   }
-
   fetchUsersFromBackend(): void {
-    this.http.get<User[]>('/api/users').subscribe(users => {
+    this.http.get<User[]>(this.apiUrl).subscribe(users => {
       this.users = users;
       this.users$.next(users);
     });
   }
 
-  addUser(user: User): void {
-    this.http.post<User>('/api/users', user).subscribe(newUser => {
+addUser(user: User): void {
+    this.http.post<User>(this.apiUrl, user).subscribe(newUser => {
       this.users.push(newUser);
       this.users$.next(this.users);
     });
   }
 
   updateUser(user: User): void {
-    this.http.put<User>(`/api/users/${user.userId}`, user).subscribe(updatedUser => {
+    this.http.put<User>(`${this.apiUrl}/${user.userId}`, user).subscribe(updatedUser => {
       const idx = this.users.findIndex(u => u.userId === user.userId);
       if (idx !== -1) {
         this.users[idx] = updatedUser;
@@ -61,7 +62,7 @@ export class UserService {
   }
 
   deleteUser(userId: string): void {
-    this.http.delete(`/api/users/${userId}`).subscribe(() => {
+    this.http.delete(`${this.apiUrl}/${userId}`).subscribe(() => {
       this.users = this.users.filter(user => user.userId !== userId);
       this.users$.next(this.users);
       if (this.selectedUser$.getValue()?.userId === userId) {
