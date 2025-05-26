@@ -67,7 +67,9 @@ export class ErgoStatSelectedPageComponent implements OnInit, OnDestroy {
   loadGameStatistics(userId: string): void {
     this.gameStatisticsService.getStatisticsForChild(userId)
       .subscribe(stats => {
+        console.log('Received statistics:', stats);
         this.childStatistics = stats;
+        console.log('available session', stats.map(stat=>stat.sessionName));
         this.setCurrentStatistic(this.activeTab);
         this.cdr.detectChanges();
       });
@@ -94,10 +96,7 @@ export class ErgoStatSelectedPageComponent implements OnInit, OnDestroy {
         sessionName = 'TOTAL';
     }
 
-    // Get the statistic for this session
-    this.currentStatistic = this.childStatistics.find(stat =>
-      stat.sessionName === sessionName
-    );
+    
   }
 
   onTabChange(tabId: string): void {

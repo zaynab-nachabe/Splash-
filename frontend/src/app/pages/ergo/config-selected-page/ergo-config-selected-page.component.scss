@@ -287,10 +287,9 @@ span {
 }
 
 .settings-column {
-  width: 48%; /* Allow some space between columns */
+  width: 48%;
 }
 
-/* Make operation-selector take full width */
 .operation-selector {
   width: 100%;
   margin-bottom: 20px;
@@ -323,7 +322,6 @@ span {
   box-sizing: border-box; /* Include padding in width calculation */
 }
 
-/* Class to make an element span 2 columns */
 .grid-span-2 {
   grid-column: span 2;
 }
@@ -376,9 +374,9 @@ span {
   font-weight: bold;
 }
 
-/* Fix for app-inner-box to prevent horizontal scrollbar */
+
 .main-box {
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
   width: 80%;
   box-sizing: border-box;
   padding-left: 15px;
