@@ -1,12 +1,13 @@
 <app-template>
   <!--Zone de la navbar -->
   <app-home-button></app-home-button>
-  <app-user-card class="navbar-profile-image">
-    <img [src]="userIconPath" alt="PP 1" class="icon"/>
-  </app-user-card>
-  <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active"><p class="name">{{ selectedUser?.name }}</p></app-medium-button>
-  <app-medium-button class="navbar-button red" [routerLink]="['/ergo-config']"> Retour </app-medium-button>
-  <app-medium-button class="navbar-button green" (click) = "onSaveConfig()"> Sauvegarder </app-medium-button>
+  <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active">
+    <p class="name">
+        <app-user-card [user]="selectedUser" class="horizontal navbar"/>
+    </p>
+  </app-medium-button>
+  <app-medium-button class="navbar-button red" [routerLink]="['/ergo-play']"> Retour </app-medium-button>
+  <app-medium-button class="navbar-button" [routerLink]="['/ergo-stat-selected']"> Statistiques </app-medium-button>
 
 
 

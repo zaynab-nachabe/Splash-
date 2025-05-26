@@ -1,11 +1,12 @@
 <app-template>
     <!--Zone de la navbar -->
-    <app-home-button>Home</app-home-button>
-    <app-user-card class="navbar-profile-image" *ngIf="selectedUser">
-        <img [src]="userIconPath" [alt]="selectedUser.name">
-    </app-user-card>
-    <app-medium-button class="navbar-button" *ngIf="selectedUser"><p class="name">{{selectedUser.name}}</p></app-medium-button>
-    <app-medium-button class="navbar-button red" [routerLink]="['/ergo-stats']"> Retour </app-medium-button>
+    <app-home-button></app-home-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active">
+    <p class="name">
+        <app-user-card [user]="selectedUser" class="horizontal navbar"/>
+    </p>
+    </app-medium-button>
+    <app-medium-button class="navbar-button red" [routerLink]="['/ergo-config-selected']"> Retour </app-medium-button>
     <app-medium-button class="navbar-button invisible"/>
 
     <!--Zone du main -->

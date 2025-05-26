@@ -5,7 +5,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
 import { FontService } from 'src/app/shared/services/font.service';
 import { GameStatisticsService } from '../../../shared/services/game-statistics.service';
-import {QuestionConfig, QuestionConfigService} from "../../../shared/services/question-config.service";
+import {QuestionConfigService} from "../../../shared/services/question-config.service";
 import {Subscription} from "rxjs";
 import { Router } from '@angular/router';
 import { QuestionService } from 'src/app/shared/services/question.service';
@@ -183,6 +183,7 @@ export class GameComponent implements OnInit, OnDestroy {
         if (this.cursorPosition == this.proposed_answerInputs.length)
             return;
         this.proposed_answerInputs.splice(this.cursorPosition, 1);
+        this.updateInputs();
     }
 
     private deletePreviousCharacter(): void {
@@ -191,11 +192,13 @@ export class GameComponent implements OnInit, OnDestroy {
 
         this.cursorPosition--;
         this.proposed_answerInputs.splice(this.cursorPosition, 1);
+        this.updateInputs();
     }
 
     private submitAnswer(): void {
     if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
       this.score += 10;
+      this.gameEngine.score = this.score;
       this.gameEngine.answerCorrectly();
     } else {
       //this.gameEngine.answerIncorrectly(this.proposed_answerInputs);
@@ -218,6 +221,7 @@ export class GameComponent implements OnInit, OnDestroy {
         this.proposed_answerInputs.splice(
             this.cursorPosition++, 0, c
         );
+        this.updateInputs();
     }
 
     private checkInput(event: KeyboardEvent): void {
@@ -278,10 +282,8 @@ export class GameComponent implements OnInit, OnDestroy {
       (savedStats) => {
         console.log('Game statistics saved successfully', savedStats);
         
-        // Set score in user service
         this.userService.setScore(this.score);
         
-        // Navigate to podium
         this.router.navigate(['/game-podium'], {
           queryParams: {
             user: JSON.stringify(this.user)
@@ -303,14 +305,19 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 }
 
-
-
-
-
 class AnswerChecker {
-    public static checkAnswer(proposed_answer: string[], expected_answer: string[]): boolean {
-        return proposed_answer === expected_answer;
+  public static checkAnswer(proposed_answer: string[], expected_answer: string[]): boolean {
+    if (proposed_answer.length !== expected_answer.length) {
+        return false;
     }
+    
+    for (let i = 0; i < proposed_answer.length; i++) {
+        if (proposed_answer[i] !== expected_answer[i]) {
+            return false;
+        }
+    }
+    return true;
+  }
 }
 
 
