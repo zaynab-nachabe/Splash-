@@ -43,14 +43,13 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
     private gameStatisticsService: GameStatisticsService,
     private cdr: ChangeDetectorRef
   ) {
-    this.userService.selectedUser$.subscribe((user: User) => {
-      this.user = user;
+    this.userService.selectedUser$.subscribe((user: User | null) => {
       if (!user) {
         console.error('No user selected, navigating back to user selection');
         this.router.navigate(['/child-list']);
         return;
       }
-
+      this.user = user;
       console.log('Selected user for statistics:', user);
       // Load statistics for this user
       this.loadGameStatistics(user.userId);

@@ -1,9 +1,10 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {QuestionConfig, QuestionConfigService} from 'src/app/shared/services/question-config.service';
+import { UserConfig } from 'src/app/shared/models/user-config.model';
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {User} from "../../../shared/models/user.model";
 import {UserService} from "../../../shared/services/user.service";
+import {QuestionConfigService} from "../../../shared/services/question-config.service";
 
 
 @Component({
@@ -12,7 +13,7 @@ import {UserService} from "../../../shared/services/user.service";
   styleUrl: './ergo-config-selected-page.component.scss'
 })
 export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
-  public currentConfig: QuestionConfig;
+  public currentConfig: UserConfig;
   public selectedUser?: User;
   private configSubscription!: Subscription;
   private userSubscription!: Subscription;
@@ -52,7 +53,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
 
     // Subscribe to config changes
     this.configSubscription = this.questionConfigService.getConfig().subscribe(config => {
-      this.currentConfig = { ...config };
+      this.currentConfig = { ...config } as UserConfig;
       console.log('Config loaded:', this.currentConfig);
       this.cdr.detectChanges();
     });
@@ -75,7 +76,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
   }
 
 
-  onToggleChange(notion: keyof QuestionConfig, value: boolean): void {
+  onToggleChange(notion: keyof UserConfig, value: boolean): void {
     console.log(`Toggle change - ${notion}:`, value);
     this.currentConfig = {
       ...this.currentConfig,
@@ -106,7 +107,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
   }
 
   isOperationSelected(key: string): boolean {
-    return this.currentConfig[key as keyof QuestionConfig] === true;
+    return this.currentConfig[key as keyof UserConfig] === true;
   }
 
   getOperationLabel(key: string): string {
@@ -120,7 +121,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
 
     // Toggle the operation state using the same callback as toggles
     const isCurrentlySelected = this.isOperationSelected(value);
-    this.onToggleChange(value as keyof QuestionConfig, !isCurrentlySelected);
+    this.onToggleChange(value as keyof UserConfig, !isCurrentlySelected);
 
     // Reset the dropdown to placeholder
     setTimeout(() => {
@@ -133,7 +134,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
 
   toggleOperation(key: string): void {
     // Set it to false (because clicking an active pill means removing it)
-    this.onToggleChange(key as keyof QuestionConfig, false);
+    this.onToggleChange(key as keyof UserConfig, false);
   }
 
 

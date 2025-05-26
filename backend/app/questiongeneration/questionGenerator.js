@@ -2,6 +2,8 @@ const FrenchNumberConverter = require('./FrenchNumberConverter.js');
 const { QuestionNotion } = require('./QuestionNotionEnum.js');
 const QuestionAndAnswer = require('./QuestionAndAnswer.model.js');
 const { validateUser } = require('../models/user.model.js');
+const {FrenchWordDictionary, words} = require('./FrenchWordDictionary.js');
+const frenchWordDict = new FrenchWordDictionary(words);
 
 class QuestionGenerator {
     constructor(seed) {
@@ -10,7 +12,7 @@ class QuestionGenerator {
             console.error('Seed is NaN, resetting to 1');
             this.seed = 1;
         }
-    }
+    } 
 
     // Seeded random number generator
     seededRandom() {
@@ -95,6 +97,7 @@ class QuestionGenerator {
             if (userConfig.division) allowedTypes.push('division');
             if (userConfig.rewriting) allowedTypes.push('rewrite');
             if (userConfig.encryption) allowedTypes.push('crypted');
+            if (userConfig.word) allowedTypes.push('word');
 
             console.log('Allowed types:', allowedTypes);
 
@@ -126,6 +129,18 @@ class QuestionGenerator {
                 notion = QuestionNotion.ENCRYPTION;
                 break;
             }
+
+            case 'word': {
+                // Pick a random word from the dictionary
+                const allWords = words; // or: Object.values(frenchWordDict.letterToWords).flat()
+                const randomIndex = Math.floor(this.seededRandom() * allWords.length);
+                const word = allWords[randomIndex];
+                questionString = `Recopiez ${word} : `;
+                answerString = word;
+                notion = QuestionNotion.REWRITING; // or create a new notion if you want
+                break;
+            }
+            
 
             default: {
                 const [op, questionNotion] = QuestionGenerator.convertToOperand(type);

@@ -15,6 +15,7 @@ const userSchema = Joi.object({
         division: Joi.boolean().optional().default(false),
         rewriting: Joi.boolean().optional().default(false),
         encryption: Joi.boolean().optional().default(false),
+        word: Joi.boolean().optional().default(false),
     }).required(),
 });
 

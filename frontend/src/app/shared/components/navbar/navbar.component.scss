@@ -9,4 +9,30 @@
     background-image: url('../../../../assets/images/environement/sky.gif');
     background-size: cover;
     background-position: center;
+    padding-left: 4vw;
+    padding-right: 4vw;
+    gap: 2vw;  
 }
+
+.home-navbar-button {
+    position: absolute;
+    left: 2vw; // or left: 1rem; adjust as needed
+    top: 50%;
+    transform: translateY(-50%);
+    height: 7vh !important;
+    width: 7vw !important;
+    min-width: 0 !important;
+    font-size: 1.5rem !important;
+    padding: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+:host(.center-navbar) {
+    justify-content: center !important; // center content when home button is hidden
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+

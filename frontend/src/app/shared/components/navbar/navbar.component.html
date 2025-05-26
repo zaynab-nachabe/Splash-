@@ -1,3 +1,7 @@
+<app-medium-button *ngIf="showHomeButton" class="navbar-button home-navbar-button" [routerLink]="['/']" routerLinkActive="active">
+  <span class="material-icons">home</span>
+</app-medium-button>
+
 <ng-content select=".navbar-profile-image"/>
 <ng-content select=".navbar-button"/>
 <ng-content select=".navbar-text"/>

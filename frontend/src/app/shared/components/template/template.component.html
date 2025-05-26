@@ -1,4 +1,4 @@
-<app-navbar class="template-navbar">
+<app-navbar class="template-navbar" [showHomeButton]="showHomeButton" [ngClass]="{'center-navbar': !showHomeButton}">
     <ng-content select=".navbar-profile-image" class="navbar-profile-image"/>
     <ng-content select=".navbar-button" class="navbar-button"/>
     <ng-content select=".navbar-text" class="navbar-text"/>
