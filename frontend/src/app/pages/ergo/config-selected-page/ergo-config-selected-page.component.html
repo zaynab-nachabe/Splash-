@@ -67,18 +67,26 @@
         <!-- Encryption toggle -->
         <div class="toggle-row">
           <span class="toggle-label">Chiffrement</span>
-          <app-settings-toggle
-            [checked]="currentConfig.crypted"
-            (valueChange)="onToggleChange('crypted', $event)">
-          </app-settings-toggle>
+              <app-settings-toggle
+                [checked]="currentConfig.encryption"
+                (valueChange)="onToggleChange('encryption', $event)">
+              </app-settings-toggle>
         </div>
 
         <!-- Show Answers toggle -->
         <div class="toggle-row">
           <span class="toggle-label">Montrer les réponses</span>
+              <app-settings-toggle
+                [checked]="currentConfig.showsAnswer"
+                (valueChange)="onToggleChange('showsAnswer', $event)">
+              </app-settings-toggle>
+        </div>
+          <!-- Word toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Mot français</span>
           <app-settings-toggle
-            [checked]="currentConfig.showAnswers"
-            (valueChange)="onToggleChange('showAnswers', $event)">
+            [checked]="currentConfig.word"
+            (valueChange)="onToggleChange('word', $event)">
           </app-settings-toggle>
         </div>
       </div>
@@ -86,24 +94,6 @@
       <!-- Column 2 -->
       <div class="settings-column">
         <!-- Additional features -->
-        <div class="toggle-row">
-          <span class="toggle-label">Équations</span>
-          <app-settings-toggle
-            [checked]="currentConfig.equations"
-            (valueChange)="onToggleChange('equations', $event)">
-          </app-settings-toggle>
-        </div>
-
-        <!-- Leaderboard toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Tableau des scores</span>
-          <app-settings-toggle
-            [checked]="currentConfig.leaderboard"
-            (valueChange)="onToggleChange('leaderboard', $event)">
-          </app-settings-toggle>
-        </div>
-
-
       </div>
     </div>
   </app-inner-box>

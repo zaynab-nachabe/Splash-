@@ -60,9 +60,15 @@ export class GameComponent implements OnInit, OnDestroy {
     private questionService: QuestionService,
     private gameStatisticsService: GameStatisticsService
   ) {
-    this.userService.selectedUser$.subscribe((user: User) => {
-      this.user = user;
-    });
+this.userService.selectedUser$.subscribe((user: User | null) => {
+  if (user) {
+    this.user = user;
+  } else {
+    // Handle the case where no user is selected, e.g. redirect or show a message
+    console.warn('No user selected in game.');
+    // Optionally: this.router.navigate(['/child-list']);
+  }
+});
 
     this.fontService.selectedFont$.subscribe((font) => {
       console.log('Font updated in GameComponent:', font);
@@ -80,7 +86,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.keydownHandler = this.checkInput.bind(this);
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {   
     document.addEventListener("keydown", this.keydownHandler);
     this.updateInputs();
   }
@@ -114,6 +120,11 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private loadNewQuestion(): void {
     console.log("Requesting new question");
+    if (!this.user) 
+    {
+      console.log("No user selected, cannot load new question.");
+      return; 
+    }
     const userConfig: UserConfig = this.user.userConfig; // Get user configuration
     this.questionService.generateQuestion(userConfig).subscribe(
       (question) => {
@@ -132,8 +143,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private updateInputs(): void {
-    const showsAnswer = this.questionConfigService.getCurrentConfig().showAnswers;
-
+    const showsAnswer = this.questionConfigService.getCurrentConfig()?.showsAnswer ?? false;
     const PENDING_SPACE: Input = { letter: '\xa0', status: "pending" };
     const CORRECT_SPACE: Input = { letter: '\xa0', status: "correct" };
     const WRONG_SPACE: Input = { letter: '·', status: "wrong" };

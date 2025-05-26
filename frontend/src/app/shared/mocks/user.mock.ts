@@ -1,3 +1,4 @@
+/*
 import { User } from "../models/user.model";
 
 export const MOCK_USER: User[] = [
@@ -10,11 +11,12 @@ export const MOCK_USER: User[] = [
     userConfig: {
       showsAnswer: true,
       addition: true,
-      substraction: true,
+      subtraction: true,
       multiplication: true,
       division: true,
-      rewriting: true,
+      rewrite: true,
       encryption: true,
+      word: true,
     }
   }, {
     userId: "2",
@@ -25,11 +27,12 @@ export const MOCK_USER: User[] = [
     userConfig: {
       showsAnswer: true,
       addition: true,
-      substraction: true,
+      subtraction: true,
       multiplication: false,
       division: false,
-      rewriting: true,
+      rewrite: true,
       encryption: false,
+      word: false,
     }
   }, {
     userId: "3",
@@ -40,11 +43,12 @@ export const MOCK_USER: User[] = [
     userConfig: {
       showsAnswer: false,
       addition: true,
-      substraction: true,
+      subtraction: true,
       multiplication: true,
       division: true,
-      rewriting: true,
+      rewrite: true,
       encryption: true,
+      word: true,
     }
   }, {
     userId: "4",
@@ -55,11 +59,13 @@ export const MOCK_USER: User[] = [
     userConfig: {
       showsAnswer: true,
       addition: false,
-      substraction: false,
+      subtraction: false,
       multiplication: false,
       division: false,
-      rewriting: true,
+      rewrite: true,
       encryption: false,
+      word: true,
     }
   }
 ]
+*/

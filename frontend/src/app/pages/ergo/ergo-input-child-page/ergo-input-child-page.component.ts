@@ -139,11 +139,12 @@ export class ErgoInputChildComponent implements OnInit {
         userConfig: {
           showsAnswer: false,
           addition: true,
-          substraction: true,
+          subtraction: true,
           multiplication: true,
           division: true,
-          rewriting: true,
+          rewrite: true,
           encryption: false,
+          word: false,
         }
       };
 

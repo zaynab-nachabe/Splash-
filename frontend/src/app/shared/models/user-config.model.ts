@@ -1,10 +1,10 @@
 export type UserConfig = {
     showsAnswer: boolean,
     addition: boolean,
-    substraction: boolean,
+    subtraction: boolean,
     multiplication: boolean,
     division: boolean,
-    rewriting: boolean,
+    rewrite: boolean,
     encryption: boolean,
-
+    word: boolean,
 };
