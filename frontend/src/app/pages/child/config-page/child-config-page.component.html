@@ -1,11 +1,10 @@
 <app-template>
     <!--Zone de la navbar -->
-    <app-home-button>Home</app-home-button>
     <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"><p class="name">
         <app-user-card [user]="user" class="horizontal navbar"/>
     </app-medium-button>
     <app-medium-button class="navbar-button" [routerLink]="['/child-play']" routerLinkActive="active"> Jouer </app-medium-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon classement </app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon aquarium </app-medium-button>
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue">
