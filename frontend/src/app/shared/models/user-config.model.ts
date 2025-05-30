@@ -1,5 +1,5 @@
 export type UserConfig = {
-    showsAnswer: boolean,
+    showAnswer: boolean,
     addition: boolean,
     subtraction: boolean,
     multiplication: boolean,
@@ -7,4 +7,7 @@ export type UserConfig = {
     rewrite: boolean,
     encryption: boolean,
     word: boolean,
+    showScore: boolean,
+    nombresDeQuestion: number,
+    questionFrequency?: { [key: string]: number }
 };

@@ -4,7 +4,7 @@ const QuestionNotion = {
   ADDITION: 'ADDITION',
   SUBTRACTION: 'SUBTRACTION',
   DIVISION: 'DIVISION',
-  REWRITING: 'REWRITING',
+  REWRITE: 'REWRITE',
 };
 
 module.exports = { QuestionNotion };

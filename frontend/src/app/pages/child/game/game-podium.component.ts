@@ -13,6 +13,9 @@ export class GamePodiumComponent implements OnInit{
 
     public  user?: User;
     public userScore: number = 0;
+    public questionsAnswered: number = -1;
+    public showScore: boolean = false; 
+
 
     constructor(private route: ActivatedRoute, private userService: UserService) {}
 
@@ -20,6 +23,8 @@ export class GamePodiumComponent implements OnInit{
         const state = this.route.snapshot.queryParams;
         this.user = JSON.parse(state['user'] || '{}');
         this.userScore = this.userService.getScore();
+        this.questionsAnswered = Number(state['questionsAnswered']) || 0;
+        this.showScore = !!this.user?.userConfig?.showScore;
     }
 
     ngAfterViewInit(): void {

@@ -52,6 +52,9 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private gameEngine!: GameEngine;
 
+  private questionCount: number = -1;
+  private MaxQuestions: number = 10;
+
   constructor(
     private userService: UserService,
     private questionConfigService: QuestionConfigService,
@@ -63,6 +66,7 @@ export class GameComponent implements OnInit, OnDestroy {
 this.userService.selectedUser$.subscribe((user: User | null) => {
   if (user) {
     this.user = user;
+    this.MaxQuestions = user.userConfig.nombresDeQuestion ?? 10;
   } else {
     // Handle the case where no user is selected, e.g. redirect or show a message
     console.warn('No user selected in game.');
@@ -87,6 +91,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
   }
 
   ngOnInit(): void {   
+    this.questionCount = -1; //OPTIONAL TO TEST
     document.addEventListener("keydown", this.keydownHandler);
     this.updateInputs();
   }
@@ -119,6 +124,16 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
   }
 
   private loadNewQuestion(): void {
+if (this.hasEnded) {
+      console.log("Game has ended, not loading new question.");
+      return;
+    }
+    if (this.questionCount >= this.MaxQuestions) {
+      console.log("Maximum number of questions reached, ending game.");
+      this.endGame();
+      return;
+    }
+
     console.log("Requesting new question");
     if (!this.user) 
     {
@@ -134,6 +149,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
         this.expected_answerInputs = this.question.answer.split('');
         this.proposed_answerInputs = [];
         this.updateInputs();
+        this.questionCount++;
       },
       (error) => {
         console.error('Error fetching question:', error);
@@ -143,7 +159,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
   }
 
   private updateInputs(): void {
-    const showsAnswer = this.questionConfigService.getCurrentConfig()?.showsAnswer ?? false;
+    const showsAnswer = this.questionConfigService.getCurrentConfig()?.showAnswer ?? false;
     const PENDING_SPACE: Input = { letter: '\xa0', status: "pending" };
     const CORRECT_SPACE: Input = { letter: '\xa0', status: "correct" };
     const WRONG_SPACE: Input = { letter: '·', status: "wrong" };
@@ -296,7 +312,9 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
         
         this.router.navigate(['/game-podium'], {
           queryParams: {
-            user: JSON.stringify(this.user)
+            user: JSON.stringify(this.user),
+            questionsAnswered: this.questionCount,
+            score: this.score,
           }
         });
       },
@@ -307,7 +325,9 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
         this.userService.setScore(this.score);
         this.router.navigate(['/game-podium'], {
           queryParams: {
-            user: JSON.stringify(this.user)
+            user: JSON.stringify(this.user),
+            questionsAnswered: this.questionCount,
+            score: this.score,
           }
         });
       }

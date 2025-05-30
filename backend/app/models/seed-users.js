@@ -11,10 +11,18 @@ module.exports = [
       subtraction: true,
       multiplication: true,
       division: true,
-      rewriting: true,
+      rewrite: true,
       encryption: true,
       word: true,
+      nombresDeQuestion: 7,
+      questionFrequency: {
+        addition: 0.25,
+        subtraction: 0.25,
+        multiplication: 0.25,
+        division: 0.25
+      }
     }
+
   },
   {
     userId: "2",
@@ -28,7 +36,7 @@ module.exports = [
       subtraction: true,
       multiplication: false,
       division: false,
-      rewriting: true,
+      rewrite: true,
       encryption: false,
       word: false,
     }
@@ -45,7 +53,7 @@ module.exports = [
       subtraction: true,
       multiplication: true,
       division: true,
-      rewriting: true,
+      rewrite: true,
       encryption: true,
       word: true,
     }
@@ -62,7 +70,7 @@ module.exports = [
       subtraction: false,
       multiplication: false,
       division: false,
-      rewriting: true,
+      rewrite: true,
       encryption: false,
       word: true,
     }
