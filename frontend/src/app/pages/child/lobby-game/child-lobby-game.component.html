@@ -1,7 +1,7 @@
 <app-template>
     <!--Zone de la navbar -->
     <app-home-button>Home</app-home-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/child-lobby']" routerLinkActive="active">Lancement de la partie</app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active">Mon aquarium</app-medium-button>
     <app-medium-button class="navbar-button red" [routerLink]="['/child-play']" routerLinkActive="active">Retour</app-medium-button>
     <!--Zone du main -->
     <app-inner-box class="main-box blue ">
@@ -11,6 +11,6 @@
             <p>Par exemple : si la question est "2 + 3", la réponse correcte est <strong>"cinq"</strong>.</p>
             <p>Essayez de répondre correctement pour obtenir le meilleur score possible !</p>
         </div>
-        <app-small-button [routerLink]="['/game']">Jeu ici</app-small-button>
+        <app-big-button class="main-button" [routerLink]="['/game']">Jouer</app-big-button>
     </app-inner-box>
 </app-template>

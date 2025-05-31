@@ -11,10 +11,12 @@ module.exports = [
       subtraction: true,
       multiplication: true,
       division: true,
-      rewriting: true,
+      rewrite: true,
       encryption: true,
       word: true,
-    }
+    },
+    musicEnabled: false,
+    effectsEnabled: true,
   },
   {
     userId: "2",
@@ -28,10 +30,12 @@ module.exports = [
       subtraction: true,
       multiplication: false,
       division: false,
-      rewriting: true,
+      rewrite: true,
       encryption: false,
       word: false,
-    }
+    },
+    musicEnabled: true,
+    effectsEnabled: true,
   },
   {
     userId: "3",
@@ -45,10 +49,12 @@ module.exports = [
       subtraction: true,
       multiplication: true,
       division: true,
-      rewriting: true,
+      rewrite: true,
       encryption: true,
       word: true,
-    }
+    },
+    musicEnabled: true,
+    effectsEnabled: false,
   },
   {
     userId: "4",
@@ -62,9 +68,11 @@ module.exports = [
       subtraction: false,
       multiplication: false,
       division: false,
-      rewriting: true,
+      rewrite: true,
       encryption: false,
       word: true,
-    }
+    },
+    musicEnabled: false,
+    effectsEnabled: false,
   }
 ];

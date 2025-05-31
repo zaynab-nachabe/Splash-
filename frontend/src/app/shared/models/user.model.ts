@@ -7,6 +7,8 @@ export type User = {
     icon: string;
     conditions: string[];
     userConfig: UserConfig;
+    musicEnabled?: boolean;
+    effectsEnabled?: boolean;
 }
 
 

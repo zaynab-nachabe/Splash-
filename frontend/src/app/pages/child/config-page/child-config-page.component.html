@@ -3,10 +3,27 @@
     <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"><p class="name">
         <app-user-card [user]="user" class="horizontal navbar"/>
     </app-medium-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/child-play']" routerLinkActive="active"> Jouer </app-medium-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon aquarium </app-medium-button>
+    <app-medium-button class="navbar-button red" [routerLink]="['/child-play']" routerLinkActive="active"> Retour </app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"> Mon aquarium </app-medium-button>
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue">
+        <!--effects on or off-->
+         <div class="toggle-row">
+          <span class="toggle-label">Effets sonore</span>
+          <app-settings-toggle [checked]="effectsEnabled" (valueChange)="toggleEffects()"></app-settings-toggle>
+        </div>
+
+        <!-- sound toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label"> Musique </span>
+              <app-settings-toggle [checked]="musicEnabled" (valueChange)="toggleMusic()"></app-settings-toggle>
+        </div>
+
+        <!-- show deaths -->
+        <div class="toggle-row">
+          <span class="toggle-label">Montrer les vie restantes</span>
+              <app-settings-toggle></app-settings-toggle>
+        </div>
     </app-inner-box>
 </app-template>
