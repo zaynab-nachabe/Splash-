@@ -1,44 +1,154 @@
 <app-template>
-  <!--Zone de la navbar -->
+  <!-- Navbar -->
   <app-home-button>Home</app-home-button>
-  <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"><p class="name">
-    <app-user-card [user]="user" class="horizontal navbar"/>
-  </p></app-medium-button>
-  <app-medium-button class="navbar-button red" [routerLink]="['/child-play']" routerLinkActive="active"> Retour </app-medium-button>
-  <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon classement </app-medium-button>
+  <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active">
+    <p class="name">
+      <app-user-card [user]="user" class="horizontal navbar" />
+    </p>
+  </app-medium-button>
+  <app-medium-button class="navbar-button red" [routerLink]="['/child-play']" routerLinkActive="active"> Retour
+  </app-medium-button>
+  <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon classement
+  </app-medium-button>
 
-  <!--Zone du main -->
-  <div class="stats-container main-box" *ngIf="currentStatistic">
-    <app-tab-box
-      [tabs]="mainTabs"
-      [sections]="sections"
-      [activeTabId]="activeTab"
-      (tabSelected)="onTabChange($event)"
-      class="tab-container">
-    </app-tab-box>
-
-    <app-inner-box class="main-box blue stat-box">
-        <span>
-            Classement: <strong>{{ currentStatistic.ranking }}</strong>
-        </span>
-      <span>
-            Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong>
-        </span>
-
-      <span>
-            Mots les moins réussis:
-            <ul class="words-list">
-                <li *ngFor="let word of currentStatistic.wordsLeastSuccessful">
+  <!-- Main stats area -->
+  <div class="main-box">
+    <div class="stat-flex-row">
+      <div class="stat-tab-buttons">
+        <button class="stat-tab-btn" [class.active]="activeTab === 'last'" (click)="onTabChange('last')">
+          Dernière partie
+        </button>
+        <button class="stat-tab-btn" [class.active]="activeTab === 'total'" (click)="onTabChange('total')">
+          Moyenne
+        </button>
+        <button class="stat-tab-btn" [class.active]="activeTab === 'historique'" (click)="onTabChange('historique')">
+          Historique
+        </button>
+      </div>
+      <div class="stat-box-overlay-wrapper">
+        <app-inner-box class="main-box blue stat-box">
+          <!-- Dernière partie & Moyenne -->
+          <ng-container *ngIf="activeTab === 'last' || activeTab === 'total'">
+            <ng-container *ngIf="currentStatistic; else loading">
+              <div>
+                <span>Classement: <strong>{{ currentStatistic.ranking }}</strong></span>
+              </div>
+              <div>
+                <span>Score: <strong>{{ currentStatistic.score }}</strong></span>
+              </div>
+              <div>
+                <span>Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong></span>
+              </div>
+              <div>
+                <span>Précision: <strong>{{ currentStatistic.precision }}%</strong></span>
+              </div>
+              <div>
+                <span>Compréhension des notions mathématiques: <strong>{{ currentStatistic.mathNotionUnderstanding
+                    }}%</strong></span>
+              </div>
+              <div>
+                <span>Nombre de corrections: <strong>{{ currentStatistic.numberOfCorrections }}</strong></span>
+              </div>
+              <div>
+                <span>Réponses affichées: <strong>{{ currentStatistic.answersShown }}</strong></span>
+              </div>
+              <div>
+                <span>Mots les moins réussis:</span>
+                <ul class="words-list">
+                  <li
+                    *ngIf="!currentStatistic.wordsLeastSuccessful || currentStatistic.wordsLeastSuccessful.length === 0">
+                    Aucun mot difficile détecté.
+                  </li>
+                  <li *ngFor="let word of currentStatistic.wordsLeastSuccessful">
                     {{ word.word }} ({{ word.successRate }}%)
-                </li>
-            </ul>
-        </span>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <span>Date de la session: <strong>{{ currentStatistic.sessionName }}</strong></span>
+              </div>
+            </ng-container>
+            <ng-template #loading>
+              <div class="loading-container">
+                <p>Chargement des statistiques en cours...</p>
+              </div>
+            </ng-template>
+          </ng-container>
 
-    </app-inner-box>
-  </div>
-
-  <!-- Show a loading message or placeholder when statistics aren't loaded yet -->
-  <div *ngIf="!currentStatistic" class="loading-container">
-    <p>Chargement des statistiques en cours...</p>
+          <!-- Historique (same format, plus overlay arrow) -->
+          <ng-container *ngIf="activeTab === 'historique'">
+            <!-- Arrow button always visible in top left of box -->
+            <button class="arrow-btn overlay-arrow" (click)="historiqueSidebarOpen = !historiqueSidebarOpen">
+              <span *ngIf="historiqueSidebarOpen">&#8592;</span>
+              <span *ngIf="!historiqueSidebarOpen">&#8594;</span>
+            </button>
+            <ng-container *ngIf="currentStatistic; else loadingHistorique">
+              <!-- Main statistics content (same as other tabs) -->
+              <div>
+                <span>Classement: <strong>{{ currentStatistic.ranking }}</strong></span>
+              </div>
+              <div>
+                <span>Score: <strong>{{ currentStatistic.score }}</strong></span>
+              </div>
+              <div>
+                <span>Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong></span>
+              </div>
+              <div>
+                <span>Précision: <strong>{{ currentStatistic.precision }}%</strong></span>
+              </div>
+              <div>
+                <span>Compréhension des notions mathématiques: <strong>{{ currentStatistic.mathNotionUnderstanding
+                    }}%</strong></span>
+              </div>
+              <div>
+                <span>Nombre de corrections: <strong>{{ currentStatistic.numberOfCorrections }}</strong></span>
+              </div>
+              <div>
+                <span>Réponses affichées: <strong>{{ currentStatistic.answersShown }}</strong></span>
+              </div>
+              <div>
+                <span>Mots les moins réussis:</span>
+                <ul class="words-list">
+                  <li
+                    *ngIf="!currentStatistic.wordsLeastSuccessful || currentStatistic.wordsLeastSuccessful.length === 0">
+                    Aucun mot difficile détecté.
+                  </li>
+                  <li *ngFor="let word of currentStatistic.wordsLeastSuccessful">
+                    {{ word.word }} ({{ word.successRate }}%)
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <span>Date de la session: <strong>{{ currentStatistic.sessionName }}</strong></span>
+              </div>
+            </ng-container>
+            <ng-template #loadingHistorique>
+              <div class="loading-container">
+                <p>Chargement des statistiques en cours...</p>
+              </div>
+            </ng-template>
+            <!-- Overlay historique sidebar INSIDE the border -->
+            <div class="historique-sidebar-overlay inside-border" *ngIf="historiqueSidebarOpen">
+              <div class="historique-sidebar-header">
+                <input type="text" [(ngModel)]="searchTerm" placeholder="Rechercher par date..."
+                  class="historique-search" />
+              </div>
+              <div class="historique-list" style="max-height: 300px; overflow-y: auto;">
+                <ul>
+                  <li *ngFor="let stat of filteredSessions">
+                    <button (click)="selectHistoriqueSession(stat)">
+                      {{ stat.sessionName }}
+                    </button>
+                  </li>
+                </ul>
+                <div *ngIf="filteredSessions.length === 0">
+                  <p>Aucune session trouvée pour cette recherche.</p>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </app-inner-box>
+      </div>
+    </div>
   </div>
 </app-template>

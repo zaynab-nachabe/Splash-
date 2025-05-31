@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GameStatistics } from 'src/app/shared/models/game-statistics.model';
-import {childRankingMock} from '../../../shared/mocks/childRanking-mock';
+import { childRankingMock } from '../../../shared/mocks/childRanking-mock';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/shared/models/user.model';
 import { GameStatisticsService } from 'src/app/shared/services/game-statistics.service';
@@ -14,7 +14,12 @@ import { GameStatisticsService } from 'src/app/shared/services/game-statistics.s
 })
 
 export class ChildStatPageComponent implements OnInit, OnDestroy {
-  activeTab: string = 'total';
+  activeTab: string = 'last';
+  showHistorique: boolean = false;
+  searchTerm: string = '';
+  historiqueSidebarOpen = true;
+
+
   selectedUser?: User;
   user!: User;
   childStatistics: GameStatistics[] = [];
@@ -23,8 +28,8 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
 
   // Define tabs structure
   mainTabs = [
-    { id: 'total', label: 'TOTAL' },
-    { id: 'derniere', label: 'Dernière partie' }
+    { id: 'last', label: 'Dernière partie' },
+    { id: 'average', label: 'Moyenne' }
   ];
 
   sections = [
@@ -53,6 +58,9 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
       console.log('Selected user for statistics:', user);
       // Load statistics for this user
       this.loadGameStatistics(user.userId);
+      console.log('Loaded game statistics for user:', user.userId);
+      console.log('GameStatisticsService initialized');
+
     });
   }
 
@@ -72,39 +80,62 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
         this.childStatistics = stats;
         this.setCurrentStatistic(this.activeTab);
         this.cdr.detectChanges();
+        console.log('in load game statistics: active tag is :', this.activeTab);
+        console.log('in load game statistics: Game statistics loaded:', this.childStatistics);
+        console.log('In load game statistics: Current statistic set to:', this.currentStatistic);
       });
+
   }
 
   setCurrentStatistic(tabId: string): void {
-    // Map tab IDs to session names
-    let sessionName: string;
+    if (tabId === 'last') {
+      // Find the session with the latest date
+      const sessions = this.childStatistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
+      console.log('Filtered sessions:', sessions);
+      if (sessions.length > 0) {
+        sessions.sort((a, b) => {
+          // Parse date from sessionName
+          const dateA = new Date(a.sessionName.replace(/^Session /, ''));
+          const dateB = new Date(b.sessionName.replace(/^Session /, ''));
 
-    switch (tabId) {
-      case 'total':
-        sessionName = 'TOTAL';
-        break;
-      case 'derniere':
-        sessionName = 'Session 3'; // Latest session
-        break;
-      case 'session2':
-        sessionName = 'Session 2';
-        break;
-      case 'session1':
-        sessionName = 'Session 1';
-        break;
-      default:
-        sessionName = 'TOTAL';
+          //console.log('session A is' + a.sessionName + ' and session B is ' + b.sessionName);
+          //console.log('date A is' + dateA + ' and date B is ' + dateB);
+          return dateB.getTime() - dateA.getTime();
+        });
+        this.currentStatistic = sessions[0];
+        console.log('in set current statistic: current statistic is set to:', this.currentStatistic);
+        console.log('in set current statistic: latest session is:', sessions[0]);
+        return;
+      }
+    } else if (tabId === 'average') {
+      // Compute average (for now, just use the last game as placeholder)
+      const sessions = this.childStatistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
+      if (sessions.length > 0) {
+        // TODO: Compute real average
+        this.currentStatistic = sessions[0];
+        return;
+      }
     }
-
-    // Get the statistic for this session
-    this.currentStatistic = this.childStatistics.find(stat =>
-      stat.sessionName === sessionName
-    );
+    this.currentStatistic = undefined;
   }
 
   onTabChange(tabId: string): void {
     this.activeTab = tabId;
+    this.showHistorique = false;
     this.setCurrentStatistic(tabId);
+  }
+
+
+  showHistoriquePage(): void {
+    this.showHistorique = true;
+  }
+
+  get filteredSessions() {
+    if (!this.searchTerm) return this.childStatistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
+    return this.childStatistics.filter(stat =>
+      stat.sessionName &&
+      stat.sessionName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 
   get userIconPath(): string {
@@ -112,4 +143,10 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
     return `assets/images/child-pps/${icon}`;
 
   }
+
+
+  selectHistoriqueSession(stat: GameStatistics) {
+  this.currentStatistic = stat;
+  this.historiqueSidebarOpen = false;
+}
 }
