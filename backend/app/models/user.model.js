@@ -11,7 +11,7 @@ const userSchema = Joi.object({
     icon: Joi.string().default('pp-9.png'),
     conditions: Joi.array().items(Joi.string()).default([]),
     userConfig: Joi.object({
-        showsAnswer: Joi.boolean().optional().default(false),
+        showAnswer: Joi.boolean().optional().default(false),
         addition: Joi.boolean().optional().default(false),
         subtraction: Joi.boolean().optional().default(false),
         multiplication: Joi.boolean().optional().default(false),
@@ -19,6 +19,10 @@ const userSchema = Joi.object({
         rewrite: Joi.boolean().optional().default(false),
         encryption: Joi.boolean().optional().default(false),
         word: Joi.boolean().optional().default(false),
+        showScore: Joi.boolean().optional().default(false),
+        nombresDeQuestion: Joi.number().optional().default(10),
+        questionFrequency: {
+        }
     }).required(),
     musicEnabled: Joi.boolean().optional().default(true),
     effectsEnabled: Joi.boolean().optional().default(true),

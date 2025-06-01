@@ -5,9 +5,9 @@
   <app-inner-box class="main-box blue">
     <div class="podium-container">
       <div class="toast-message">
-        <p>🎉 Félicitations ! Vous avez terminé la partie avec un score de {{ userScore }} points ! 🎉</p>
+        <p>🎉 Félicitations ! Tu as répondus à {{ questionsAnswered }} questions ! 🎉</p>
       </div>
-      <div class="score">
+      <div class="score" *ngIf="showScore">
         <p>Score: {{ userScore }}</p>
       </div>
       <div class="user-card">

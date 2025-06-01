@@ -1,0 +1,150 @@
+<div class="stat-flex-row">
+  <div class="stat-tab-buttons">
+    <button class="stat-tab-btn" [class.active]="activeTab === 'last'" (click)="onTabChange('last')">
+      Dernière partie
+    </button>
+    <button class="stat-tab-btn" [class.active]="activeTab === 'average'" (click)="onTabChange('average')">
+      Moyenne
+    </button>
+    <button class="stat-tab-btn" [class.active]="activeTab === 'historique'" (click)="onTabChange('historique')">
+      Historique
+    </button>
+  </div>
+  <div class="main-box">
+    <div class="stat-box-overlay-wrapper">
+      <app-inner-box class="main-box blue stat-box">
+        <!-- Dernière partie & Moyenne -->
+        <ng-container *ngIf="activeTab === 'last' || activeTab === 'average'">
+          <ng-container *ngIf="currentStatistic; else loading">
+            <div>
+              <span>Classement: <strong>{{ currentStatistic.ranking }}</strong></span>
+            </div>
+            <div>
+              <span>Score: <strong>{{ currentStatistic.score }}</strong></span>
+            </div>
+            <div>
+              <span>Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong></span>
+            </div>
+            <div>
+              <span>Précision: <strong>{{ currentStatistic.precision }}%</strong></span>
+            </div>
+            <div>
+              <span>Compréhension des notions mathématiques: <strong>{{ currentStatistic.mathNotionUnderstanding }}%</strong></span>
+            </div>
+            <div>
+              <span>Nombre de corrections: <strong>{{ currentStatistic.numberOfCorrections }}</strong></span>
+            </div>
+            <div>
+              <span>Réponses affichées: <strong>{{ currentStatistic.answersShown }}</strong></span>
+            </div>
+            <div>
+              <span>Mots les moins réussis:</span>
+              <ul class="words-list">
+                <li *ngIf="!currentStatistic.wordsLeastSuccessful || currentStatistic.wordsLeastSuccessful.length === 0">
+                  Aucun mot difficile détecté.
+                </li>
+                <li *ngFor="let word of currentStatistic.wordsLeastSuccessful">
+                  {{ word.word }} ({{ word.successRate }}%)
+                </li>
+              </ul>
+            </div>
+            <div>
+              <span>Date de la session: <strong>{{ currentStatistic.sessionName }}</strong></span>
+            </div>
+            <div *ngIf="currentStatistic.heatmapData && currentStatistic.heatmapData.length">
+              <span>HeatMap:</span>
+              <div class="heatmap-container">
+                <div *ngFor="let key of currentStatistic.heatmapData" class="heatmap-key"
+                  [style.background-color]="'rgba(255, 0, 0, ' + (key.errorFrequency / 100) + ')'">
+                  {{ key.keyCode.replace('Key', '') }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #loading>
+            <div class="loading-container">
+              <p>Chargement des statistiques en cours...</p>
+            </div>
+          </ng-template>
+        </ng-container>
+
+        <!-- Historique (same format, plus overlay arrow) -->
+        <ng-container *ngIf="activeTab === 'historique'">
+          <button class="arrow-btn overlay-arrow" (click)="historiqueSidebarOpen = !historiqueSidebarOpen">
+            <span *ngIf="historiqueSidebarOpen">&#8592;</span>
+            <span *ngIf="!historiqueSidebarOpen">&#8594;</span>
+          </button>
+          <ng-container *ngIf="currentStatistic; else loadingHistorique">
+            <div>
+              <span>Classement: <strong>{{ currentStatistic.ranking }}</strong></span>
+            </div>
+            <div>
+              <span>Score: <strong>{{ currentStatistic.score }}</strong></span>
+            </div>
+            <div>
+              <span>Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong></span>
+            </div>
+            <div>
+              <span>Précision: <strong>{{ currentStatistic.precision }}%</strong></span>
+            </div>
+            <div>
+              <span>Compréhension des notions mathématiques: <strong>{{ currentStatistic.mathNotionUnderstanding }}%</strong></span>
+            </div>
+            <div>
+              <span>Nombre de corrections: <strong>{{ currentStatistic.numberOfCorrections }}</strong></span>
+            </div>
+            <div>
+              <span>Réponses affichées: <strong>{{ currentStatistic.answersShown }}</strong></span>
+            </div>
+            <div>
+              <span>Mots les moins réussis:</span>
+              <ul class="words-list">
+                <li *ngIf="!currentStatistic.wordsLeastSuccessful || currentStatistic.wordsLeastSuccessful.length === 0">
+                  Aucun mot difficile détecté.
+                </li>
+                <li *ngFor="let word of currentStatistic.wordsLeastSuccessful">
+                  {{ word.word }} ({{ word.successRate }}%)
+                </li>
+              </ul>
+            </div>
+            <div>
+              <span>Date de la session: <strong>{{ currentStatistic.sessionName }}</strong></span>
+            </div>
+            <div *ngIf="currentStatistic.heatmapData && currentStatistic.heatmapData.length">
+              <span>HeatMap:</span>
+              <div class="heatmap-container">
+                <div *ngFor="let key of currentStatistic.heatmapData" class="heatmap-key"
+                  [style.background-color]="'rgba(255, 0, 0, ' + (key.errorFrequency / 100) + ')'">
+                  {{ key.keyCode.replace('Key', '') }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #loadingHistorique>
+            <div class="loading-container">
+              <p>Chargement des statistiques en cours...</p>
+            </div>
+          </ng-template>
+          <!-- Overlay historique sidebar INSIDE the border -->
+          <div class="historique-sidebar-overlay inside-border" *ngIf="historiqueSidebarOpen">
+            <div class="historique-sidebar-header">
+              <input type="text" [(ngModel)]="searchTerm" placeholder="Rechercher par date..." class="historique-search" />
+            </div>
+            <div class="historique-list" style="max-height: 300px; overflow-y: auto;">
+              <ul>
+                <li *ngFor="let stat of filteredSessions">
+                  <button (click)="selectHistoriqueSession(stat)">
+                    {{ stat.sessionName }}
+                  </button>
+                </li>
+              </ul>
+              <div *ngIf="filteredSessions.length === 0">
+                <p>Aucune session trouvée pour cette recherche.</p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </app-inner-box>
+    </div>
+  </div>
+</div>

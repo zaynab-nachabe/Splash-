@@ -14,6 +14,15 @@ module.exports = [
       rewrite: true,
       encryption: true,
       word: true,
+      nombresDeQuestion: 7,
+      questionFrequency: {
+        addition: 0.25,
+        subtraction: 0.25,
+        multiplication: 0.25,
+        division: 0.25
+      }
+    }
+
     },
     musicEnabled: false,
     effectsEnabled: true,

@@ -28,7 +28,7 @@
 
 
     <div class="config-item operation-selector">
-      <h3>Opérations</h3>
+      <h3>Types de Questions</h3>
 
       <!-- Selected operations pills (similar to ergo-input-child-page) -->
       <div class="selected-operations" *ngIf="getSelectedOperations().length > 0">
@@ -38,10 +38,10 @@
         </div>
       </div>
 
-      <!-- Dropdown for operations -->
+      <!-- Dropdown for question types -->
       <div class="dropdown-wrapper">
         <select #operationSelect class="operations-dropdown" (change)="handleOperationSelection(operationSelect.value)">
-          <option value="" disabled selected>Sélectionner une opération</option>
+          <option value="" disabled selected>Sélectionner un type</option>
           <option *ngFor="let op of availableOperations"
                   [value]="op.key"
                   [disabled]="isOperationSelected(op.key)">
@@ -51,49 +51,73 @@
       </div>
     </div>
 
-    <!-- Settings in columns -->
+<!-- Settings in columns -->
     <div class="settings-columns">
       <!-- Column 1 -->
       <div class="settings-column">
-        <!-- Rewrite toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Réécrire</span>
-          <app-settings-toggle
-            [checked]="currentConfig.rewrite"
-            (valueChange)="onToggleChange('rewrite', $event)">
-          </app-settings-toggle>
-        </div>
-
-        <!-- Encryption toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Chiffrement</span>
-              <app-settings-toggle
-                [checked]="currentConfig.encryption"
-                (valueChange)="onToggleChange('encryption', $event)">
-              </app-settings-toggle>
-        </div>
-
         <!-- Show Answers toggle -->
         <div class="toggle-row">
           <span class="toggle-label">Montrer les réponses</span>
-              <app-settings-toggle
-                [checked]="currentConfig.showsAnswer"
-                (valueChange)="onToggleChange('showsAnswer', $event)">
-              </app-settings-toggle>
-        </div>
-          <!-- Word toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Mot français</span>
           <app-settings-toggle
-            [checked]="currentConfig.word"
-            (valueChange)="onToggleChange('word', $event)">
+            [checked]="currentConfig.showAnswer"
+            (valueChange)="onToggleChange('showAnswer', $event)">
           </app-settings-toggle>
         </div>
+
+        <div class="toggle-row advanced-statistics-toggle" (click)="toggleAdvancedStats()"
+          style="cursor:pointer;user-select:none;">
+          <span class="toggle-label">
+            Statistiques avancées
+            <span [ngClass]="{'arrow-down': showAdvancedStats, 'arrow-left': !showAdvancedStats}">
+              {{ showAdvancedStats ? '▼' : '►' }}
+            </span>
+          </span>
+        </div>
+      </div>
+      <!-- Column 2 -->
+      <div class="settings-column">      
+        <!-- Show Score toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Afficher le score</span>
+          <app-settings-toggle
+            [checked]="currentConfig.showScore"
+            (valueChange)="onToggleChange('showScore', $event)">
+          </app-settings-toggle>
+        </div>
+
+        <!-- Nombre de questions input -->
+        <div class="toggle-row">
+          <span class="toggle-label">Nombre de questions</span>
+          <input
+            #nombreInput
+            type="text"
+            min="1"
+            [value]="currentConfig.nombresDeQuestion || ''"
+            (input)="onNombreDeQuestionInput(nombreInput)"
+            class="number-input"
+            style="width: 60px; margin-left: 10px;"
+          />
+        </div>
+        <!-- Additional features -->
       </div>
 
-      <!-- Column 2 -->
-      <div class="settings-column">
-        <!-- Additional features -->
+
+    </div>
+
+    <!-- Advanced stats section, outside the settings-columns row -->
+    <div class="advanced-stats-section" *ngIf="showAdvancedStats">
+      <div class="advanced-stats-grid">
+        <div *ngFor="let op of availableOperations" class="advanced-stat-cell">
+          <span>{{ op.label }}</span>
+          <input
+            #freqInput
+            type="text"
+            [value]="currentConfig.questionFrequency?.[op.key] ?? ''"
+            (input)="onFrequencyInput(freqInput, op.key)"
+            class="frequency-input"
+            style="width: 60px; margin-left: 10px;"
+          />
+        </div>
       </div>
     </div>
   </app-inner-box>

@@ -382,3 +382,15 @@ span {
   padding-left: 15px;
   padding-right: 15px;
 }
+
+
+.advanced-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px 24px;
+}
+.advanced-stat-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

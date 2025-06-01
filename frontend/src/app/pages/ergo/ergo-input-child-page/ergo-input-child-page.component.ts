@@ -135,16 +135,19 @@ export class ErgoInputChildComponent implements OnInit {
         name: this.childForm.value.name,
         age: this.childForm.value.age,
         icon: this.selectedIcon,
-        conditions: this.selectedConditions,
+        conditions: this.selectedConditions, // <-- Add this line
+
         userConfig: {
-          showsAnswer: false,
-          addition: true,
-          subtraction: true,
-          multiplication: true,
-          division: true,
+          showAnswer: false,
+          addition: false,
+          subtraction: false,
+          multiplication: false,
+          division: false,
           rewrite: true,
           encryption: false,
           word: false,
+          showScore: false,
+          nombresDeQuestion: 10 // or your default
         }
       };
 

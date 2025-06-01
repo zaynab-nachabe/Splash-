@@ -17,6 +17,7 @@ import { SettingsSliderComponent } from './shared/components/settings-slider/set
 import { SettingsToggleComponent } from './shared/components/settings-toggle/settings-toggle.component';
 import { UserListComponent } from './shared/components/user-list/user-list.component';
 import { SettingsFontComponent } from './shared/components/settings-font/settings-font.component';
+import { StatisticsBoxComponent } from 'src/app/shared/components/statistics-box/statistics-box.component';
 
 import { WelcomePageComponent } from './pages/welcome-page/welcome-page.component';
 import { ChildListPageComponent } from './pages/child/list-page/child-list-page.component';
@@ -74,7 +75,9 @@ import { SearchBarComponent } from './shared/components/search-bar/search-bar.co
     InnerBoxComponent,
     SettingsToggleComponent,
     ErgoLobbyGameComponent, 
-    SearchBarComponent
+    SearchBarComponent, 
+    StatisticsBoxComponent
+
   ],
   imports: [
     BrowserModule,

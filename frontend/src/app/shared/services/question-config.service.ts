@@ -42,16 +42,18 @@ export class QuestionConfigService {
   }
 
   private getDefaultConfig(): UserConfig {
-    return {
-      showsAnswer: false,
-      addition: false,
-      subtraction: false,
-      multiplication: false,
-      division: false,
-      rewrite: true,
-      encryption: false,
-      word: false
-    };
+      return {
+        showAnswer: false,
+        addition: false,
+        subtraction: false,
+        multiplication: false,
+        division: false,
+        rewrite: true,
+        encryption: false,
+        word: false,
+        showScore: false,
+        nombresDeQuestion: 10 // or any sensible default
+      };
   }
 
 
@@ -63,7 +65,7 @@ export class QuestionConfigService {
     return this.configSubject.getValue();
   }
 
-public updateNotion(notion: keyof UserConfig, value: boolean): void {
+public updateNotion(notion: keyof UserConfig, value: any): void {
     if (!this.currentUser) {
       throw new Error('Cannot update configuration: No user selected');
     }

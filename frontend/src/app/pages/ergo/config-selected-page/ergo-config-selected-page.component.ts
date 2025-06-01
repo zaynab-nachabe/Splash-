@@ -18,13 +18,18 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
   private configSubscription!: Subscription;
   private userSubscription!: Subscription;
   saveConfirmationVisible: boolean = false;
+  showAdvancedStats: boolean = false;
 
   availableOperations = [
     { key: 'addition', label: 'Addition' },
     { key: 'subtraction', label: 'Soustraction' },
     { key: 'multiplication', label: 'Multiplication' },
-    { key: 'division', label: 'Division' }
+    { key: 'division', label: 'Division' },
+    { key: 'rewrite', label: 'Chiffres' },
+    { key: 'encryption', label: 'Caractères spéciaux' },
+    { key: 'word', label: 'Mot français' }
   ];
+
 
 
   constructor(
@@ -35,8 +40,6 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
   ) {
     this.currentConfig = this.questionConfigService.getCurrentConfig();
     console.log('Constructor - Initial config:', this.currentConfig);
-
-
   }
   ngOnInit() {
     // First, get the selected user
@@ -85,7 +88,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
     this.questionConfigService.updateNotion(notion, value);
     console.log('After toggle - Current config:', this.currentConfig);
     // Force UI update - with proper type casting
-    const allToggles = document.querySelectorAll('.settings-toggle');
+    /*const allToggles = document.querySelectorAll('.settings-toggle');
     allToggles.forEach(toggle => {
       // Properly cast to HTMLElement to access style property
       const toggleEl = toggle as HTMLElement;
@@ -93,6 +96,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
       toggleEl.style.display = 'none';
       setTimeout(() => toggleEl.style.display = display, 0);
     });
+    */
     // Also force Angular change detection
     this.cdr.detectChanges();
   }
@@ -149,10 +153,56 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
   }
 
 
+    onNombreDeQuestionChange(value: string) {
+    const num = Number(value);
+    if (!isNaN(num) && num > 0) {
+      this.currentConfig.nombresDeQuestion = num;
+      this.questionConfigService.updateNotion('nombresDeQuestion' as any, num);
+    }
+
+  }
+
+  toggleAdvancedStats() {
+    this.showAdvancedStats = !this.showAdvancedStats;
+  }
+
+  onQuestionFrequencyChange(key: string, value: string) {
+    const floatVal = parseFloat(value);
+    if (!this.currentConfig.questionFrequency) {
+      this.currentConfig.questionFrequency = {};
+    }
+    if (!isNaN(floatVal) && floatVal >= 0 && floatVal <= 1) {
+      this.currentConfig.questionFrequency[key] = floatVal;
+      this.questionConfigService.updateNotion('questionFrequency' as any, { ...this.currentConfig.questionFrequency });
+    }
+
+  }
+
   get userIconPath(): string {
     return `assets/images/child-pps/${this.selectedUser?.icon || 'pp-9.png'}`;
   }
 
+  
 
+onNombreDeQuestionInput(input: HTMLInputElement) {
+  const value = input.value;
+  // Only show alert if a non-digit character is present and the last key was not Backspace
+  // But since we can't get the key here, just don't alert if the value is empty (which happens after backspace)
+  if (!/^\d*$/.test(value) && value !== '') {
+    alert('seul les caracteres numeriaues sont autorisées');
+    input.value = value.replace(/\D/g, '');
+  }
+  this.onNombreDeQuestionChange(input.value);
+}
+
+onFrequencyInput(input: HTMLInputElement, key: string) {
+  const value = input.value;
+  // Allow empty (for backspace), or valid float
+  if (!/^\d*\.?\d*$/.test(value) && value !== '') {
+    alert('seul les caracteres numeriaues sont autorisées');
+    input.value = value.replace(/[^0-9.]/g, '');
+  }
+  this.onQuestionFrequencyChange(key, input.value);
+}
 }
 
