@@ -1,116 +1,76 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { GameStatistics } from 'src/app/shared/models/game-statistics.model';
-import { childRankingMock } from '../../../shared/mocks/childRanking-mock';
-import { UserService } from 'src/app/shared/services/user.service';
-import { User } from 'src/app/shared/models/user.model';
 import { GameStatisticsService } from 'src/app/shared/services/game-statistics.service';
 
 @Component({
-  selector: 'app-child-stat-page',
-  templateUrl: './child-stat-page.component.html',
-  styleUrls: ['./child-stat-page.component.scss']
+  selector: 'app-statistics-box',
+  templateUrl: './statistics-box.component.html',
+  styleUrls: ['./statistics-box.component.scss']
 })
+export class StatisticsBoxComponent implements OnInit, OnDestroy {
+  @Input() mode: 'child' | 'ergo' = 'child';
+  @Input() childId!: string;
 
-export class ChildStatPageComponent implements OnInit, OnDestroy {
-  activeTab: string = 'last';
-  showHistorique: boolean = false;
-  searchTerm: string = '';
-  historiqueSidebarOpen = true;
-
-
-  selectedUser?: User;
-  user!: User;
-  childStatistics: GameStatistics[] = [];
+  statistics: GameStatistics[] = [];
   currentStatistic?: GameStatistics;
-  private userSubscription?: Subscription;
+  loading: boolean = true;
+  activeTab: string = 'last';
 
-  // Define tabs structure
+  historiqueSidebarOpen = false;
+  searchTerm: string = '';
+
+  private statsSub?: Subscription;
+
   mainTabs = [
     { id: 'last', label: 'Dernière partie' },
-    { id: 'average', label: 'Moyenne' }
-  ];
-
-  sections = [
-    {
-      title: 'HISTORIQUE',
-      tabs: [
-        { id: 'session2', label: 'Session 2' },
-        { id: 'session1', label: 'Session 1' }
-      ]
-    }
+    { id: 'average', label: 'Moyenne' },
+    { id: 'historique', label: 'Historique' }
   ];
 
   constructor(
-    private router: Router,
-    private userService: UserService,
-    private gameStatisticsService: GameStatisticsService,
+    private statisticsService: GameStatisticsService,
     private cdr: ChangeDetectorRef
-  ) {
-    this.userService.selectedUser$.subscribe((user: User | null) => {
-      if (!user) {
-        console.error('No user selected, navigating back to user selection');
-        this.router.navigate(['/child-list']);
-        return;
-      }
-      this.user = user;
-      console.log('Selected user for statistics:', user);
-      // Load statistics for this user
-      this.loadGameStatistics(user.userId);
-      console.log('Loaded game statistics for user:', user.userId);
-      console.log('GameStatisticsService initialized');
-
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
-
-  }
-
-  ngOnDestroy(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
+    if (this.childId) {
+      this.loadStatistics(this.childId);
     }
   }
 
-  loadGameStatistics(userId: string): void {
-    this.gameStatisticsService.getStatisticsForChild(userId)
-      .subscribe(stats => {
-        this.childStatistics = stats;
-        this.setCurrentStatistic(this.activeTab);
-        this.cdr.detectChanges();
-        console.log('in load game statistics: active tag is :', this.activeTab);
-        console.log('in load game statistics: Game statistics loaded:', this.childStatistics);
-        console.log('In load game statistics: Current statistic set to:', this.currentStatistic);
-      });
+  ngOnDestroy(): void {
+    if (this.statsSub) {
+      this.statsSub.unsubscribe();
+    }
+  }
 
+  loadStatistics(childId: string): void {
+    this.loading = true;
+    this.statsSub = this.statisticsService.getStatisticsForChild(childId)
+      .subscribe(stats => {
+        console.log('Loaded statistics:', stats);
+        this.statistics = stats;
+        this.setCurrentStatistic(this.activeTab);
+        this.loading = false;
+        this.cdr.detectChanges();
+      });
   }
 
   setCurrentStatistic(tabId: string): void {
     if (tabId === 'last') {
-      // Find the session with the latest date
-      const sessions = this.childStatistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
-      console.log('Filtered sessions:', sessions);
+      const sessions = this.statistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
       if (sessions.length > 0) {
         sessions.sort((a, b) => {
-          // Parse date from sessionName
           const dateA = new Date(a.sessionName.replace(/^Session /, ''));
           const dateB = new Date(b.sessionName.replace(/^Session /, ''));
-
-          //console.log('session A is' + a.sessionName + ' and session B is ' + b.sessionName);
-          //console.log('date A is' + dateA + ' and date B is ' + dateB);
           return dateB.getTime() - dateA.getTime();
         });
         this.currentStatistic = sessions[0];
-        console.log('in set current statistic: current statistic is set to:', this.currentStatistic);
-        console.log('in set current statistic: latest session is:', sessions[0]);
         return;
       }
     } else if (tabId === 'average') {
-
-      console.log('Calculating average statistics for all sessions');
-      const sessions = this.childStatistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
+      const sessions = this.statistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
       if (sessions.length > 0) {
         const n = sessions.length;
         let totalScore = 0;
@@ -132,7 +92,6 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
           if (stat.wordsLeastSuccessful) {
             allWords = allWords.concat(stat.wordsLeastSuccessful);
           }
-          // Aggregate heatmapData if present
           if (stat.heatmapData) {
             stat.heatmapData.forEach(h => {
               if (!allHeatmap[h.keyCode]) {
@@ -143,8 +102,7 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
             });
           }
         });
-        console.log('calculating averages:');
-        // Calculate averages
+
         const avgScore = Math.round(totalScore / n);
         const avgWPM = Math.round(totalWPM / n);
         const avgMath = Math.round(totalMath / n);
@@ -152,7 +110,6 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
         const avgCorrections = Math.round(totalCorrections / n);
         const avgAnswersShown = Math.round(totalAnswersShown / n);
 
-        // Aggregate wordsLeastSuccessful by word, averaging their successRate
         const wordMap: { [word: string]: { total: number; count: number } } = {};
         allWords.forEach(w => {
           if (!wordMap[w.word]) {
@@ -165,26 +122,22 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
           word,
           successRate: Math.round(data.total / data.count)
         }));
-        // Sort by lowest successRate and take top 5
         const top5LeastSuccessful = averagedWords
           .sort((a, b) => a.successRate - b.successRate)
           .slice(0, 5);
 
-        // Aggregate heatmapData averages
         const averagedHeatmap = Object.entries(allHeatmap).map(([keyCode, data]) => ({
           keyCode,
           errorFrequency: Math.round(data.total / data.count)
         }));
 
-        console.log('building the statistic');
-        // Use the current user's id for childId, and a fixed id for the average stat
         this.currentStatistic = {
           id: 'average',
-          childId: this.user?.userId || '',
+          childId: this.childId,
           sessionName: 'Moyenne',
           date: undefined,
           score: avgScore,
-          ranking: 0, // Not meaningful for average
+          ranking: 0,
           wordsPerMinute: avgWPM,
           mathNotionUnderstanding: avgMath,
           wordsLeastSuccessful: top5LeastSuccessful,
@@ -194,7 +147,18 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
           answersShown: avgAnswersShown,
           isTotal: true
         };
-        console.log('in set current statistic: current statistic is set to:', this.currentStatistic);
+        return;
+      }
+    } else if (tabId === 'historique') {
+      // By default, show the latest session in historique
+      const sessions = this.statistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
+      if (sessions.length > 0) {
+        sessions.sort((a, b) => {
+          const dateA = new Date(a.sessionName.replace(/^Session /, ''));
+          const dateB = new Date(b.sessionName.replace(/^Session /, ''));
+          return dateB.getTime() - dateA.getTime();
+        });
+        this.currentStatistic = sessions[0];
         return;
       }
     }
@@ -203,29 +167,19 @@ export class ChildStatPageComponent implements OnInit, OnDestroy {
 
   onTabChange(tabId: string): void {
     this.activeTab = tabId;
-    this.showHistorique = false;
     this.setCurrentStatistic(tabId);
-  }
-
-
-  showHistoriquePage(): void {
-    this.showHistorique = true;
+    if (tabId === 'historique') {
+      this.historiqueSidebarOpen = false;
+    }
   }
 
   get filteredSessions() {
-    if (!this.searchTerm) return this.childStatistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
-    return this.childStatistics.filter(stat =>
+    if (!this.searchTerm) return this.statistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
+    return this.statistics.filter(stat =>
       stat.sessionName &&
       stat.sessionName.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
-
-  get userIconPath(): string {
-    const icon = this.user?.icon || this.selectedUser?.icon || 'pp-9.png';
-    return `assets/images/child-pps/${icon}`;
-
-  }
-
 
   selectHistoriqueSession(stat: GameStatistics) {
     this.currentStatistic = stat;

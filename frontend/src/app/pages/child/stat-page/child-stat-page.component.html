@@ -18,7 +18,7 @@
         <button class="stat-tab-btn" [class.active]="activeTab === 'last'" (click)="onTabChange('last')">
           Dernière partie
         </button>
-        <button class="stat-tab-btn" [class.active]="activeTab === 'total'" (click)="onTabChange('total')">
+        <button class="stat-tab-btn" [class.active]="activeTab === 'total'" (click)="onTabChange('average')">
           Moyenne
         </button>
         <button class="stat-tab-btn" [class.active]="activeTab === 'historique'" (click)="onTabChange('historique')">
@@ -28,7 +28,7 @@
       <div class="stat-box-overlay-wrapper">
         <app-inner-box class="main-box blue stat-box">
           <!-- Dernière partie & Moyenne -->
-          <ng-container *ngIf="activeTab === 'last' || activeTab === 'total'">
+          <ng-container *ngIf="activeTab === 'last' || activeTab === 'average'">
             <ng-container *ngIf="currentStatistic; else loading">
               <div>
                 <span>Classement: <strong>{{ currentStatistic.ranking }}</strong></span>
