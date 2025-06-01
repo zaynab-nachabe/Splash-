@@ -1,16 +1,19 @@
 <app-template>
     <!--Zone de la navbar -->
     <app-home-button>Home</app-home-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/child-lobby']" routerLinkActive="active">Lancement de la partie</app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active">Mon aquarium</app-medium-button>
     <app-medium-button class="navbar-button red" [routerLink]="['/child-play']" routerLinkActive="active">Retour</app-medium-button>
     <!--Zone du main -->
     <app-inner-box class="main-box blue ">
         <div class="game-instructions">
             <h2>Instructions du jeu</h2>
-            <p>Dans ce jeu, vous devez écrire les <strong>nombres en lettres</strong>.</p>
-            <p>Par exemple : si la question est "2 + 3", la réponse correcte est <strong>"cinq"</strong>.</p>
-            <p>Essayez de répondre correctement pour obtenir le meilleur score possible !</p>
+            <p>Bienvenue, petit poisson ! 🐟</p>
+            <p>Tu es un <strong>poisson courageux</strong> qui vit dans un bel aquarium. Mais attention... de méchants crabes 🦀 sont arrivés et veulent tout gâcher !</p>
+            <p>Heureusement, tu as un super pouvoir : <strong>les mots</strong> !</p>
+            <p>À chaque question, tu devras écrire le <strong>nombre en lettres</strong>. Si tu donnes la bonne réponse, tu <strong>bats un crabe</strong> et tu aides ton aquarium à redevenir paisible.</p>
+            <p>Par exemple : si la question est "2 + 3", tu devras écrire <strong>"cinq"</strong>.</p>
+            <p>Bonne chance, petit(e) héros/héroïne des mers ! 🌊</p>
         </div>
-        <app-small-button [routerLink]="['/game']">Jeu ici</app-small-button>
+        <app-big-button class="main-button" [routerLink]="['/game']">Jouer</app-big-button>
     </app-inner-box>
 </app-template>

@@ -16,5 +16,12 @@ export class Crab extends Enemy {
         const scaledWidth = this.width * 1.5;
         const scaledHeight = this.height * 1.5;
         ctx.drawImage(this.image, this.x - scaledWidth / 2, this.y - scaledHeight / 2, this.width, this.height);
+        if (this.isDying) {
+            const frame = this.deathAnimationFrames[this.deathAnimationFrame];
+            if (frame && frame.complete) {
+                ctx.drawImage(frame, this.x, this.y, this.width, this.height);
+            }
+            return;
+        }
     }
 }

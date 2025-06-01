@@ -18,5 +18,12 @@ export class HiveCrab extends Enemy {
         const scaledWidth = this.width * 2.5;
         const scaledHeight = this.height * 2.5;
         ctx.drawImage(this.image, this.x - scaledWidth / 2, this.y - scaledHeight / 2, scaledWidth, scaledHeight);
+        if (this.isDying) {
+            const frame = this.deathAnimationFrames[this.deathAnimationFrame];
+            if (frame && frame.complete) {
+                ctx.drawImage(frame, this.x, this.y, this.width, this.height);
+            }
+            return;
+        }
     }
 }

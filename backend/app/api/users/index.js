@@ -18,16 +18,31 @@ router.get('/', (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////
 // UPDATE A USER :
 router.put('/:userId', (req, res) => {
+    console.log('PUT /api/users/:userId', req.params.userId, req.body);
     try {
         const updatedUser = User.update(req.params.userId, { ...req.body });
+        console.log('Updated user:', updatedUser);
         res.status(200).json(updatedUser);
     } catch (err) {
+        console.error('PUT /api/users/:userId error:', err); 
         if (err.name === 'ValidationError') {
             res.status(400).json(err.extra);
         } else {
-            res.status(500).json(err);
+            res.status(500).json({ message: err.message, stack: err.stack });
         }
     }
+});
+
+router.get('/:userId', (req, res) => {
+  try {
+    const user = User.get().find(u => u.userId === req.params.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 ////////////////////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////////////////

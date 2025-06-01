@@ -7,12 +7,13 @@ import { HiveCrab } from "./HiveCrab";
 import { Drone } from "./Drone";
 import { Ui } from "./Ui";
 import {FontService} from "../../../shared/services/font.service"
+import { ChildConfigService } from '../../../shared/services/child-config.service';
 
 export class GameEngine {
     private ctx: CanvasRenderingContext2D;
     private Ui: Ui;
     public enemies: Enemy[];
-
+    public enemyKilledAudio: HTMLAudioElement;
     //statistics 
     public player : Player;
     public score: number = 0;
@@ -24,8 +25,14 @@ export class GameEngine {
     private errorsByKey: Map<string, number> = new Map();
     private difficultWords: Map<string, {attempts: number, successes: number}> = new Map();
     private answersShown: number = 0;
+    private backgroundBrightness: number = 0.8;
 
-    constructor(private gameComponent: GameComponent, private canvas: HTMLCanvasElement, private fontService: FontService) {
+    constructor(
+        private gameComponent: GameComponent, 
+        private canvas: HTMLCanvasElement, 
+        private fontService: FontService,
+        private childConfigService: ChildConfigService
+    ) {
         this.ctx = canvas.getContext('2d')!;
         this.adjustCanvaResolution();
         this.player = new Player(this, canvas);
@@ -35,6 +42,21 @@ export class GameEngine {
         this.Ui.ngOnInit();
         this.score = 0;
         this.startGameLoop();
+        this.enemyKilledAudio = new Audio('../../../../../assets/audio/killSound.mp3');
+
+        this.childConfigService.effectsEnabled$.subscribe((enabled: boolean) => {
+            this.enemyKilledAudio.muted = !enabled;
+        });
+
+        // Subscribe to selectedPlayerImage and update player image
+        this.childConfigService.selectedPlayerImage$.subscribe((img: string | null) => {
+            if (img) {
+                this.player.setImage(img);
+            } else {
+                // fallback to default if null
+                this.player.setImage("../../../../assets/images/game/player/yellow_fish.png");
+            }
+        });
     }
 
     private checkCollision(obj1: any, obj2: any): boolean {
@@ -51,6 +73,10 @@ export class GameEngine {
     private kill(enemy: Enemy): void {
         if(enemy instanceof HiveCrab){
             this.enemies.push(new Drone(this,this.canvas, enemy.position.x, enemy.position.y), new Drone(this,this.canvas, enemy.position.x+40, enemy.position.y-40), new Drone(this,this.canvas, enemy.position.x-50, enemy.position.y));
+        }
+        if (this.childConfigService.getEffectsEnabled()) {
+            this.enemyKilledAudio.currentTime = 0;
+            this.enemyKilledAudio.play();
         }
         enemy.destroy();
     }
@@ -99,7 +125,17 @@ export class GameEngine {
     }
 
     private draw(ctx: CanvasRenderingContext2D): void {
-        this.Ui.draw(ctx);
+        // Draw background with brightness
+        ctx.save();
+        ctx.globalAlpha = this.backgroundBrightness;
+        ctx.fillStyle = '#ffffff'; // or your background color
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.globalAlpha = 1.0;
+        ctx.restore();
+
+        if (this.getShowScore()) {
+            this.Ui.draw(ctx);
+        }
         this.player.draw(ctx);
         this.enemies.forEach(enemy=>{
             if (enemy instanceof Crab) {
@@ -231,5 +267,14 @@ export class GameEngine {
             numberOfCorrections: this.incorrectAnswers,
             answersShown: this.answersShown
         };
+    }
+
+    public getShowScore(): boolean {
+        // Defensive: always return true if config is missing
+        return this.childConfigService.showScoreSubject?.value !== false;
+    }
+
+    public setBackgroundBrightness(brightness: number) {
+        this.backgroundBrightness = brightness;
     }
 }

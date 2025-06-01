@@ -10,9 +10,8 @@ import {Subscription} from "rxjs";
 import { Router } from '@angular/router';
 import { QuestionService } from 'src/app/shared/services/question.service';
 import { UserConfig } from 'src/app/shared/models/user-config.model';
+import { ChildConfigService } from 'src/app/shared/services/child-config.service';
 
-// Import the backend question generator
-//import { QuestionsGenerator } from 'backend/app/questions/QuestionsGenerator';
 
 type Input = {
     letter: string,
@@ -37,6 +36,8 @@ export class GameComponent implements OnInit, OnDestroy {
   private static readonly INPUTS_END = { letter: '\xa0', status: "pending" };
 
   private configSubscription: Subscription;
+  private musicSubscription: Subscription;
+  private brightnessSubscription: Subscription;
   public fontFamily: string = 'Arial';
   public user!: User;
   public question!: Question;
@@ -52,21 +53,24 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private gameEngine!: GameEngine;
 
+  public backgroundBrightness: number = 0.8;
+
   constructor(
     private userService: UserService,
     private questionConfigService: QuestionConfigService,
     private fontService: FontService,
     private router: Router,
     private questionService: QuestionService,
-    private gameStatisticsService: GameStatisticsService
+    private gameStatisticsService: GameStatisticsService,
+    private childConfigService: ChildConfigService
   ) {
 this.userService.selectedUser$.subscribe((user: User | null) => {
   if (user) {
     this.user = user;
+    this.childConfigService.loadUserConfig(this.user);
   } else {
     // Handle the case where no user is selected, e.g. redirect or show a message
     console.warn('No user selected in game.');
-    // Optionally: this.router.navigate(['/child-list']);
   }
 });
 
@@ -75,15 +79,32 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
       this.fontFamily = font;
     });
 
-    // Subscribe to config changes
     this.configSubscription = this.questionConfigService.getConfig().subscribe(() => {
       this.loadNewQuestion();
     });
 
-    // Initial setup
     this.loadNewQuestion();
 
     this.keydownHandler = this.checkInput.bind(this);
+
+    this.musicSubscription = this.childConfigService.musicEnabled$.subscribe((enabled: boolean) => {
+      if (this.gameMusicRef && this.gameMusicRef.nativeElement) {
+        if (enabled) {
+          this.gameMusicRef.nativeElement.muted = false;
+          this.gameMusicRef.nativeElement.play().catch(() => {});
+        } else {
+          this.gameMusicRef.nativeElement.pause();
+          this.gameMusicRef.nativeElement.muted = true;
+        }
+      }
+    });
+
+    this.brightnessSubscription = this.childConfigService.backgroundBrightness$.subscribe((brightness: number) => {
+      this.backgroundBrightness = brightness;
+      if (this.gameEngine) {
+        this.gameEngine.setBackgroundBrightness(brightness);
+      }
+    });
   }
 
   ngOnInit(): void {   
@@ -92,8 +113,12 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
   }
 
   ngAfterViewInit(): void {
+    if (this.user) {
+        this.childConfigService.loadUserConfig(this.user);
+    }
     const canvas = this.canvasRef.nativeElement;
-    this.gameEngine = new GameEngine(this, canvas, this.fontService);
+    this.gameEngine = new GameEngine(this, canvas, this.fontService, this.childConfigService);
+    this.gameEngine.setBackgroundBrightness(this.backgroundBrightness);
     this.startMusic();
   }
 
@@ -102,14 +127,26 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
     if (this.configSubscription) {
       this.configSubscription.unsubscribe();
     }
+    if (this.musicSubscription) {
+      this.musicSubscription.unsubscribe();
+    }
+    if (this.brightnessSubscription) {
+      this.brightnessSubscription.unsubscribe();
+    }
     this.stopMusic();
   }
 
   private startMusic(): void {
     const audioElement = this.gameMusicRef.nativeElement;
-    audioElement.play().catch((error) => {
-      console.error('Error playing music:', error);
-    });
+    // Only play music if music is enabled
+    if (this.childConfigService.getMusicEnabled()) {
+      audioElement.play().catch((error) => {
+        console.error('Error playing music:', error);
+      });
+    } else {
+      audioElement.pause();
+      audioElement.currentTime = 0;
+    }
   }
 
   private stopMusic(): void {

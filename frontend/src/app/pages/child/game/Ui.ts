@@ -16,7 +16,7 @@ export class Ui implements OnInit{
     constructor(private gameEngine: GameEngine, private fontService: FontService) {
         this.gameEngine = gameEngine;
         
-        this.fontSize = 70;
+        this.fontSize = 35;
         this.fontFamily = 'Arial';
         this.fontColor = '#000000';
     }
@@ -48,11 +48,13 @@ export class Ui implements OnInit{
     }
 
     public draw(ctx: CanvasRenderingContext2D): void{
-        ctx.save();
-        ctx.fillStyle = this.fontColor;
-        ctx.font = this.fontSize + 'px ' + this.fontFamily;
-        ctx.fillText(`Score: ${this.gameEngine.score}`, this.canvas.width-350, this.canvas.height-70);
-
-        ctx.restore();
+        // Only draw the score if showScore is true
+        if (this.gameEngine.getShowScore()) {
+            ctx.save();
+            ctx.fillStyle = this.fontColor;
+            ctx.font = this.fontSize + 'px ' + this.fontFamily;
+            ctx.fillText(`Score: ${this.gameEngine.score}`, this.canvas.width-1000, this.canvas.height - 700);
+            ctx.restore();
+        }
     }
 }
