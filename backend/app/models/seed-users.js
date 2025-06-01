@@ -17,6 +17,9 @@ module.exports = [
     },
     musicEnabled: false,
     effectsEnabled: true,
+    showScore: false,
+    backgroundBrightness: 0.1,
+    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/red_fish.png',
   },
   {
     userId: "2",
@@ -36,6 +39,9 @@ module.exports = [
     },
     musicEnabled: true,
     effectsEnabled: true,
+    showScore: true,
+    backgroundBrightness: 0.1,
+    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/nemo.png',
   },
   {
     userId: "3",
@@ -55,6 +61,9 @@ module.exports = [
     },
     musicEnabled: true,
     effectsEnabled: false,
+    showScore: true,
+    backgroundBrightness: 0.1,
+    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/dory.png',
   },
   {
     userId: "4",
@@ -74,5 +83,8 @@ module.exports = [
     },
     musicEnabled: false,
     effectsEnabled: false,
-  }
+    showScore: true,
+    backgroundBrightness: 0.1,
+    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/yellow_fish.png',
+  },
 ];

@@ -6,5 +6,5 @@ export type UserConfig = {
     division: boolean,
     rewrite: boolean,
     encryption: boolean,
-    word: boolean,
+    word: boolean
 };

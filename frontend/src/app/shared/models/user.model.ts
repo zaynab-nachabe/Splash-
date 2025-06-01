@@ -9,6 +9,7 @@ export type User = {
     userConfig: UserConfig;
     musicEnabled?: boolean;
     effectsEnabled?: boolean;
+    showScore?: boolean;
 }
 
 
@@ -19,6 +20,9 @@ export function createUser(user: Partial<User>): User {
     age: user.age || '',
     icon: user.icon || 'pp-9.png',
     conditions: user.conditions || [],
-    userConfig: user.userConfig || {} as UserConfig
+    userConfig: user.userConfig || {} as UserConfig,
+    musicEnabled: user.musicEnabled ?? true,
+    effectsEnabled: user.effectsEnabled ?? true,
+    showScore: user.showScore ?? true
   };
 }

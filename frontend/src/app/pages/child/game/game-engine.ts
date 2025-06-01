@@ -25,6 +25,7 @@ export class GameEngine {
     private errorsByKey: Map<string, number> = new Map();
     private difficultWords: Map<string, {attempts: number, successes: number}> = new Map();
     private answersShown: number = 0;
+    private backgroundBrightness: number = 0.8;
 
     constructor(
         private gameComponent: GameComponent, 
@@ -45,6 +46,16 @@ export class GameEngine {
 
         this.childConfigService.effectsEnabled$.subscribe((enabled: boolean) => {
             this.enemyKilledAudio.muted = !enabled;
+        });
+
+        // Subscribe to selectedPlayerImage and update player image
+        this.childConfigService.selectedPlayerImage$.subscribe((img: string | null) => {
+            if (img) {
+                this.player.setImage(img);
+            } else {
+                // fallback to default if null
+                this.player.setImage("../../../../assets/images/game/player/yellow_fish.png");
+            }
         });
     }
 
@@ -114,7 +125,17 @@ export class GameEngine {
     }
 
     private draw(ctx: CanvasRenderingContext2D): void {
-        this.Ui.draw(ctx);
+        // Draw background with brightness
+        ctx.save();
+        ctx.globalAlpha = this.backgroundBrightness;
+        ctx.fillStyle = '#ffffff'; // or your background color
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.globalAlpha = 1.0;
+        ctx.restore();
+
+        if (this.getShowScore()) {
+            this.Ui.draw(ctx);
+        }
         this.player.draw(ctx);
         this.enemies.forEach(enemy=>{
             if (enemy instanceof Crab) {
@@ -246,5 +267,14 @@ export class GameEngine {
             numberOfCorrections: this.incorrectAnswers,
             answersShown: this.answersShown
         };
+    }
+
+    public getShowScore(): boolean {
+        // Defensive: always return true if config is missing
+        return this.childConfigService.showScoreSubject?.value !== false;
+    }
+
+    public setBackgroundBrightness(brightness: number) {
+        this.backgroundBrightness = brightness;
     }
 }

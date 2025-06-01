@@ -22,6 +22,9 @@ const userSchema = Joi.object({
     }).required(),
     musicEnabled: Joi.boolean().optional().default(true),
     effectsEnabled: Joi.boolean().optional().default(true),
+    showScore: Joi.boolean().optional().default(true),
+    backgroundBrightness: Joi.number().optional().default(0.8),
+    selectedPlayerImage: Joi.string().optional().default('../../../../frontend/src/assets/images/game/player/yellow_fish.png'),
 });
 
 const validateUser = (user) => {
@@ -49,7 +52,12 @@ if (fs.existsSync(USERS_FILE)) {
 }
 
 function saveUsersToFile() {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
+    try {
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
+        console.log('[saveUsersToFile] users.json written successfully:', USERS_FILE);
+    } catch (err) {
+        console.error('[saveUsersToFile] Error writing users.json:', err);
+    }
 }
 
 const get = () => users;
@@ -68,6 +76,7 @@ const update = (userId, updates) => {
     // Validate
     const validUser = validateUser(updatedUser);
     users[idx] = validUser;
+    console.log('[update] User updated in memory:', validUser);
     saveUsersToFile();
     return users[idx];
 };

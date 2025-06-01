@@ -37,6 +37,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private configSubscription: Subscription;
   private musicSubscription: Subscription;
+  private brightnessSubscription: Subscription;
   public fontFamily: string = 'Arial';
   public user!: User;
   public question!: Question;
@@ -51,6 +52,8 @@ export class GameComponent implements OnInit, OnDestroy {
   private hasEnded: boolean = false;
 
   private gameEngine!: GameEngine;
+
+  public backgroundBrightness: number = 0.8;
 
   constructor(
     private userService: UserService,
@@ -95,6 +98,13 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
         }
       }
     });
+
+    this.brightnessSubscription = this.childConfigService.backgroundBrightness$.subscribe((brightness: number) => {
+      this.backgroundBrightness = brightness;
+      if (this.gameEngine) {
+        this.gameEngine.setBackgroundBrightness(brightness);
+      }
+    });
   }
 
   ngOnInit(): void {   
@@ -108,6 +118,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
     }
     const canvas = this.canvasRef.nativeElement;
     this.gameEngine = new GameEngine(this, canvas, this.fontService, this.childConfigService);
+    this.gameEngine.setBackgroundBrightness(this.backgroundBrightness);
     this.startMusic();
   }
 
@@ -118,6 +129,9 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
     }
     if (this.musicSubscription) {
       this.musicSubscription.unsubscribe();
+    }
+    if (this.brightnessSubscription) {
+      this.brightnessSubscription.unsubscribe();
     }
     this.stopMusic();
   }

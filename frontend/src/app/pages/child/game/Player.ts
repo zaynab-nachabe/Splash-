@@ -50,4 +50,8 @@ export class Player {
             projectile.draw(ctx);
         });
     }
+
+    public setImage(imagePath: string) {
+        this.image.src = imagePath;
+    }
 }
