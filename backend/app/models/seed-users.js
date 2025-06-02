@@ -6,7 +6,7 @@ module.exports = [
     icon: "red_fish.png",
     conditions: ["Dyslexia", "ADHD"],
     userConfig: {
-      showsAnswer: true,
+      showAnswer: true,
       addition: true,
       subtraction: true,
       multiplication: true,
@@ -36,7 +36,7 @@ module.exports = [
     icon: "yellow_fish.png",
     conditions: ["Dyscalculia"],
     userConfig: {
-      showsAnswer: true,
+      showAnswer: true,
       addition: true,
       subtraction: true,
       multiplication: false,
@@ -58,7 +58,7 @@ module.exports = [
     icon: "blue_fish.png",
     conditions: [],
     userConfig: {
-      showsAnswer: false,
+      showAnswer: false,
       addition: true,
       subtraction: true,
       multiplication: true,
@@ -80,7 +80,7 @@ module.exports = [
     icon: "turtle.png",
     conditions: ["Visual Processing Disorder"],
     userConfig: {
-      showsAnswer: true,
+      showAnswer: true,
       addition: false,
       subtraction: false,
       multiplication: false,

@@ -104,6 +104,8 @@ export class ChildConfigService {
 
   updateSelectedPlayerImage(image: string) {
     if (this.userId && this.currentUser) {
+      console.log('current user:', this.currentUser);
+      console.log('updating selected player image:', image);
       const updatedUser = { ...this.currentUser, selectedPlayerImage: image };
       this.http.put<any>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
         next: (userData: any) => {

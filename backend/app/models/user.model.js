@@ -21,8 +21,10 @@ const userSchema = Joi.object({
         word: Joi.boolean().optional().default(false),
         showScore: Joi.boolean().optional().default(false),
         nombresDeQuestion: Joi.number().optional().default(10),
-        questionFrequency: {
-        }
+        questionFrequency: Joi.object().pattern(
+            /^(addition|subtraction|multiplication|division|rewrite|encryption|word)$/,
+            Joi.number().optional()
+        ).optional()
     }).required(),
     musicEnabled: Joi.boolean().optional().default(true),
     effectsEnabled: Joi.boolean().optional().default(true),
