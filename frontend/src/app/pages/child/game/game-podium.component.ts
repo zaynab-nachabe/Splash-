@@ -23,7 +23,6 @@ export class GamePodiumComponent implements OnInit{
         const state = this.route.snapshot.queryParams;
         this.user = JSON.parse(state['user'] || '{}');
         this.questionsAnswered = Number(state['questionsAnswered']) || 0;
-        // Prefer score from queryParams, fallback to userService.getScore()
         this.userScore = typeof state['score'] !== 'undefined' ? Number(state['score']) : this.userService.getScore();
         this.showScore = !!(this.user?.showScore ?? this.user?.userConfig?.showScore);
     }
