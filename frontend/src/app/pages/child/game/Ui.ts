@@ -12,11 +12,10 @@ export class Ui implements OnInit{
     private fontFamily: string;
     private fontColor: string;
 
-    //constructor has private canvas: HTMLCanvasElement before
     constructor(private gameEngine: GameEngine, private fontService: FontService) {
         this.gameEngine = gameEngine;
         
-        this.fontSize = 35;
+        this.fontSize = 50;
         this.fontFamily = 'Arial';
         this.fontColor = '#000000';
     }
@@ -53,7 +52,7 @@ export class Ui implements OnInit{
             ctx.save();
             ctx.fillStyle = this.fontColor;
             ctx.font = this.fontSize + 'px ' + this.fontFamily;
-            ctx.fillText(`Score: ${this.gameEngine.score}`, this.canvas.width-1000, this.canvas.height - 700);
+            ctx.fillText(`Score: ${this.gameEngine.score}`, this.canvas.width-1500, this.canvas.height - 1150);
             ctx.restore();
         }
     }

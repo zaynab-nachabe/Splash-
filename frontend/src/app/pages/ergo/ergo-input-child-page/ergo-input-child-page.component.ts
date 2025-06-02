@@ -12,11 +12,11 @@ import {LocalStorageService} from "../../../shared/services/localStorage.service
 export class ErgoInputChildComponent implements OnInit {
   childForm: FormGroup;
   defaultConditions: string[] = [
-    'Dyslexia',
-    'Dyscalculia',
-    'Dysgraphia',
-    'ADHD',
-    'Visual Processing Disorder'
+    'Dyslexie',
+    'Dyscalculie',
+    'Dysgraphie',
+    'TDAH',
+    'troubles visuelles'
   ];
   availableConditions: string[] = [];
   selectedConditions: string[] = [];
@@ -152,7 +152,7 @@ export class ErgoInputChildComponent implements OnInit {
       };
 
       this.userService.addUser(newChild);
-      this.router.navigate(['/ergo-config']);
+      this.router.navigate(['/ergo-play']);
     }
   }
 

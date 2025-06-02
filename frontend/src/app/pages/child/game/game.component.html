@@ -1,17 +1,19 @@
 <audio #gameMusic src="assets/audio/music.mp3" loop></audio>
 <div *ngIf="question; else loading">
     <div class="header">
-        <div class="question" [ngStyle]="{ 'font-family': fontFamily }" >
-            <p>{{ question.question }}</p>
-        </div>
-        <div class="answer">
-            <span
-                *ngFor="let input of inputs; let i = index"
-                [ngClass]="[input.status, i === cursorPosition ? 'cursor' : '']"
-                [ngStyle]="{ 'font-family': fontFamily}"
-            >
-                {{ input.letter }}
-            </span>
+        <div class="question-box">
+            <div class="question" [ngStyle]="{ 'font-family': fontFamily }" >
+                <p>{{ question.question }}</p>
+            </div>
+            <div class="answer">
+                <span
+                    *ngFor="let input of inputs; let i = index"
+                    [ngClass]="[input.status, i === cursorPosition ? 'cursor' : '']"
+                    [ngStyle]="{ 'font-family': fontFamily}"
+                >
+                    {{ input.letter }}
+                </span>
+            </div>
         </div>
     </div>
 </div>

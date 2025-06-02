@@ -36,16 +36,42 @@
     font-size: 50px;
     overflow-x: hidden;
     color: white;
+    position: relative;
+}
+
+.question-box {
+    background: #fff;
+    border-radius: 30px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    padding: 1.2rem 2rem;
+    min-width: 300px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 1.2rem auto 0 auto; 
+}
+
+.question {
+    color: #111;
+    font-size: 44px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 0;
+    margin-right: 2.5rem;
+    white-space: nowrap;
 }
 
 .answer {
     position: relative;
     display: flex;
     align-items: center;
-    font-size: 50px;
+    font-size: 44px;
     font-weight: bold;
-    display: flex;
-
+    color: #111;
+    justify-content: flex-start;
+    margin-bottom: 0;
 }
 
 .correct {

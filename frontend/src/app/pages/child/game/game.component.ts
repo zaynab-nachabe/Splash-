@@ -342,42 +342,37 @@ if (this.hasEnded) {
     }
 
     private endGame(): void {
-    this.hasEnded = true;
-    this.stopMusic();
-    
-    // Get statistics from game engine
-    const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
-    
-    // Save to statistics service
-    this.gameStatisticsService.saveGameSession(gameStats).subscribe(
-      (savedStats) => {
-        console.log('Game statistics saved successfully', savedStats);
-        
-        this.userService.setScore(this.score);
-        
-        this.router.navigate(['/game-podium'], {
-          queryParams: {
-            user: JSON.stringify(this.user),
-            questionsAnswered: this.questionCount,
-            score: this.score,
-          }
-        });
-      },
-      (error) => {
-        console.error('Failed to save game statistics', error);
-        
-        // Navigate to podium anyway
-        this.userService.setScore(this.score);
-        this.router.navigate(['/game-podium'], {
-          queryParams: {
-            user: JSON.stringify(this.user),
-            questionsAnswered: this.questionCount,
-            score: this.score,
-          }
-        });
-      }
-    );
-  }
+        this.hasEnded = true;
+        this.stopMusic();
+        // Get statistics from game engine
+        const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
+        // Save to statistics service
+        this.gameStatisticsService.saveGameSession(gameStats).subscribe(
+            (savedStats) => {
+                console.log('Game statistics saved successfully', savedStats);
+                this.userService.setScore(this.score);
+                this.router.navigate(['/game-podium'], {
+                    queryParams: {
+                        user: JSON.stringify(this.user),
+                        questionsAnswered: this.questionCount,
+                        score: this.score
+                    }
+                });
+            },
+            (error) => {
+                console.error('Failed to save game statistics', error);
+                // Navigate to podium anyway
+                this.userService.setScore(this.score);
+                this.router.navigate(['/game-podium'], {
+                    queryParams: {
+                        user: JSON.stringify(this.user),
+                        questionsAnswered: this.questionCount,
+                        score: this.score
+                    }
+                });
+            }
+        );
+    }
 }
 
 class AnswerChecker {

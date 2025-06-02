@@ -15,7 +15,7 @@ export class ChildConfigPageComponent {
     showScore: boolean = true;
     playerImages: string[] = [];
     selectedPlayerImage: string | null = null;
-    backgroundBrightness: number = 0.8;
+    backgroundBrightness: number = 1.0;
 
 
     constructor(private userService: UserService, private childConfigService: ChildConfigService) {
@@ -33,20 +33,20 @@ export class ChildConfigPageComponent {
     }
 
     ngOnInit() {
-        if (this.user) {
-            this.childConfigService.loadUserConfig(this.user);
-            this.showScore = this.user.showScore ?? true;
-        }
         this.playerImages = [
             '../../../../assets/images/game/player/dory.png',
             '../../../../assets/images/game/player/nemo.png',
             '../../../../assets/images/game/player/red_fish.png',
             '../../../../assets/images/game/player/yellow_fish.png'
         ];
-        // load the selected image from user config
+        if (this.user) {
+            this.childConfigService.loadUserConfig(this.user);
+            this.showScore = this.user.showScore ?? true;
+            this.backgroundBrightness = (typeof this.user.backgroundBrightness === 'number') ? this.user.backgroundBrightness : 1.0;
+            this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[4];
+        }
+        // Optionally set selectedPlayerImage from user if needed
         // this.selectedPlayerImage = this.user.selectedPlayerImage;
-        this.backgroundBrightness = 0.8; // Default value, or load from user config if available
- 
         console.log(this.user);
     }
 
