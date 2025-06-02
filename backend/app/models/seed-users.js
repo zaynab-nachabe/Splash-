@@ -21,14 +21,13 @@ module.exports = [
         multiplication: 0.25,
         division: 0.25
       }
-    }
-
     },
     musicEnabled: false,
     effectsEnabled: true,
     showScore: false,
     backgroundBrightness: 0.1,
-    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/red_fish.png',
+    //selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/red_fish.png',
+    selectedPlayerImage: '/assets/images/game/player/red_fish.png',
   },
   {
     userId: "2",

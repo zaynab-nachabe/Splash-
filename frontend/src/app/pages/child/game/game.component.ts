@@ -93,12 +93,18 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
 
     this.musicSubscription = this.childConfigService.musicEnabled$.subscribe((enabled: boolean) => {
       if (this.gameMusicRef && this.gameMusicRef.nativeElement) {
+        const audio = this.gameMusicRef.nativeElement;
         if (enabled) {
-          this.gameMusicRef.nativeElement.muted = false;
-          this.gameMusicRef.nativeElement.play().catch(() => {});
+          audio.pause();
+          audio.currentTime = 0; // Reset to the beginning
+          setTimeout(() => {
+            audio.muted = false; // Unmute after a short delay
+            audio.play().catch(() => {});
+          }, 0); // Let pause finish before play
         } else {
-          this.gameMusicRef.nativeElement.pause();
-          this.gameMusicRef.nativeElement.muted = true;
+          audio.pause();
+          audio.currentTime = 0; // Reset to the beginning
+          audio.muted = true;
         }
       }
     });
@@ -124,7 +130,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
     const canvas = this.canvasRef.nativeElement;
     this.gameEngine = new GameEngine(this, canvas, this.fontService, this.childConfigService);
     this.gameEngine.setBackgroundBrightness(this.backgroundBrightness);
-    this.startMusic();
+    //this.startMusic();
   }
 
   ngOnDestroy(): void {
@@ -145,6 +151,8 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
     const audioElement = this.gameMusicRef.nativeElement;
     // Only play music if music is enabled
     if (this.childConfigService.getMusicEnabled()) {
+      audioElement.pause(); // Reset audio playback
+      audioElement.currentTime = 0; // Reset to the beginning
       audioElement.play().catch((error) => {
         console.error('Error playing music:', error);
       });

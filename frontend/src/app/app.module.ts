@@ -82,14 +82,12 @@ import { SearchBarComponent } from './shared/components/search-bar/search-bar.co
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
     ReactiveFormsModule, 
     FormsModule,
     HttpClientModule
   ],
   providers: [FontService,
     RouterModule,
-    FormsModule,
   [QuestionConfigService]
   ],
   bootstrap: [AppComponent]

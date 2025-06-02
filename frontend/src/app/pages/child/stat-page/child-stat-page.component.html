@@ -130,7 +130,7 @@
             <!-- Overlay historique sidebar INSIDE the border -->
             <div class="historique-sidebar-overlay inside-border" *ngIf="historiqueSidebarOpen">
               <div class="historique-sidebar-header">
-                <input type="text" [(ngModel)]="searchTerm" placeholder="Rechercher par date..."
+                <input type="text" name = "searchTerm" [(ngModel)]="searchTerm" placeholder="Rechercher par date..."
                   class="historique-search" />
               </div>
               <div class="historique-list" style="max-height: 300px; overflow-y: auto;">
