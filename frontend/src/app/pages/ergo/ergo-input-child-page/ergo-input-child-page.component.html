@@ -5,8 +5,6 @@
     <img src="assets/images/child-pps/{{selectedIcon}}" alt="Profile Icon" class="icon"/>
   </app-user-card>
   <app-medium-button class="navbar-button"><p class="name">Nouvel Enfant</p></app-medium-button>
-  <app-medium-button class="navbar-button red" (click)="onCancel()"> Annuler </app-medium-button>
-  <app-medium-button class="navbar-button green" (click)="onSaveChild()"> Sauvegarder </app-medium-button>
 
   <!--Zone du main -->
   <app-inner-box class="main-box blue">
@@ -79,5 +77,11 @@
         </div>
       </div>
     </form>
+
+        <!-- New buttons at the bottom of the inner box -->
+    <div class="bottom-buttons" style="display: flex; justify-content: flex-end; gap: 16px; margin-top: 24px;">
+      <app-small-button (click)="onCancel()">Annuler</app-small-button>
+      <app-small-button (click)="onSaveChild()">Sauvegarder</app-small-button>
+    </div>
   </app-inner-box>
 </app-template>
