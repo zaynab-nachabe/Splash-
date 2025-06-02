@@ -17,7 +17,7 @@
         <ng-container *ngIf="activeTab === 'last' || activeTab === 'average'">
           <ng-container *ngIf="currentStatistic; else loading">
             <div>
-              <span>Classement: <strong>{{ currentStatistic.ranking }}</strong></span>
+              <span>Date de la session: <strong>{{ currentStatistic.sessionName }}</strong></span>
             </div>
             <div>
               <span>Score: <strong>{{ currentStatistic.score }}</strong></span>
@@ -48,9 +48,7 @@
                 </li>
               </ul>
             </div>
-            <div>
-              <span>Date de la session: <strong>{{ currentStatistic.sessionName }}</strong></span>
-            </div>
+
             <div *ngIf="currentStatistic.heatmapData && currentStatistic.heatmapData.length">
               <span>HeatMap:</span>
               <div class="heatmap-container">

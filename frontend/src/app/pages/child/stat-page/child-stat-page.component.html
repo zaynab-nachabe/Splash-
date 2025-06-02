@@ -8,7 +8,7 @@
   </app-medium-button>
   <app-medium-button class="navbar-button red" [routerLink]="['/child-play']" routerLinkActive="active"> Retour
   </app-medium-button>
-  <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon classement
+  <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"> Mon Aquarium
   </app-medium-button>
 
   <!-- Main stats area -->
@@ -30,9 +30,7 @@
           <!-- Dernière partie & Moyenne -->
           <ng-container *ngIf="activeTab === 'last' || activeTab === 'average'">
             <ng-container *ngIf="currentStatistic; else loading">
-              <div>
-                <span>Classement: <strong>{{ currentStatistic.ranking }}</strong></span>
-              </div>
+
               <div>
                 <span>Score: <strong>{{ currentStatistic.score }}</strong></span>
               </div>
@@ -84,9 +82,7 @@
             </button>
             <ng-container *ngIf="currentStatistic; else loadingHistorique">
               <!-- Main statistics content (same as other tabs) -->
-              <div>
-                <span>Classement: <strong>{{ currentStatistic.ranking }}</strong></span>
-              </div>
+
               <div>
                 <span>Score: <strong>{{ currentStatistic.score }}</strong></span>
               </div>

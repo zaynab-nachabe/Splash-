@@ -67,8 +67,9 @@
         <div class="toggle-row advanced-statistics-toggle" (click)="toggleAdvancedStats()"
           style="cursor:pointer;user-select:none;">
           <span class="toggle-label">
-            Statistiques avancées
-            <span [ngClass]="{'arrow-down': showAdvancedStats, 'arrow-left': !showAdvancedStats}">
+            Configurations avancées
+            <span [ngClass]="{'arrow-down': showAdvancedStats, 'arrow-left': !showAdvancedStats}"
+              style = "margin-left: 8px;">
               {{ showAdvancedStats ? '▼' : '►' }}
             </span>
           </span>
