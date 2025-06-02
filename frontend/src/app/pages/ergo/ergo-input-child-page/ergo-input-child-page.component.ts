@@ -152,12 +152,12 @@ export class ErgoInputChildComponent implements OnInit {
       };
 
       this.userService.addUser(newChild);
-      this.router.navigate(['/ergo-config']);
+      this.router.navigate(['/ergo-play']);
     }
   }
 
   onCancel(): void {
-    this.router.navigate(['/ergo-config']);
+    this.router.navigate(['/ergo-play']);
   }
 
   handleTroubleSelection(value: string): void {

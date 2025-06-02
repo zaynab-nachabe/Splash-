@@ -205,6 +205,16 @@ export class GameEngine {
         this.incorrectAnswers++;
         this.totalQuestions++;
         
+        if (proposedAnswer) {
+            if(!this.difficultWords.has(proposedAnswer)) {
+                this.difficultWords.set(proposedAnswer, {attempts: 1, successes: 0});
+            }
+            else {
+                const stats = this.difficultWords.get(proposedAnswer)!;
+                stats.attempts++;
+                this.difficultWords.set(proposedAnswer, stats);
+            }
+        }
         
         if (this.gameComponent.question) {
             const correctAnswer = this.gameComponent.question.answer;
@@ -242,6 +252,7 @@ export class GameEngine {
         
         // Format difficult words
         const wordsLeastSuccessful = Array.from(this.difficultWords.entries())
+            .filter(([__dirname, stats]) => stats.successes < stats.attempts)
             .map(([word, stats]) => ({
                 word,
                 successRate: Math.round((stats.successes / stats.attempts) * 100)

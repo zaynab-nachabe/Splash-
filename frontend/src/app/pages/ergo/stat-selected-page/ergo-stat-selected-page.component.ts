@@ -21,7 +21,7 @@ export class ErgoStatSelectedPageComponent implements OnInit {
     this.userService.selectedUser$.subscribe(selected => {
       if (!selected) {
         // If no user is selected, redirect to the appropriate page
-        this.router.navigate(['/ergo-list']);
+        this.router.navigate(['/ergo-play']);
         return;
       }
       this.user = selected;

@@ -1,14 +1,14 @@
 <app-template>
   <!-- Navbar -->
   <app-home-button>Home</app-home-button>
-  <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active">
+  <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active">
     <p class="name">
       <app-user-card [user]="user" class="horizontal navbar" />
     </p>
   </app-medium-button>
-  <app-medium-button class="navbar-button red" [routerLink]="['/child-play']" routerLinkActive="active"> Retour
+  <app-medium-button class="navbar-button red" [routerLink]="['/ergo-play']" routerLinkActive="active"> Retour
   </app-medium-button>
-  <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon classement
+  <app-medium-button class="navbar-button" [routerLink]="['/ergo-stat-selected']" routerLinkActive="active"> Statistiques
   </app-medium-button>
 
   <!-- Main stats area -->

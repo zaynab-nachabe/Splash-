@@ -1,8 +1,10 @@
 <app-template>
     <!--Zone de la navbar -->
     <app-home-button></app-home-button>
-    <app-medium-button class="navbar-button"><p class="name">
+    <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active">
+        <p class="name">
         <app-user-card [user]="user" class="horizontal navbar"/>
+        </p>
     </app-medium-button>
     <app-medium-button class="navbar-button red" [routerLink]="['/child-list']" routerLinkActive="active">Retour</app-medium-button>
     <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"> Mon aquarium </app-medium-button>

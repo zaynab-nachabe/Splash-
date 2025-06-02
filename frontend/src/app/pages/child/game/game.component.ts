@@ -272,7 +272,7 @@ if (this.hasEnded) {
       this.gameEngine.score = this.score;
       this.gameEngine.answerCorrectly();
     } else {
-      //this.gameEngine.answerIncorrectly(this.proposed_answerInputs);
+      this.gameEngine.answerIncorrectly(this.proposed_answerInputs.join(''));
     }
     //review logic
    this.loadNewQuestion();
