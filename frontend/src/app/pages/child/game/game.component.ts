@@ -53,7 +53,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private gameEngine!: GameEngine;
 
-  private questionCount: number = -1;
+  private questionCount: number = -2;
   private MaxQuestions: number = 10;
 
   public backgroundBrightness: number = 0.8;

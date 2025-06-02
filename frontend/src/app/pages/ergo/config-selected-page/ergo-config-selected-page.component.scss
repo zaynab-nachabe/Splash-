@@ -63,6 +63,8 @@ span {
   overflow: hidden; /* Hide overflow */
   text-overflow: ellipsis; /* Add ellipsis for long text */
   margin-right: 5px; /* Ensure space for the toggle */
+  display: flex;
+  align-items: center;
 }
 
 .actions {
