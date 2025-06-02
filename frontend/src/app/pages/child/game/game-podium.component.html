@@ -1,7 +1,6 @@
 <audio #gameMusic src="assets/audio/victory.mp3"></audio>
 <app-template>
   <app-medium-button class="navbar-button red" [routerLink]="['/']" routerLinkActive="active">Retour</app-medium-button>
-  <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active">Détail de la partie</app-medium-button>
   <app-inner-box class="main-box blue">
     <div class="podium-container">
       <div class="toast-message">
@@ -10,7 +9,8 @@
       <div class="score" *ngIf="showScore">
         <p>Score: {{ userScore }}</p>
       </div>
-      <div class="user-card">
+      <div style="text-align:center; font-weight:600; font-size:1.2rem; margin-bottom:0.5rem;">Détails de la partie</div>
+      <div class="user-card" (click)="goToStats()" style="cursor:pointer;">
         <app-user-card [user]="user"></app-user-card>
       </div>
     </div>

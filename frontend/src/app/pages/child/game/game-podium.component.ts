@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import {User} from 'src/app/shared/models/user.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
@@ -8,16 +8,15 @@ import { UserService } from 'src/app/shared/services/user.service';
     templateUrl: './game-podium.component.html',
     styleUrls: ['./game-podium.component.scss']
 })
-export class GamePodiumComponent implements OnInit{
+export class GamePodiumComponent implements OnInit {
     @ViewChild('gameMusic', { static: false }) gameMusicRef!: ElementRef<HTMLAudioElement>;
 
-    public  user?: User;
+    public user?: User;
     public userScore: number = 0;
     public questionsAnswered: number = -1;
-    public showScore: boolean = false; 
+    public showScore: boolean = false;
 
-
-    constructor(private route: ActivatedRoute, private userService: UserService) {}
+    constructor(private route: ActivatedRoute, private userService: UserService, private router: Router) { }
 
     ngOnInit(): void {
         const state = this.route.snapshot.queryParams;
@@ -36,5 +35,9 @@ export class GamePodiumComponent implements OnInit{
         audioElement.play().catch((error) => {
             console.error('Error playing music:', error);
         });
+    }
+
+    goToStats() {
+        this.router.navigate(['/child-stats']);
     }
 }
