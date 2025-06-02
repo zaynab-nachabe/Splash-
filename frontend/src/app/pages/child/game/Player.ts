@@ -12,6 +12,9 @@ export class Player {
 
     private image: HTMLImageElement;
 
+    public isDeadFishActive: boolean = false;
+    public currentImagePath: string = "../../../../assets/images/game/player/yellow_fish.png";
+
     constructor(private gameEngine: GameEngine, private canvas: HTMLCanvasElement) {
         this.gameEngine = gameEngine;
 
@@ -22,7 +25,7 @@ export class Player {
         this._projectiles = [];
 
         this.image = new Image();
-        this.image.src = "../../../../assets/images/game/player/yellow_fish.png";
+        this.image.src = this.currentImagePath;
     }   
     
     public get position(): {x:number, y:number} {
@@ -52,6 +55,7 @@ export class Player {
     }
 
     public setImage(imagePath: string) {
+        this.currentImagePath = imagePath;
         this.image.src = imagePath;
     }
 }

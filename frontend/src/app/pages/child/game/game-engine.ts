@@ -107,9 +107,15 @@ export class GameEngine {
     private update(): void {
         this.player.update();
         let minDistance = Infinity;
-
-        this.enemies.forEach(enemy =>{
+        let playerHit = false;
+        let selectedPlayerImage = this.player.currentImagePath;
+        // Check for collisions between enemies and player
+        this.enemies.forEach(enemy => {
             enemy.update();
+            // Check collision with player
+            if (this.checkCollision(enemy, this.player)) {
+                playerHit = true;
+            }
             this.player.projectiles.forEach(projectile => {
                 if(this.checkCollision(enemy, projectile)) {
                     this.kill(enemy);
@@ -121,6 +127,17 @@ export class GameEngine {
         this.enemies = this.enemies.filter(enemy => enemy.isAlive);
         if (this.enemies.length < 1) {
             this.addEnemy();
+        }
+        // If player is hit, temporarily switch to dead_fish.png
+        if (playerHit && !this.player.isDeadFishActive) {
+            this.player.isDeadFishActive = true;
+            const previousImage = selectedPlayerImage;
+            this.player.setImage('../../../../assets/images/game/player/dead_fish.png');
+            setTimeout(() => {
+                // Revert to the selected avatar after 2 seconds
+                this.player.setImage(previousImage);
+                this.player.isDeadFishActive = false;
+            }, 2000);
         }
     }
 
