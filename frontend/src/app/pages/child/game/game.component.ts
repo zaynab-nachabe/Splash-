@@ -7,7 +7,7 @@ import { FontService } from 'src/app/shared/services/font.service';
 import { GameStatisticsService } from '../../../shared/services/game-statistics.service';
 import {QuestionConfigService} from "../../../shared/services/question-config.service";
 import {Subscription} from "rxjs";
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { QuestionService } from 'src/app/shared/services/question.service';
 import { UserConfig } from 'src/app/shared/models/user-config.model';
 import { ChildConfigService } from 'src/app/shared/services/child-config.service';
@@ -57,6 +57,7 @@ export class GameComponent implements OnInit, OnDestroy {
   private MaxQuestions: number = 10;
 
   public backgroundBrightness: number = 0.8;
+  public showPreGameLobby: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -65,7 +66,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private router: Router,
     private questionService: QuestionService,
     private gameStatisticsService: GameStatisticsService,
-    private childConfigService: ChildConfigService
+    private childConfigService: ChildConfigService,
+    private route: ActivatedRoute
   ) {
 this.userService.selectedUser$.subscribe((user: User | null) => {
   if (user) {
@@ -85,6 +87,12 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
 
     this.configSubscription = this.questionConfigService.getConfig().subscribe(() => {
       this.loadNewQuestion();
+    });
+
+    this.route.queryParams.subscribe(params => {
+      if (params['preGameLobby'] === 'true') {
+        this.showPreGameLobby = true;
+      }
     });
 
     this.loadNewQuestion();
@@ -121,6 +129,10 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
     this.questionCount = -1; //OPTIONAL TO TEST
     document.addEventListener("keydown", this.keydownHandler);
     this.updateInputs();
+    // Do not start the game if pre-game lobby is shown
+    if (!this.showPreGameLobby) {
+      this.loadNewQuestion();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -372,6 +384,11 @@ if (this.hasEnded) {
                 });
             }
         );
+    }
+
+    startGame() {
+      this.showPreGameLobby = false;
+      this.loadNewQuestion();
     }
 }
 
