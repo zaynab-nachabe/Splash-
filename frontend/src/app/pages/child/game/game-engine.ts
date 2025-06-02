@@ -6,7 +6,7 @@ import { Player } from "./Player";
 import { HiveCrab } from "./HiveCrab";
 import { Drone } from "./Drone";
 import { Ui } from "./Ui";
-import {FontService} from "../../../shared/services/font.service"
+import { FontService } from "../../../shared/services/font.service"
 import { ChildConfigService } from '../../../shared/services/child-config.service';
 
 export class GameEngine {
@@ -15,7 +15,7 @@ export class GameEngine {
     public enemies: Enemy[];
     public enemyKilledAudio: HTMLAudioElement;
     //statistics 
-    public player : Player;
+    public player: Player;
     public score: number = 0;
     private correctAnswers: number = 0;
     private incorrectAnswers: number = 0;
@@ -23,13 +23,13 @@ export class GameEngine {
     private totalQuestions: number = 0;
     private wordsTyped: string[] = [];
     private errorsByKey: Map<string, number> = new Map();
-    private difficultWords: Map<string, {attempts: number, successes: number}> = new Map();
+    private difficultWords: Map<string, { attempts: number, successes: number }> = new Map();
     private answersShown: number = 0;
     private backgroundBrightness: number = 0.8;
 
     constructor(
-        private gameComponent: GameComponent, 
-        private canvas: HTMLCanvasElement, 
+        private gameComponent: GameComponent,
+        private canvas: HTMLCanvasElement,
         private fontService: FontService,
         private childConfigService: ChildConfigService
     ) {
@@ -71,8 +71,8 @@ export class GameEngine {
     }
 
     private kill(enemy: Enemy): void {
-        if(enemy instanceof HiveCrab){
-            this.enemies.push(new Drone(this,this.canvas, enemy.position.x, enemy.position.y), new Drone(this,this.canvas, enemy.position.x+40, enemy.position.y-40), new Drone(this,this.canvas, enemy.position.x-50, enemy.position.y));
+        if (enemy instanceof HiveCrab) {
+            this.enemies.push(new Drone(this, this.canvas, enemy.position.x, enemy.position.y), new Drone(this, this.canvas, enemy.position.x + 40, enemy.position.y - 40), new Drone(this, this.canvas, enemy.position.x - 50, enemy.position.y));
         }
         if (this.childConfigService.getEffectsEnabled()) {
             this.enemyKilledAudio.currentTime = 0;
@@ -82,7 +82,7 @@ export class GameEngine {
     }
 
     private addEnemy(): void {
-        let newEnemy = Math.random() > 0.3 ? new Crab(this,this.canvas) : new HiveCrab(this, this.canvas);
+        let newEnemy = Math.random() > 0.3 ? new Crab(this, this.canvas) : new HiveCrab(this, this.canvas);
         this.enemies.push(newEnemy);
     }
 
@@ -94,13 +94,13 @@ export class GameEngine {
             const dx = fromX - enemy.position.x;
             const dy = fromY - enemy.position.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            
+
             if (distance < minDistance) {
                 minDistance = distance;
                 closestEnemy = enemy;
             }
         });
-    
+
         return closestEnemy;
     }
 
@@ -108,10 +108,10 @@ export class GameEngine {
         this.player.update();
         let minDistance = Infinity;
 
-        this.enemies.forEach(enemy =>{
+        this.enemies.forEach(enemy => {
             enemy.update();
             this.player.projectiles.forEach(projectile => {
-                if(this.checkCollision(enemy, projectile)) {
+                if (this.checkCollision(enemy, projectile)) {
                     this.kill(enemy);
                     projectile.destroy();
                     this.score += enemy.scoreValue;
@@ -137,7 +137,7 @@ export class GameEngine {
             this.Ui.draw(ctx);
         }
         this.player.draw(ctx);
-        this.enemies.forEach(enemy=>{
+        this.enemies.forEach(enemy => {
             if (enemy instanceof Crab) {
                 enemy.draw(ctx);
             } else if (enemy instanceof HiveCrab) {
@@ -179,19 +179,19 @@ export class GameEngine {
                 closestEnemy = enemy;
             }
         });
-        
-        if(closestEnemy){
+
+        if (closestEnemy) {
             this.player.shoot();
         }
-        
+
         // Record the successfully answered word
         if (this.gameComponent.question) {
             const answer = this.gameComponent.question.answer;
             this.wordsTyped.push(answer);
-            
+
             // Track word success rate
             if (!this.difficultWords.has(answer)) {
-                this.difficultWords.set(answer, {attempts: 1, successes: 1});
+                this.difficultWords.set(answer, { attempts: 1, successes: 1 });
             } else {
                 const stats = this.difficultWords.get(answer)!;
                 stats.attempts++;
@@ -204,31 +204,20 @@ export class GameEngine {
     public answerIncorrectly(proposedAnswer: string): void {
         this.incorrectAnswers++;
         this.totalQuestions++;
-        
-        if (proposedAnswer) {
-            if(!this.difficultWords.has(proposedAnswer)) {
-                this.difficultWords.set(proposedAnswer, {attempts: 1, successes: 0});
-            }
-            else {
-                const stats = this.difficultWords.get(proposedAnswer)!;
-                stats.attempts++;
-                this.difficultWords.set(proposedAnswer, stats);
-            }
-        }
-        
+
+        // Only track the expected answer as a difficult word
         if (this.gameComponent.question) {
             const correctAnswer = this.gameComponent.question.answer;
             if (!this.difficultWords.has(correctAnswer)) {
-                this.difficultWords.set(correctAnswer, {attempts: 1, successes: 0});
+                this.difficultWords.set(correctAnswer, { attempts: 1, successes: 0 });
             } else {
                 const stats = this.difficultWords.get(correctAnswer)!;
                 stats.attempts++;
                 this.difficultWords.set(correctAnswer, stats);
             }
         }
-        
-        // Track key errors (simplified)
-        // This would be more complex in a real implementation
+
+        // Track key errors (as before)
         for (let i = 0; i < proposedAnswer.length; i++) {
             const key = `Key${proposedAnswer[i].toUpperCase()}`;
             this.errorsByKey.set(key, (this.errorsByKey.get(key) || 0) + 1);
@@ -239,17 +228,17 @@ export class GameEngine {
     public showAnswer(): void {
         this.answersShown++;
     }
-    
+
     public getGameStatistics(userId: string): any {
         const endTime = new Date();
         const gameTimeMinutes = (endTime.getTime() - this.startTime.getTime()) / 60000;
-        
+
         // Calculate statistics
         const wordsPerMinute = Math.round(this.wordsTyped.length / gameTimeMinutes) || 0;
-        const precision = this.totalQuestions > 0 
-            ? Math.round((this.correctAnswers / this.totalQuestions) * 100) 
+        const precision = this.totalQuestions > 0
+            ? Math.round((this.correctAnswers / this.totalQuestions) * 100)
             : 0;
-        
+
         // Format difficult words
         const wordsLeastSuccessful = Array.from(this.difficultWords.entries())
             .filter(([__dirname, stats]) => stats.successes < stats.attempts)
@@ -259,11 +248,11 @@ export class GameEngine {
             }))
             .sort((a, b) => a.successRate - b.successRate)
             .slice(0, 5);
-            
+
         // Format heatmap data
         const heatmapData = Array.from(this.errorsByKey.entries())
             .map(([keyCode, errorFrequency]) => ({ keyCode, errorFrequency }));
-            
+
         return {
             childId: userId,
             sessionName: `Session ${new Date().toLocaleString()}`,
@@ -287,5 +276,10 @@ export class GameEngine {
 
     public setBackgroundBrightness(brightness: number) {
         this.backgroundBrightness = brightness;
+    }
+
+
+    public logKeyError(key: string): void {
+        this.errorsByKey.set(key, (this.errorsByKey.get(key) || 0) + 1);
     }
 }

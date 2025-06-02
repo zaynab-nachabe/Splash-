@@ -5,8 +5,8 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
 import { FontService } from 'src/app/shared/services/font.service';
 import { GameStatisticsService } from '../../../shared/services/game-statistics.service';
-import {QuestionConfigService} from "../../../shared/services/question-config.service";
-import {Subscription} from "rxjs";
+import { QuestionConfigService } from "../../../shared/services/question-config.service";
+import { Subscription } from "rxjs";
 import { Router } from '@angular/router';
 import { QuestionService } from 'src/app/shared/services/question.service';
 import { UserConfig } from 'src/app/shared/models/user-config.model';
@@ -14,8 +14,8 @@ import { ChildConfigService } from 'src/app/shared/services/child-config.service
 
 
 type Input = {
-    letter: string,
-    status: "correct" | "wrong" | "pending",
+  letter: string,
+  status: "correct" | "wrong" | "pending",
 };
 
 
@@ -25,9 +25,9 @@ type Input = {
 ////////////////////////////////////////////////////////////////////////////////
 
 @Component({
-    selector: 'app-game',
-    templateUrl: './game.component.html',
-    styleUrls: ['./game.component.scss']
+  selector: 'app-game',
+  templateUrl: './game.component.html',
+  styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit, OnDestroy {
   @ViewChild('gameMusic', { static: false }) gameMusicRef!: ElementRef<HTMLAudioElement>;
@@ -67,16 +67,16 @@ export class GameComponent implements OnInit, OnDestroy {
     private gameStatisticsService: GameStatisticsService,
     private childConfigService: ChildConfigService
   ) {
-this.userService.selectedUser$.subscribe((user: User | null) => {
-  if (user) {
-    this.user = user;
-    this.MaxQuestions = user.userConfig.nombresDeQuestion ?? 10;
-    this.childConfigService.loadUserConfig(this.user);
-  } else {
-    // Handle the case where no user is selected, e.g. redirect or show a message
-    console.warn('No user selected in game.');
-  }
-});
+    this.userService.selectedUser$.subscribe((user: User | null) => {
+      if (user) {
+        this.user = user;
+        this.MaxQuestions = user.userConfig.nombresDeQuestion ?? 10;
+        this.childConfigService.loadUserConfig(this.user);
+      } else {
+        // Handle the case where no user is selected, e.g. redirect or show a message
+        console.warn('No user selected in game.');
+      }
+    });
 
     this.fontService.selectedFont$.subscribe((font) => {
       console.log('Font updated in GameComponent:', font);
@@ -99,7 +99,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
           audio.currentTime = 0; // Reset to the beginning
           setTimeout(() => {
             audio.muted = false; // Unmute after a short delay
-            audio.play().catch(() => {});
+            audio.play().catch(() => { });
           }, 0); // Let pause finish before play
         } else {
           audio.pause();
@@ -117,7 +117,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
     });
   }
 
-  ngOnInit(): void {   
+  ngOnInit(): void {
     this.questionCount = -1; //OPTIONAL TO TEST
     document.addEventListener("keydown", this.keydownHandler);
     this.updateInputs();
@@ -125,7 +125,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
 
   ngAfterViewInit(): void {
     if (this.user) {
-        this.childConfigService.loadUserConfig(this.user);
+      this.childConfigService.loadUserConfig(this.user);
     }
     const canvas = this.canvasRef.nativeElement;
     this.gameEngine = new GameEngine(this, canvas, this.fontService, this.childConfigService);
@@ -169,7 +169,7 @@ this.userService.selectedUser$.subscribe((user: User | null) => {
   }
 
   private loadNewQuestion(): void {
-if (this.hasEnded) {
+    if (this.hasEnded) {
       console.log("Game has ended, not loading new question.");
       return;
     }
@@ -180,10 +180,9 @@ if (this.hasEnded) {
     }
 
     console.log("Requesting new question");
-    if (!this.user) 
-    {
+    if (!this.user) {
       console.log("No user selected, cannot load new question.");
-      return; 
+      return;
     }
     const userConfig: UserConfig = this.user.userConfig; // Get user configuration
     this.questionService.generateQuestion(userConfig).subscribe(
@@ -230,43 +229,43 @@ if (this.hasEnded) {
     this.inputs = ret;
   }
 
-    private gotoStart(): void {
-        this.cursorPosition = 0;  
-    }
-    private goToEnd(): void {
-        this.cursorPosition = this.proposed_answerInputs.length;
-    }
+  private gotoStart(): void {
+    this.cursorPosition = 0;
+  }
+  private goToEnd(): void {
+    this.cursorPosition = this.proposed_answerInputs.length;
+  }
 
-    private moveToTheLeft(): void {
-        if (this.cursorPosition == 0)
-            return;
-        this.cursorPosition--;
-    }
+  private moveToTheLeft(): void {
+    if (this.cursorPosition == 0)
+      return;
+    this.cursorPosition--;
+  }
 
-    private moveToTheRight(): void {
-        if (this.cursorPosition == this.proposed_answerInputs.length)
-            return;
-        this.cursorPosition++;
-    }
+  private moveToTheRight(): void {
+    if (this.cursorPosition == this.proposed_answerInputs.length)
+      return;
+    this.cursorPosition++;
+  }
 
 
-    private deleteCurrentCharacter(): void {
-        if (this.cursorPosition == this.proposed_answerInputs.length)
-            return;
-        this.proposed_answerInputs.splice(this.cursorPosition, 1);
-        this.updateInputs();
-    }
+  private deleteCurrentCharacter(): void {
+    if (this.cursorPosition == this.proposed_answerInputs.length)
+      return;
+    this.proposed_answerInputs.splice(this.cursorPosition, 1);
+    this.updateInputs();
+  }
 
-    private deletePreviousCharacter(): void {
-        if (this.cursorPosition == 0)
-            return;
+  private deletePreviousCharacter(): void {
+    if (this.cursorPosition == 0)
+      return;
 
-        this.cursorPosition--;
-        this.proposed_answerInputs.splice(this.cursorPosition, 1);
-        this.updateInputs();
-    }
+    this.cursorPosition--;
+    this.proposed_answerInputs.splice(this.cursorPosition, 1);
+    this.updateInputs();
+  }
 
-    private submitAnswer(): void {
+  private submitAnswer(): void {
     if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
       this.score += 10;
       this.gameEngine.score = this.score;
@@ -275,116 +274,133 @@ if (this.hasEnded) {
       this.gameEngine.answerIncorrectly(this.proposed_answerInputs.join(''));
     }
     //review logic
-   this.loadNewQuestion();
+    this.loadNewQuestion();
     if (!this.question) {
       this.endGame();
       return;
     }
 
-    
+
     // Reset answer inputs
     this.expected_answerInputs = this.question.answer.split("");
     this.proposed_answerInputs = [];
     this.cursorPosition = 0;
   }
+  /*
+  private writeCharacter(c: string): void {
+      this.proposed_answerInputs.splice(
+          this.cursorPosition++, 0, c
+      );
+      this.updateInputs();
+  }
+  */
 
-    private writeCharacter(c: string): void {
-        this.proposed_answerInputs.splice(
-            this.cursorPosition++, 0, c
-        );
-        this.updateInputs();
+  private writeCharacter(c: string): void {
+    // Check if the character is wrong at the current position
+    const expected = this.expected_answerInputs[this.cursorPosition];
+    if (expected && c !== expected) {
+      // Log the error to the game engine's errorsByKey map
+      const key = `Key${expected.toUpperCase()}`;
+      this.gameEngine.logKeyError(key);
     }
 
-    private checkInput(event: KeyboardEvent): void {
-        const keyPressed = event.key;
+    this.proposed_answerInputs.splice(
+      this.cursorPosition++, 0, c
+    );
+    this.updateInputs();
+  }
 
-        switch (keyPressed) {
-            case "Home" :
-                this.gotoStart();
-                break;
 
-            case "End" :
-                this.goToEnd();
-                break;
+  private checkInput(event: KeyboardEvent): void {
+    const keyPressed = event.key;
 
-            case "ArrowLeft" :
-                this.moveToTheLeft();
-                break;
+    switch (keyPressed) {
+      case "Home":
+        this.gotoStart();
+        break;
 
-            case "ArrowRight" :
-                this.moveToTheRight();
-                break;
+      case "End":
+        this.goToEnd();
+        break;
 
-            case "Delete" :
-                this.deleteCurrentCharacter();
-                break;
+      case "ArrowLeft":
+        this.moveToTheLeft();
+        break;
 
-            case "Backspace" :
-                this.deletePreviousCharacter();
-                break;
+      case "ArrowRight":
+        this.moveToTheRight();
+        break;
 
-            case "Enter" :
-                this.submitAnswer();
-                break;
+      case "Delete":
+        this.deleteCurrentCharacter();
+        break;
 
-            default :
-                if (keyPressed.length === 1) {
-                    this.writeCharacter(keyPressed);
-                }
-                break;
+      case "Backspace":
+        this.deletePreviousCharacter();
+        break;
+
+      case "Enter":
+        this.submitAnswer();
+        break;
+
+      default:
+        if (keyPressed.length === 1) {
+          this.writeCharacter(keyPressed);
         }
-        //break;
+        break;
     }
+    //break;
+  }
 
-    private showAnswer(): void {
-        // Whatever logic you use to show answers
-        this.gameEngine.showAnswer();
-    }
+  private showAnswer(): void {
+    // Whatever logic you use to show answers
+    this.gameEngine.showAnswer();
+  }
 
-    private endGame(): void {
-        this.hasEnded = true;
-        this.stopMusic();
-        // Get statistics from game engine
-        const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
-        // Save to statistics service
-        this.gameStatisticsService.saveGameSession(gameStats).subscribe(
-            (savedStats) => {
-                console.log('Game statistics saved successfully', savedStats);
-                this.userService.setScore(this.score);
-                this.router.navigate(['/game-podium'], {
-                    queryParams: {
-                        user: JSON.stringify(this.user),
-                        questionsAnswered: this.questionCount,
-                        score: this.score
-                    }
-                });
-            },
-            (error) => {
-                console.error('Failed to save game statistics', error);
-                // Navigate to podium anyway
-                this.userService.setScore(this.score);
-                this.router.navigate(['/game-podium'], {
-                    queryParams: {
-                        user: JSON.stringify(this.user),
-                        questionsAnswered: this.questionCount,
-                        score: this.score
-                    }
-                });
-            }
-        );
-    }
+  private endGame(): void {
+    this.hasEnded = true;
+    this.stopMusic();
+    // Get statistics from game engine
+    const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
+    // Save to statistics service
+    this.gameStatisticsService.saveGameSession(gameStats).subscribe(
+      (savedStats) => {
+        console.log('Game statistics saved successfully', savedStats);
+        this.userService.setScore(this.score);
+        this.router.navigate(['/game-podium'], {
+          queryParams: {
+            user: JSON.stringify(this.user),
+            questionsAnswered: this.questionCount,
+            score: this.score
+          }
+        });
+      },
+      (error) => {
+        console.error('Failed to save game statistics', error);
+        // Navigate to podium anyway
+        this.userService.setScore(this.score);
+        this.router.navigate(['/game-podium'], {
+          queryParams: {
+            user: JSON.stringify(this.user),
+            questionsAnswered: this.questionCount,
+            score: this.score
+          }
+        });
+      }
+    );
+  }
 }
 
 class AnswerChecker {
   public static checkAnswer(proposed_answer: string[], expected_answer: string[]): boolean {
     if (proposed_answer.length !== expected_answer.length) {
-        return false;
+      return false;
     }
-    
+
     for (let i = 0; i < proposed_answer.length; i++) {
-        if (proposed_answer[i] !== expected_answer[i]) {
-            return false;
-        }
+      if (proposed_answer[i] !== expected_answer[i]) {
+        return false;
+      }
     }
     return true;
   }
