@@ -5,9 +5,9 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
 import { FontService } from 'src/app/shared/services/font.service';
 import { GameStatisticsService } from '../../../shared/services/game-statistics.service';
-import { QuestionConfigService } from "../../../shared/services/question-config.service";
-import { Subscription } from "rxjs";
-import { Router } from '@angular/router';
+import {QuestionConfigService} from "../../../shared/services/question-config.service";
+import {Subscription} from "rxjs";
+import { Router, ActivatedRoute } from '@angular/router';
 import { QuestionService } from 'src/app/shared/services/question.service';
 import { UserConfig } from 'src/app/shared/models/user-config.model';
 import { ChildConfigService } from 'src/app/shared/services/child-config.service';
@@ -57,6 +57,7 @@ export class GameComponent implements OnInit, OnDestroy {
   private MaxQuestions: number = 10;
 
   public backgroundBrightness: number = 0.8;
+  public showPreGameLobby: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -65,7 +66,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private router: Router,
     private questionService: QuestionService,
     private gameStatisticsService: GameStatisticsService,
-    private childConfigService: ChildConfigService
+    private childConfigService: ChildConfigService,
+    private route: ActivatedRoute
   ) {
     this.userService.selectedUser$.subscribe((user: User | null) => {
       if (user) {
@@ -85,6 +87,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.configSubscription = this.questionConfigService.getConfig().subscribe(() => {
       this.loadNewQuestion();
+    });
+
+    this.route.queryParams.subscribe(params => {
+      if (params['preGameLobby'] === 'true') {
+        this.showPreGameLobby = true;
+      }
     });
 
     this.loadNewQuestion();
@@ -121,6 +129,10 @@ export class GameComponent implements OnInit, OnDestroy {
     this.questionCount = -1; //OPTIONAL TO TEST
     document.addEventListener("keydown", this.keydownHandler);
     this.updateInputs();
+    // Do not start the game if pre-game lobby is shown
+    if (!this.showPreGameLobby) {
+      this.loadNewQuestion();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -357,38 +369,43 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameEngine.showAnswer();
   }
 
-  private endGame(): void {
-    this.hasEnded = true;
-    this.stopMusic();
-    // Get statistics from game engine
-    const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
-    // Save to statistics service
-    this.gameStatisticsService.saveGameSession(gameStats).subscribe(
-      (savedStats) => {
-        console.log('Game statistics saved successfully', savedStats);
-        this.userService.setScore(this.score);
-        this.router.navigate(['/game-podium'], {
-          queryParams: {
-            user: JSON.stringify(this.user),
-            questionsAnswered: this.questionCount,
-            score: this.score
-          }
-        });
-      },
-      (error) => {
-        console.error('Failed to save game statistics', error);
-        // Navigate to podium anyway
-        this.userService.setScore(this.score);
-        this.router.navigate(['/game-podium'], {
-          queryParams: {
-            user: JSON.stringify(this.user),
-            questionsAnswered: this.questionCount,
-            score: this.score
-          }
-        });
-      }
-    );
-  }
+    private endGame(): void {
+        this.hasEnded = true;
+        this.stopMusic();
+        // Get statistics from game engine
+        const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
+        // Save to statistics service
+        this.gameStatisticsService.saveGameSession(gameStats).subscribe(
+            (savedStats) => {
+                console.log('Game statistics saved successfully', savedStats);
+                this.userService.setScore(this.score);
+                this.router.navigate(['/game-podium'], {
+                    queryParams: {
+                        user: JSON.stringify(this.user),
+                        questionsAnswered: this.questionCount,
+                        score: this.score
+                    }
+                });
+            },
+            (error) => {
+                console.error('Failed to save game statistics', error);
+                // Navigate to podium anyway
+                this.userService.setScore(this.score);
+                this.router.navigate(['/game-podium'], {
+                    queryParams: {
+                        user: JSON.stringify(this.user),
+                        questionsAnswered: this.questionCount,
+                        score: this.score
+                    }
+                });
+            }
+        );
+    }
+
+    startGame() {
+      this.showPreGameLobby = false;
+      this.loadNewQuestion();
+    }
 }
 
 class AnswerChecker {
