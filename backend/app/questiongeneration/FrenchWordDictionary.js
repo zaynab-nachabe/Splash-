@@ -16,6 +16,9 @@ function loadWordsFromTSV(tsvPath) {
 const words = loadWordsFromTSV('./Lexique383.tsv'); // adjust path if needed
 console.log(`Loaded ${words.length} French words.`);
 console.log('words are ', words);
+
+
+
 class FrenchWordDictionary {
     constructor(words) {
         this.letterToWords = {};
@@ -37,6 +40,26 @@ class FrenchWordDictionary {
                 }
             }
         }
+    }
+
+
+    // Save the mapping to a JSON file (sets as arrays)
+    saveLetterToWordsMap(filePath) {
+        const obj = {};
+        for (const [letter, set] of Object.entries(this.letterToWords)) {
+            obj[letter] = Array.from(set);
+        }
+        fs.writeFileSync(filePath, JSON.stringify(obj, null, 2), 'utf-8');
+    }
+
+    // Load the mapping from a JSON file
+    static loadLetterToWordsMap(filePath) {
+        const obj = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        const dict = new FrenchWordDictionary([]);
+        for (const [letter, arr] of Object.entries(obj)) {
+            dict.letterToWords[letter] = new Set(arr);
+        }
+        return dict;
     }
 
     // Example: get all words containing 'e'

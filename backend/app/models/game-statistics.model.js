@@ -14,12 +14,15 @@ module.exports = new BaseModel('GameStatistics', {
   numberOfCorrections: Joi.number().default(0),
   answersShown: Joi.number().default(0),
   isTotal: Joi.boolean().default(false),
+
   wordsLeastSuccessful: Joi.array().items(
     Joi.object({
       word: Joi.string(),
-      successRate: Joi.number()
+      successRate: Joi.number(),
+      attempts: Joi.array().items(Joi.string()).default([]) // <-- Add this line
     })
   ).default([]),
+
   heatmapData: Joi.array().items(
     Joi.object({
       keyCode: Joi.string(),

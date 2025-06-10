@@ -181,18 +181,75 @@ class QuestionGenerator {
                     notion = QuestionNotion.ENCRYPTION;
                     break;
                 }
-
                 case 'word': {
-                    // Pick a random word from the dictionary
-                    const allWords = words; // or: Object.values(frenchWordDict.letterToWords).flat()
-                    const randomIndex = Math.floor(this.seededRandom() * allWords.length);
-                    const word = allWords[randomIndex];
+                    // 1. Get letter frequencies from userConfig.questionFrequency
+                    const letterFreqs = userConfig.questionFrequency
+                        ? Object.entries(userConfig.questionFrequency)
+                            .filter(([k, v]) => /^[a-zA-Z]$/.test(k) && typeof v === 'number' && v > 0 && v <= 1)
+                        : [];
+                    console.log('Letter frequencies found in config:', letterFreqs);
+
+                    const selectedLetters = [];
+                    for (const [letter, freq] of letterFreqs) {
+                        const rand = this.seededRandom();
+                        const include = rand < freq;
+                        console.log(`Letter "${letter}": freq=${freq}, random=${rand}, include=${include}`);
+                        if (include) {
+                            selectedLetters.push(letter.toLowerCase());
+                        }
+                    }
+
+                    console.log('Selected letters for this word:', selectedLetters);
+
+
+                    let candidateWords = null;
+
+                    if (selectedLetters.length > 0) {
+                        // 3. Build sets for each selected letter
+                        const sets = selectedLetters.map(l => new Set(frenchWordDict.getWordsWithLetter(l)));
+                        console.log('Word sets for selected letters:', sets.map(s => Array.from(s).slice(0, 5))); // show first 5 words per set
+
+                        // 4. Try intersection, reduce if empty
+                        for (let n = sets.length; n > 0; n--) {
+                            // Try all combinations of n sets
+                            const combos = getCombinations(sets, n);
+                            let found = false;
+                            for (const combo of combos) {
+                                // Intersect all sets in combo
+                                let intersection = new Set(combo[0]);
+                                for (let i = 1; i < combo.length; i++) {
+                                    intersection = new Set([...intersection].filter(x => combo[i].has(x)));
+                                }
+                                if (intersection.size > 0) {
+                                    candidateWords = Array.from(intersection);
+                                    console.log(`Intersection found with ${n} sets, size: ${candidateWords.length}`);
+
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (found) break;
+                            else console.log(`No intersection found with ${n} sets, trying with fewer letters...`);
+
+                        }
+                    }
+
+                    // 5. If no candidates, pick from all words
+                    if (!candidateWords || candidateWords.length === 0) {
+                        candidateWords = words;
+                        console.log('No candidate words from letter sets, using all words.');
+                    }
+
+                    // Pick a random word from candidateWords
+                    const randomIndex = Math.floor(this.seededRandom() * candidateWords.length);
+                    const word = candidateWords[randomIndex];
+                    console.log('Final candidate words count:', candidateWords.length, 'Random index:', randomIndex, 'Chosen word:', word);
+
                     questionString = `Recopies ${word} : `;
                     answerString = word;
-                    notion = QuestionNotion.REWRITE; // or create a new notion if you want
+                    notion = QuestionNotion.REWRITE;
                     break;
                 }
-
 
                 default: {
                     const [op, questionNotion] = QuestionGenerator.convertToOperand(type);
@@ -218,6 +275,25 @@ class QuestionGenerator {
             throw err;
         }
     }
+
+
+
+}
+// Helper function for combinations
+function getCombinations(arr, k) {
+    // arr: array of sets, k: size of combination
+    const results = [];
+    function helper(start, combo) {
+        if (combo.length === k) {
+            results.push(combo);
+            return;
+        }
+        for (let i = start; i < arr.length; i++) {
+            helper(i + 1, combo.concat([arr[i]]));
+        }
+    }
+    helper(0, []);
+    return results;
 }
 
 module.exports = QuestionGenerator;

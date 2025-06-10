@@ -2,8 +2,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { GameStatistics } from '../models/game-statistics.model';
-import {tap, catchError, map} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
+import { tap, catchError, map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class GameStatisticsService {
   private readonly STATS_STORAGE_KEY = 'game_statistics';
   private statisticsSubject = new BehaviorSubject<GameStatistics[]>([]);
   public statistics$ = this.statisticsSubject.asObservable();
-  
+
   constructor(private http: HttpClient) {
     this.loadStatistics();
   }
@@ -36,11 +36,15 @@ export class GameStatisticsService {
       )
       .subscribe();
   }
-  
+
   saveGameSession(gameStats: GameStatistics): Observable<GameStatistics> {
+    console.log('[SERVICE] Posting gameStats to backend:', JSON.stringify(gameStats, null, 2));
+
     return this.http.post<GameStatistics>(this.apiUrl, gameStats)
       .pipe(
         tap(savedStats => {
+          console.log('[SERVICE] Received savedStats from backend:', savedStats);
+
           const currentStats = this.statisticsSubject.value;
           this.statisticsSubject.next([...currentStats, savedStats]);
         }),
@@ -50,11 +54,11 @@ export class GameStatisticsService {
         })
       );
   }
-  
+
   getAllStatistics(): Observable<GameStatistics[]> {
     return this.statistics$;
   }
-  
+
   getStatisticsForChild(childId: string): Observable<GameStatistics[]> {
     return this.http.get<GameStatistics[]>(`${this.apiUrl}/child/${childId}`)
       .pipe(
@@ -71,7 +75,7 @@ export class GameStatisticsService {
         })
       );
   }
-  
+
   getTotalForChild(childId: string): Observable<GameStatistics | undefined> {
     return this.getStatisticsForChild(childId).pipe(
       map(stats => stats.find(stat => stat.isTotal))

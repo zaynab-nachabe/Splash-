@@ -5,13 +5,13 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { GameEngine } from './game-engine';
 import { FontService } from 'src/app/shared/services/font.service';
 import { GameStatisticsService } from '../../../shared/services/game-statistics.service';
-import {QuestionConfigService} from "../../../shared/services/question-config.service";
-import {Subscription} from "rxjs";
+import { QuestionConfigService } from "../../../shared/services/question-config.service";
+import { Subscription } from "rxjs";
 import { Router, ActivatedRoute } from '@angular/router';
 import { QuestionService } from 'src/app/shared/services/question.service';
 import { UserConfig } from 'src/app/shared/models/user-config.model';
 import { ChildConfigService } from 'src/app/shared/services/child-config.service';
-
+import { WordStats } from 'src/app/shared/models/game-statistics.model';
 
 type Input = {
   letter: string,
@@ -42,6 +42,8 @@ export class GameComponent implements OnInit, OnDestroy {
   public user!: User;
   public question!: Question;
   private keydownHandler: (event: KeyboardEvent) => void;
+
+  private wordAttempts: { [word: string]: string[] } = {};
 
   public expected_answerInputs: string[] = [];
   public proposed_answerInputs: string[] = [];
@@ -203,6 +205,15 @@ export class GameComponent implements OnInit, OnDestroy {
 
         this.question = question; // Set the new question
         this.expected_answerInputs = this.question.answer.split('');
+
+        if (this.gameEngine && this.expected_answerInputs) {
+          this.expected_answerInputs.forEach(letter => {
+            if (letter && letter.trim() !== '') {
+              const key = `Key${letter.toUpperCase()}`;
+              this.gameEngine.incrementKeyAppearance(key);
+            }
+          });
+        }
         this.proposed_answerInputs = [];
         this.updateInputs();
         this.questionCount++;
@@ -213,6 +224,8 @@ export class GameComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+
 
   private updateInputs(): void {
     const showsAnswer = this.questionConfigService.getCurrentConfig()?.showAnswer ?? false;
@@ -278,6 +291,16 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private submitAnswer(): void {
+    if (this.question) {
+      const word = this.question.answer;
+      const attempt = this.proposed_answerInputs.join('');
+      if (!this.wordAttempts[word]) {
+        this.wordAttempts[word] = [];
+      }
+      this.wordAttempts[word].push(attempt);
+    }
+
+
     if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
       this.score += 10;
       this.gameEngine.score = this.score;
@@ -369,43 +392,54 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameEngine.showAnswer();
   }
 
-    private endGame(): void {
-        this.hasEnded = true;
-        this.stopMusic();
-        // Get statistics from game engine
-        const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
-        // Save to statistics service
-        this.gameStatisticsService.saveGameSession(gameStats).subscribe(
-            (savedStats) => {
-                console.log('Game statistics saved successfully', savedStats);
-                this.userService.setScore(this.score);
-                this.router.navigate(['/game-podium'], {
-                    queryParams: {
-                        user: JSON.stringify(this.user),
-                        questionsAnswered: this.questionCount,
-                        score: this.score
-                    }
-                });
-            },
-            (error) => {
-                console.error('Failed to save game statistics', error);
-                // Navigate to podium anyway
-                this.userService.setScore(this.score);
-                this.router.navigate(['/game-podium'], {
-                    queryParams: {
-                        user: JSON.stringify(this.user),
-                        questionsAnswered: this.questionCount,
-                        score: this.score
-                    }
-                });
-            }
-        );
+  private endGame(): void {
+    this.hasEnded = true;
+    this.stopMusic();
+    // Get statistics from game engine
+    const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
+
+    // Attach attempts to wordsLeastSuccessful if present
+    if (gameStats.wordsLeastSuccessful) {
+      gameStats.wordsLeastSuccessful = (gameStats.wordsLeastSuccessful as WordStats[]).map(entry => ({
+        ...entry,
+        attempts: this.wordAttempts[entry.word] || []
+      }));
     }
 
-    startGame() {
-      this.showPreGameLobby = false;
-      this.loadNewQuestion();
-    }
+    console.log('[ENDGAME] Sending gameStats to backend:', JSON.stringify(gameStats, null, 2));
+
+    // Save to statistics service
+    this.gameStatisticsService.saveGameSession(gameStats).subscribe(
+      (savedStats) => {
+        console.log('Game statistics saved successfully', savedStats);
+        this.userService.setScore(this.score);
+        this.router.navigate(['/game-podium'], {
+          queryParams: {
+            user: JSON.stringify(this.user),
+            questionsAnswered: this.questionCount,
+            score: this.score
+          }
+        });
+      },
+      (error) => {
+        console.error('Failed to save game statistics', error);
+        // Navigate to podium anyway
+        this.userService.setScore(this.score);
+        this.router.navigate(['/game-podium'], {
+          queryParams: {
+            user: JSON.stringify(this.user),
+            questionsAnswered: this.questionCount,
+            score: this.score
+          }
+        });
+      }
+    );
+  }
+
+  startGame() {
+    this.showPreGameLobby = false;
+    this.loadNewQuestion();
+  }
 }
 
 class AnswerChecker {

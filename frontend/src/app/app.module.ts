@@ -39,7 +39,7 @@ import {RouterModule} from "@angular/router";
 import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
 import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
 import { SearchBarComponent } from './shared/components/search-bar/search-bar.component';
-
+import { SessionStatisticsComponent } from './shared/components/session-statistics/session-statistics.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -76,6 +76,7 @@ import { SearchBarComponent } from './shared/components/search-bar/search-bar.co
     SettingsToggleComponent,
     ErgoLobbyGameComponent, 
     SearchBarComponent, 
+    SessionStatisticsComponent,
     StatisticsBoxComponent
 
   ],

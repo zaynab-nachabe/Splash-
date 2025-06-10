@@ -283,16 +283,7 @@ span {
     text-align: center;
   }
 }
-/* Column layout for settings */
-.settings-columns {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
 
-.settings-column {
-  width: 48%;
-}
 
 .operation-selector {
   width: 100%;
@@ -316,15 +307,6 @@ span {
   font-weight: 500;
 }
 
-/* Grid layout for settings with 3 columns */
-.settings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* Three equal columns */
-  gap: 10px; /* Reduced gap size */
-  margin-top: 20px;
-  width: 100%; /* Ensure it doesn't exceed container width */
-  box-sizing: border-box; /* Include padding in width calculation */
-}
 
 .grid-span-2 {
   grid-column: span 2;
@@ -390,13 +372,33 @@ span {
 
 .advanced-stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px 24px;
+  grid-template-columns: repeat(4, auto);
+  gap: 8px 8px;
 }
 .advanced-stat-cell {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0; /* or 4px for even less space */
+  width: auto;
+  min-width: 0;
+
 }
 
+.advanced-stat-cell span {
+  margin: 0;
+  white-space: nowrap;
+  font-size: 15px;
+  width: auto;
+  display: inline;
+}
 
+.frequency-input,
+.advanced-stat-cell input[type="text"] {
+  margin-left: 4px !important; /* Small space, adjust as needed */
+  width: 60px;
+}
+
+.app-settings-toggle, 
+.advanced-stat-cell app-settings-toggle {
+  margin-left: 4px;
+}
