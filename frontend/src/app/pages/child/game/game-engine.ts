@@ -26,7 +26,7 @@ export class GameEngine {
     private difficultWords: Map<string, { attempts: number, successes: number }> = new Map();
     private answersShown: number = 0;
     private backgroundBrightness: number = 0.8;
-
+    private keyAppearances: Map<string, number> = new Map();
     constructor(
         private gameComponent: GameComponent,
         private canvas: HTMLCanvasElement,
@@ -263,12 +263,20 @@ export class GameEngine {
                 word,
                 successRate: Math.round((stats.successes / stats.attempts) * 100)
             }))
-            .sort((a, b) => a.successRate - b.successRate)
-            .slice(0, 5);
+            .sort((a, b) => a.successRate - b.successRate);
 
         // Format heatmap data
         const heatmapData = Array.from(this.errorsByKey.entries())
-            .map(([keyCode, errorFrequency]) => ({ keyCode, errorFrequency }));
+            .map(([keyCode, errorCount]) => {
+                const appearances = this.keyAppearances.get(keyCode);
+                let errorFrequency: number;
+                if (!appearances || appearances === 0) {
+                    errorFrequency = -1; // never appeared in answers
+                } else {
+                    errorFrequency = Math.round((errorCount / appearances) * 100);
+                }
+                return { keyCode, errorFrequency };
+            });
 
         return {
             childId: userId,
@@ -299,4 +307,9 @@ export class GameEngine {
     public logKeyError(key: string): void {
         this.errorsByKey.set(key, (this.errorsByKey.get(key) || 0) + 1);
     }
+
+    public incrementKeyAppearance(key: string): void {
+        this.keyAppearances.set(key, (this.keyAppearances.get(key) || 0) + 1);
+    }
+
 }

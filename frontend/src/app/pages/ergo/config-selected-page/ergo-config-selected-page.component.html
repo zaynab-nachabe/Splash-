@@ -49,59 +49,39 @@
       </div>
     </div>
 
-    <!-- Settings in columns -->
-    <div class="settings-columns">
-      <!-- Column 1 -->
-      <div class="settings-column">
+    <div class="advanced-stats-section">
+      <div class="advanced-stats-grid">
         <!-- Show Answers toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Montrer les réponses</span>
+        <div class="advanced-stat-cell">
+          <span>Montrer les réponses</span>
           <app-settings-toggle [checked]="currentConfig.showAnswer"
             (valueChange)="onToggleChange('showAnswer', $event)">
           </app-settings-toggle>
         </div>
-
-        <div class="toggle-row advanced-statistics-toggle" (click)="toggleAdvancedStats()"
-          style="cursor:pointer;user-select:none;">
-          <span class="toggle-label">
-            Configurations avancées
-            <span [ngClass]="{'arrow-down': showAdvancedStats, 'arrow-left': !showAdvancedStats}" class="arrow-icon"
-              style="margin-left: 8px;">
-              {{ showAdvancedStats ? '▼' : '►' }}
-            </span>
-          </span>
-        </div>
-      </div>
-      <!-- Column 2 -->
-      <div class="settings-column">
         <!-- Show Score toggle -->
-        <div class="toggle-row">
-          <span class="toggle-label">Afficher le score</span>
+        <div class="advanced-stat-cell">
+          <span>Afficher le score</span>
           <app-settings-toggle [checked]="currentConfig.showScore" (valueChange)="onToggleChange('showScore', $event)">
           </app-settings-toggle>
         </div>
-
         <!-- Nombre de questions input -->
-        <div class="toggle-row">
-          <span class="toggle-label">Nombre de questions</span>
+        <div class="advanced-stat-cell">
+          <span>Nombre de questions</span>
           <input #nombreInput type="text" min="1" [value]="currentConfig.nombresDeQuestion || ''"
-            (input)="onNombreDeQuestionInput(nombreInput)" class="number-input"
-            style="width: 60px; margin-left: 10px;" />
+            (input)="onNombreDeQuestionInput(nombreInput)" class="frequency-input" />
         </div>
-        <!-- Additional features -->
-      </div>
-
-
-    </div>
-
-    <!-- Advanced stats section, outside the settings-columns row -->
-    <div class="advanced-stats-section" *ngIf="showAdvancedStats">
-      <div class="advanced-stats-grid">
+        <!-- Frequency inputs for each operation -->
         <div *ngFor="let op of availableOperations" class="advanced-stat-cell">
           <span>{{ op.label }}</span>
           <input #freqInput type="text" [value]="currentConfig.questionFrequency?.[op.key] ?? ''"
-            (input)="onFrequencyInput(freqInput, op.key)" class="frequency-input"
-            style="width: 60px; margin-left: 10px;" />
+            (input)="onFrequencyInput(freqInput, op.key)" class="frequency-input" />
+        </div>
+
+        <!-- Frequency inputs for each letter -->
+        <div *ngFor="let letter of topMissedLetters" class="advanced-stat-cell">
+          <span>{{ letter.label }}</span>
+          <input #letterFreqInput type="text" [value]="letterFrequencies[letter.key] ?? ''"
+            (input)="onFrequencyInput(letterFreqInput, letter.key)" class="frequency-input" />
         </div>
       </div>
     </div>

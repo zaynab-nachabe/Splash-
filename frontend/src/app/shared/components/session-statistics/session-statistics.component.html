@@ -1,0 +1,53 @@
+<div class="box-content">
+  <div>
+    <div class="stat-block">
+      <span>Date de la session: <strong>{{ currentStatistic.sessionName }}</strong></span>
+    </div>
+    <div class="stat-block">
+      <span>Score: <strong>{{ currentStatistic.score }}</strong></span>
+    </div>
+    <div class="stat-block">
+      <span>Mots par min: <strong>{{ currentStatistic.wordsPerMinute }}</strong></span>
+    </div>
+    <div class="stat-block">
+      <span>Précision: <strong>{{ currentStatistic.precision }}%</strong></span>
+    </div>
+    <div class="stat-block">
+      <span>Compréhension des notions mathématiques: <strong>{{ currentStatistic.mathNotionUnderstanding }}%</strong></span>
+    </div>
+    <div class="stat-block">
+      <span>Nombre de corrections: <strong>{{ currentStatistic.numberOfCorrections }}</strong></span>
+    </div>
+    <div class="stat-block">
+      <span>Réponses affichées: <strong>{{ currentStatistic.answersShown }}</strong></span>
+    </div>
+    <div class="stat-block" *ngIf="currentStatistic.heatmapData && currentStatistic.heatmapData.length">
+      <span>HeatMap:</span>
+      <div class="heatmap-container">
+        <div *ngFor="let key of currentStatistic.heatmapData" class="heatmap-key"
+          [style.background-color]="getHeatmapColor(key.errorFrequency)">
+          {{ key.keyCode.replace('Key', '') }}
+        </div>
+      </div>
+    </div>
+    <div class="stat-block">
+      <span>Mots les moins réussis:</span>
+      <ul class="words-list">
+        <li *ngIf="!currentStatistic.wordsLeastSuccessful || currentStatistic.wordsLeastSuccessful.length === 0">
+          Aucun mot difficile détecté.
+        </li>
+        <li *ngFor="let word of currentStatistic.wordsLeastSuccessful">
+          <div>
+            <strong>{{ word.word }}</strong> ({{ word.successRate }}%)
+            <div *ngIf="word.attempts && word.attempts.length > 0" style="margin-left: 1em;">
+              <span>Réponses proposées :</span>
+              <ul>
+                <li *ngFor="let attempt of word.attempts">{{ attempt }}</li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

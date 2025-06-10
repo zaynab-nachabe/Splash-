@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../../shared/services/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {LocalStorageService} from "../../../shared/services/localStorage.service";
+import { LocalStorageService } from "../../../shared/services/localStorage.service";
 
 @Component({
   selector: 'app-ergo-input-child',
@@ -33,7 +33,8 @@ export class ErgoInputChildComponent implements OnInit {
     private localStorageService: LocalStorageService
   ) {
     this.childForm = this.fb.group({
-      name: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
       age: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
     });
   }
@@ -132,8 +133,9 @@ export class ErgoInputChildComponent implements OnInit {
     if (this.childForm.valid) {
       const newChild = {
         userId: Date.now().toString(), // Generate a unique ID
-        name: this.childForm.value.name,
-        age: this.childForm.value.age,
+        name: `${this.childForm.value.firstName} ${this.childForm.value.lastName}`.trim(),
+          age: this.childForm.value.age, // <-- Add this line
+
         icon: this.selectedIcon,
         conditions: this.selectedConditions, // <-- Add this line
 

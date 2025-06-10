@@ -31,7 +31,7 @@ export class StatisticsBoxComponent implements OnInit, OnDestroy {
   constructor(
     private statisticsService: GameStatisticsService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (this.childId) {
@@ -174,15 +174,43 @@ export class StatisticsBoxComponent implements OnInit, OnDestroy {
   }
 
   get filteredSessions() {
-    if (!this.searchTerm) return this.statistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
-    return this.statistics.filter(stat =>
+    const sessions = this.statistics.filter(stat => stat.sessionName && stat.sessionName !== 'TOTAL');
+    // Sort descending by date (most recent first)
+    sessions.sort((a, b) => {
+      const dateA = new Date(a.sessionName.replace(/^Session /, ''));
+      const dateB = new Date(b.sessionName.replace(/^Session /, ''));
+      return dateB.getTime() - dateA.getTime();
+    });
+    if (!this.searchTerm) return sessions;
+    return sessions.filter(stat =>
       stat.sessionName &&
       stat.sessionName.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
-
   selectHistoriqueSession(stat: GameStatistics) {
     this.currentStatistic = stat;
     this.historiqueSidebarOpen = false;
+  }
+  getHeatmapColor(errorFrequency: number): string {
+    if (errorFrequency === -1) {
+      return 'rgba(255, 105, 180, 0.7)'; // pink, high opacity
+    }
+    let color = '#ffffff'; // default: white (no error)
+    let alpha = Math.max(0.15, errorFrequency / 100); // always at least a bit visible
+
+    if (errorFrequency > 0 && errorFrequency < 10) {
+      color = '0,200,0'; // green
+    } else if (errorFrequency >= 10 && errorFrequency < 30) {
+      color = '255,215,0'; // yellow
+    } else if (errorFrequency >= 30 && errorFrequency < 50) {
+      color = '255,140,0'; // orange
+    } else if (errorFrequency >= 50) {
+      color = '255,0,0'; // red
+    } else {
+      // errorFrequency == 0
+      return '#ffffff';
+    }
+
+    return `rgba(${color},${alpha})`;
   }
 }

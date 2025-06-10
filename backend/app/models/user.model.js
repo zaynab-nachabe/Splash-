@@ -22,7 +22,7 @@ const userSchema = Joi.object({
         showScore: Joi.boolean().optional().default(false),
         nombresDeQuestion: Joi.number().optional().default(10),
         questionFrequency: Joi.object().pattern(
-            /^(addition|subtraction|multiplication|division|rewrite|encryption|word)$/,
+            /^(addition|subtraction|multiplication|division|rewrite|encryption|word|[A-Za-z])$/,
             Joi.number().optional()
         ).optional()
     }).required(),

@@ -1,10 +1,11 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { UserConfig } from 'src/app/shared/models/user-config.model';
-import {Router} from "@angular/router";
-import {Subscription} from "rxjs";
-import {User} from "../../../shared/models/user.model";
-import {UserService} from "../../../shared/services/user.service";
-import {QuestionConfigService} from "../../../shared/services/question-config.service";
+import { Router } from "@angular/router";
+import { Subscription } from "rxjs";
+import { User } from "../../../shared/models/user.model";
+import { UserService } from "../../../shared/services/user.service";
+import { QuestionConfigService } from "../../../shared/services/question-config.service";
+import { GameStatisticsService } from "../../../shared/services/game-statistics.service";
 
 
 @Component({
@@ -12,7 +13,7 @@ import {QuestionConfigService} from "../../../shared/services/question-config.se
   templateUrl: './ergo-config-selected-page.component.html',
   styleUrl: './ergo-config-selected-page.component.scss'
 })
-export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
+export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy {
   public currentConfig: UserConfig;
   public selectedUser?: User;
   private configSubscription!: Subscription;
@@ -30,17 +31,31 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
     { key: 'word', label: 'Mot français' }
   ];
 
+  topMissedLetters: { key: string, label: string }[] = [];
+
+  letterFrequencies: { [key: string]: number } = {};
+
+
+
+
+
+
 
 
   constructor(
     private questionConfigService: QuestionConfigService,
     private userService: UserService,
+    private gameStatisticsService: GameStatisticsService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
     this.currentConfig = this.questionConfigService.getCurrentConfig();
     console.log('Constructor - Initial config:', this.currentConfig);
   }
+
+
+
+
   ngOnInit() {
     // First, get the selected user
     this.userSubscription = this.userService.selectedUser$.subscribe(user => {
@@ -52,7 +67,36 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
 
       this.selectedUser = user;
       console.log('Selected user for configuration:', this.selectedUser);
+
+
+      this.gameStatisticsService.getStatisticsForChild(this.selectedUser.userId).subscribe(statsArray => {
+        if (statsArray && statsArray.length > 0) {
+          // Get the most recent game (assuming sorted by date descending, otherwise sort)
+          const lastGame = statsArray
+            .filter(stat => !stat.isTotal)
+            .sort((a, b) => (b.date ? new Date(b.date).getTime() : 0) - (a.date ? new Date(a.date).getTime() : 0))[0];
+
+          if (lastGame && lastGame.heatmapData) {
+            const sorted = lastGame.heatmapData
+              .filter(item => item.keyCode.startsWith('Key'))
+              .sort((a, b) => b.errorFrequency - a.errorFrequency)
+              .slice(0, 5);
+
+            this.topMissedLetters = sorted.map(item => ({
+              key: item.keyCode.replace('Key', ''),
+              label: item.keyCode.replace('Key', '')
+            }));
+          } else {
+            this.topMissedLetters = [];
+          }
+        } else {
+          this.topMissedLetters = [];
+        }
+        this.cdr.detectChanges();
+      });
     });
+
+
 
     // Subscribe to config changes
     this.configSubscription = this.questionConfigService.getConfig().subscribe(config => {
@@ -60,6 +104,9 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
       console.log('Config loaded:', this.currentConfig);
       this.cdr.detectChanges();
     });
+
+
+
 
     // Force change detection after a small delay
     setTimeout(() => {
@@ -153,7 +200,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
   }
 
 
-    onNombreDeQuestionChange(value: string) {
+  onNombreDeQuestionChange(value: string) {
     const num = Number(value);
     if (!isNaN(num) && num > 0) {
       this.currentConfig.nombresDeQuestion = num;
@@ -182,27 +229,29 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy{
     return `assets/images/child-pps/${this.selectedUser?.icon || 'pp-9.png'}`;
   }
 
-  
 
-onNombreDeQuestionInput(input: HTMLInputElement) {
-  const value = input.value;
-  // Only show alert if a non-digit character is present and the last key was not Backspace
-  // But since we can't get the key here, just don't alert if the value is empty (which happens after backspace)
-  if (!/^\d*$/.test(value) && value !== '') {
-    alert('seul les caracteres numeriaues sont autorisées');
-    input.value = value.replace(/\D/g, '');
-  }
-  this.onNombreDeQuestionChange(input.value);
-}
 
-onFrequencyInput(input: HTMLInputElement, key: string) {
-  const value = input.value;
-  // Allow empty (for backspace), or valid float
-  if (!/^\d*\.?\d*$/.test(value) && value !== '') {
-    alert('seul les caracteres numeriaues sont autorisées');
-    input.value = value.replace(/[^0-9.]/g, '');
+  onNombreDeQuestionInput(input: HTMLInputElement) {
+    const value = input.value;
+    // Only show alert if a non-digit character is present and the last key was not Backspace
+    // But since we can't get the key here, just don't alert if the value is empty (which happens after backspace)
+    if (!/^\d*$/.test(value) && value !== '') {
+      alert('seul les caracteres numeriaues sont autorisées');
+      input.value = value.replace(/\D/g, '');
+    }
+    this.onNombreDeQuestionChange(input.value);
   }
-  this.onQuestionFrequencyChange(key, input.value);
-}
+
+  onFrequencyInput(input: HTMLInputElement, key: string) {
+    const value = input.value;
+    // Allow empty (for backspace), or valid float
+    if (!/^\d*\.?\d*$/.test(value) && value !== '') {
+      alert('seul les caracteres numeriaues sont autorisées');
+      input.value = value.replace(/[^0-9.]/g, '');
+    }
+    this.onQuestionFrequencyChange(key, input.value);
+  }
+
+
 }
 

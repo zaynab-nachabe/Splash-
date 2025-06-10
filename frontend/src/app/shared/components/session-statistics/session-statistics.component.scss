@@ -1,0 +1,44 @@
+.box-content {
+  padding: 24px;
+  background: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stat-block {
+  margin-bottom: 12px;
+}
+
+.words-list {
+  margin-top: 5px;
+  padding-left: 20px;
+  list-style-type: disc;
+
+  li {
+    margin-bottom: 5px;
+  }
+}
+
+.heatmap-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.heatmap-key {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
+}

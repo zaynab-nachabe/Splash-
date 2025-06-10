@@ -1,7 +1,9 @@
 export interface WordStats {
   word: string;
-  successRate: number; // percentage (0-100)
+  successRate: number;
+  attempts?: string[];
 }
+
 
 export interface HeatmapData {
   keyCode: string; // The keyboard key

@@ -8,7 +8,7 @@ import { HttpClient } from "@angular/common/http";
   providedIn: 'root'
 })
 export class UserService {
- private userScore: number = 0;
+  private userScore: number = 0;
   private users: User[] = [];
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
@@ -25,7 +25,7 @@ export class UserService {
     });
   }
 
-addUser(user: User): void {
+  addUser(user: User): void {
     this.http.post<User>(this.apiUrl, user).subscribe(newUser => {
       this.users.push(newUser);
       this.users$.next(this.users);
@@ -75,7 +75,7 @@ addUser(user: User): void {
     return this.userScore;
   }
 
-  setScore(score:number):void{
+  setScore(score: number): void {
     this.userScore = score;
   }
 }
