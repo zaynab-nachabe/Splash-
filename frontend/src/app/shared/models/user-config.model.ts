@@ -8,6 +8,9 @@ export type UserConfig = {
     encryption: boolean,
     word: boolean,
     showScore: boolean,
+    chiffresEnLettres: boolean,
+    longueurMaximaleDesMots: number,
     nombresDeQuestion: number,
+    showLetterColor?: boolean,
     questionFrequency?: { [key: string]: number }
 };

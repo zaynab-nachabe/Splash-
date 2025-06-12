@@ -27,6 +27,10 @@ export class GameEngine {
     private answersShown: number = 0;
     private backgroundBrightness: number = 0.8;
     private keyAppearances: Map<string, number> = new Map();
+
+
+
+    
     constructor(
         private gameComponent: GameComponent,
         private canvas: HTMLCanvasElement,

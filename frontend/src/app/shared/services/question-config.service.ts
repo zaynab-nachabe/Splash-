@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserService } from './user.service';
 import { User } from '../models/user.model';
-import {UserConfig} from "../models/user-config.model";
+import { UserConfig } from "../models/user-config.model";
 
 /*
 export interface QuestionConfig {
@@ -42,18 +42,20 @@ export class QuestionConfigService {
   }
 
   private getDefaultConfig(): UserConfig {
-      return {
-        showAnswer: false,
-        addition: false,
-        subtraction: false,
-        multiplication: false,
-        division: false,
-        rewrite: true,
-        encryption: false,
-        word: false,
-        showScore: false,
-        nombresDeQuestion: 10 // or any sensible default
-      };
+    return {
+      showAnswer: false,
+      addition: false,
+      subtraction: false,
+      multiplication: false,
+      division: false,
+      rewrite: true,
+      encryption: false,
+      word: false,
+      showScore: false,
+      nombresDeQuestion: 10,
+      chiffresEnLettres: false,
+      longueurMaximaleDesMots: 10
+    };
   }
 
 
@@ -65,7 +67,7 @@ export class QuestionConfigService {
     return this.configSubject.getValue();
   }
 
-public updateNotion(notion: keyof UserConfig, value: any): void {
+  public updateNotion(notion: keyof UserConfig, value: any): void {
     if (!this.currentUser) {
       throw new Error('Cannot update configuration: No user selected');
     }

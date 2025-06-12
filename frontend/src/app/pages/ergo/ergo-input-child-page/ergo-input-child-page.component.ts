@@ -22,6 +22,8 @@ export class ErgoInputChildComponent implements OnInit {
   selectedConditions: string[] = [];
   showNewConditionInput: boolean = false;
   newCondition: string = '';
+  warningMessage: string = '';
+
 
   selectedIcon: string = 'pp-1.png';
   private TROUBLES_STORAGE_KEY = 'availableTroubles';
@@ -130,11 +132,17 @@ export class ErgoInputChildComponent implements OnInit {
   }
 
   onSaveChild(): void {
+    this.warningMessage = '';
     if (this.childForm.valid) {
+      const age = Number(this.childForm.value.age);
+      if (age < 3 || age > 100) {
+        this.warningMessage = 'L\'âge doit être compris entre 3 et 100 ans.';
+        return;
+      }
       const newChild = {
         userId: Date.now().toString(), // Generate a unique ID
         name: `${this.childForm.value.firstName} ${this.childForm.value.lastName}`.trim(),
-          age: this.childForm.value.age, // <-- Add this line
+        age: this.childForm.value.age, // <-- Add this line
 
         icon: this.selectedIcon,
         conditions: this.selectedConditions, // <-- Add this line
@@ -149,12 +157,14 @@ export class ErgoInputChildComponent implements OnInit {
           encryption: false,
           word: false,
           showScore: false,
-          nombresDeQuestion: 10 // or your default
+          nombresDeQuestion: 10,
+          chiffresEnLettres: false,
+          longueurMaximaleDesMots: 10
         }
       };
 
       this.userService.addUser(newChild);
-      this.router.navigate(['/ergo-play']);
+      this.router.navigate(['/child-list']);
     }
   }
 
@@ -196,6 +206,16 @@ export class ErgoInputChildComponent implements OnInit {
         selectElement.value = '';
       }
     });
+  }
+
+
+  removeAvailableCondition(condition: string): void {
+    // Remove from availableConditions
+    this.availableConditions = this.availableConditions.filter(c => c !== condition);
+    // Remove from selectedConditions if present
+    this.selectedConditions = this.selectedConditions.filter(c => c !== condition);
+    // Save updated list
+    this.saveAvailableConditions();
   }
 
 }

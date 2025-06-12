@@ -402,3 +402,45 @@ span {
 .advanced-stat-cell app-settings-toggle {
   margin-left: 4px;
 }
+
+.frequency-warning {
+  color: #fff;
+  background: #e74c3c;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+
+
+
+
+.config-section {
+  margin-bottom: 32px;
+}
+
+.intro-text {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.question-frequency-list,
+.letter-frequency-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.question-frequency-row,
+.letter-frequency-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.question-label {
+  min-width: 120px;
+  font-weight: 500;
+}
