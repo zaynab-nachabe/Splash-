@@ -12,6 +12,7 @@ export type User = {
     showScore?: boolean;
     backgroundBrightness?: number;
     selectedPlayerImage?: string | null;
+    crabSpeed?: string;
 }
 
 

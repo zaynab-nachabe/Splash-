@@ -32,6 +32,23 @@
           <app-settings-toggle [checked]="showScore" (valueChange)="toggleShowScore()"></app-settings-toggle>
         </div>
 
+        <!-- Crab speed selection -->
+        <div class="toggle-row crab-speed-row">
+          <span class="toggle-label">Vitesse des crabes</span>
+          <div class="speed-buttons">
+            <button class="speed-button"
+                    [class.selected]="!isFastCrabs"
+                    (click)="toggleCrabSpeed(false)">
+                Petits pinces
+            </button>
+            <button class="speed-button"
+                    [class.selected]="isFastCrabs"
+                    (click)="toggleCrabSpeed(true)">
+                Grands crabes en colère
+            </button>
+          </div>
+        </div>
+
         <!-- Background brightness slider -->
         <div class="toggle-row brightness-slider-row">
           <span class="toggle-label">Luminosité du fond</span>

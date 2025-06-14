@@ -27,6 +27,8 @@ export class GameEngine {
     private answersShown: number = 0;
     private backgroundBrightness: number = 0.8;
     private keyAppearances: Map<string, number> = new Map();
+    public lives: number = 5;
+    public onLivesChanged: (lives: number) => void = () => {};
     constructor(
         private gameComponent: GameComponent,
         private canvas: HTMLCanvasElement,
@@ -48,7 +50,6 @@ export class GameEngine {
             this.enemyKilledAudio.muted = !enabled;
         });
 
-        // Subscribe to selectedPlayerImage and update player image
         this.childConfigService.selectedPlayerImage$.subscribe((img: string | null) => {
             if (img) {
                 this.player.setImage(img);
@@ -105,16 +106,28 @@ export class GameEngine {
     }
 
     private update(): void {
+        if (this.lives <= 0) {
+            this.onLivesChanged(0);
+            return;
+        }
+
         this.player.update();
-        let minDistance = Infinity;
         let playerHit = false;
         let selectedPlayerImage = this.player.currentImagePath;
+        
         // Check for collisions between enemies and player
         this.enemies.forEach(enemy => {
             enemy.update();
             // Check collision with player
             if (this.checkCollision(enemy, this.player)) {
                 playerHit = true;
+                if (!this.player.isDeadFishActive) {
+                    this.lives--;
+                    this.onLivesChanged(this.lives);
+                    if (this.lives <= 0) {
+                        this.gameComponent.endGame();
+                    }
+                }
             }
             this.player.projectiles.forEach(projectile => {
                 if (this.checkCollision(enemy, projectile)) {
@@ -221,6 +234,12 @@ export class GameEngine {
     public answerIncorrectly(proposedAnswer: string): void {
         this.incorrectAnswers++;
         this.totalQuestions++;
+        // Only decrease lives when submitting a wrong answer
+        this.lives--;
+        this.onLivesChanged(this.lives);
+        if (this.lives <= 0) {
+            this.gameComponent.endGame();
+        }
 
         // Only track the expected answer as a difficult word
         if (this.gameComponent.question) {

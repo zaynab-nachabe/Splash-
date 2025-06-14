@@ -16,7 +16,7 @@ export class ChildConfigPageComponent {
     playerImages: string[] = [];
     selectedPlayerImage: string | null = null;
     backgroundBrightness: number = 1.0;
-
+    crabSpeed: string = 'normal';
 
     constructor(private userService: UserService, private childConfigService: ChildConfigService) {
         this.userService.selectedUser$.subscribe((user: User | null) => {
@@ -30,6 +30,7 @@ export class ChildConfigPageComponent {
         });
         this.childConfigService.musicEnabled$.subscribe((val: boolean) => this.musicEnabled = val);
         this.childConfigService.effectsEnabled$.subscribe((val: boolean) => this.effectsEnabled = val);
+        this.childConfigService.crabSpeed$.subscribe((speed: string) => this.crabSpeed = speed);
     }
 
     ngOnInit() {
@@ -44,6 +45,7 @@ export class ChildConfigPageComponent {
             this.showScore = this.user.showScore ?? true;
             this.backgroundBrightness = (typeof this.user.backgroundBrightness === 'number') ? this.user.backgroundBrightness : 1.0;
             this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[4];
+            this.crabSpeed = this.user.crabSpeed || 'normal';
         }
         // Optionally set selectedPlayerImage from user if needed
         // this.selectedPlayerImage = this.user.selectedPlayerImage;
@@ -73,5 +75,19 @@ export class ChildConfigPageComponent {
     onBrightnessChange(value: number) {
         this.backgroundBrightness = value;
         this.childConfigService.updateBackgroundBrightness(value);
+    }
+
+    updateCrabSpeed(speed: string) {
+        this.crabSpeed = speed;
+        this.childConfigService.updateCrabSpeed(speed);
+    }
+
+    get isFastCrabs(): boolean {
+        return this.crabSpeed === 'fast';
+    }
+
+    toggleCrabSpeed(isFast: boolean) {
+        const newSpeed = isFast ? 'fast' : 'normal';
+        this.updateCrabSpeed(newSpeed);
     }
 }

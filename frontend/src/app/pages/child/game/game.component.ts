@@ -61,6 +61,9 @@ export class GameComponent implements OnInit, OnDestroy {
   public backgroundBrightness: number = 0.8;
   public showPreGameLobby: boolean = false;
 
+  // Add lives property
+  public lives: number = 5;
+
   constructor(
     private userService: UserService,
     private questionConfigService: QuestionConfigService,
@@ -77,7 +80,6 @@ export class GameComponent implements OnInit, OnDestroy {
         this.MaxQuestions = user.userConfig.nombresDeQuestion ?? 10;
         this.childConfigService.loadUserConfig(this.user);
       } else {
-        // Handle the case where no user is selected, e.g. redirect or show a message
         console.warn('No user selected in game.');
       }
     });
@@ -135,8 +137,10 @@ export class GameComponent implements OnInit, OnDestroy {
     if (!this.showPreGameLobby) {
       this.loadNewQuestion();
     }
+    this.lives = this.gameEngine ? this.gameEngine.lives : 5;
   }
 
+  // Update to listen for lives changes from game engine
   ngAfterViewInit(): void {
     if (this.user) {
       this.childConfigService.loadUserConfig(this.user);
@@ -145,6 +149,13 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameEngine = new GameEngine(this, canvas, this.fontService, this.childConfigService);
     this.gameEngine.setBackgroundBrightness(this.backgroundBrightness);
     //this.startMusic();
+
+    this.gameEngine.onLivesChanged = (lives: number) => {
+      this.lives = lives;
+      if (lives <= 0) {
+        this.endGame();
+      }
+    };
   }
 
   ngOnDestroy(): void {
@@ -163,10 +174,9 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private startMusic(): void {
     const audioElement = this.gameMusicRef.nativeElement;
-    // Only play music if music is enabled
     if (this.childConfigService.getMusicEnabled()) {
-      audioElement.pause(); // Reset audio playback
-      audioElement.currentTime = 0; // Reset to the beginning
+      audioElement.pause();
+      audioElement.currentTime = 0;
       audioElement.play().catch((error) => {
         console.error('Error playing music:', error);
       });
@@ -250,7 +260,7 @@ export class GameComponent implements OnInit, OnDestroy {
       }
     }
 
-    ret.push(GameComponent.INPUTS_END as Input); // Explicitly cast INPUTS_END to Input
+    ret.push(GameComponent.INPUTS_END as Input);
     this.inputs = ret;
   }
 
@@ -331,18 +341,16 @@ export class GameComponent implements OnInit, OnDestroy {
   */
 
   private writeCharacter(c: string): void {
-    // Check if the character is wrong at the current position
-    const expected = this.expected_answerInputs[this.cursorPosition];
-    if (expected && c !== expected) {
-      // Log the error to the game engine's errorsByKey map
-      const key = `Key${expected.toUpperCase()}`;
-      this.gameEngine.logKeyError(key);
-    }
-
     this.proposed_answerInputs.splice(
       this.cursorPosition++, 0, c
     );
     this.updateInputs();
+
+    if (this.proposed_answerInputs.length === this.expected_answerInputs.length) {
+      if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
+        this.submitAnswer();
+      }
+    }
   }
 
 
@@ -388,14 +396,12 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private showAnswer(): void {
-    // Whatever logic you use to show answers
     this.gameEngine.showAnswer();
   }
 
-  private endGame(): void {
+  public endGame(): void {
     this.hasEnded = true;
     this.stopMusic();
-    // Get statistics from game engine
     const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
 
     // Attach attempts to wordsLeastSuccessful if present

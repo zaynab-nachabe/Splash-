@@ -13,12 +13,14 @@ export class ChildConfigService {
   public showScoreSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public backgroundBrightnessSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0.1);
   public selectedPlayerImageSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  private crabSpeedSubject: BehaviorSubject<string> = new BehaviorSubject<string>('normal');
 
   musicEnabled$;
   effectsEnabled$;
   showScore$ = this.showScoreSubject.asObservable();
   backgroundBrightness$ = this.backgroundBrightnessSubject.asObservable();
   selectedPlayerImage$ = this.selectedPlayerImageSubject.asObservable();
+  crabSpeed$ = this.crabSpeedSubject.asObservable();
   private userId: string | null = null;
   private currentUser: User | null = null;
 
@@ -39,6 +41,7 @@ export class ChildConfigService {
         this.showScoreSubject.next(userData.showScore ?? true);
         this.backgroundBrightnessSubject.next(userData.backgroundBrightness ?? 0.1);
         this.selectedPlayerImageSubject.next(userData.selectedPlayerImage ?? null);
+        this.crabSpeedSubject.next(userData.crabSpeed ?? 'normal');
       });
   }
 
@@ -114,6 +117,21 @@ export class ChildConfigService {
         },
         error: (err) => {
           console.error('Error updating selectedPlayerImage:', err);
+        }
+      });
+    }
+  }
+
+  updateCrabSpeed(speed: string) {
+    if (this.userId && this.currentUser) {
+      const updatedUser = { ...this.currentUser, crabSpeed: speed };
+      this.http.put<any>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
+        next: (userData: any) => {
+          this.crabSpeedSubject.next(userData.crabSpeed ?? speed);
+          this.currentUser = userData;
+        },
+        error: (err) => {
+          console.error('Error updating crab speed:', err);
         }
       });
     }

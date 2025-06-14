@@ -14,6 +14,9 @@ export class Player {
 
     public isDeadFishActive: boolean = false;
     public currentImagePath: string = "../../../../assets/images/game/player/yellow_fish.png";
+    public currentLives: number = 5;
+    public isInvulnerable: boolean = false;
+    private invulnerabilityDuration: number = 2000;
 
     constructor(private gameEngine: GameEngine, private canvas: HTMLCanvasElement) {
         this.gameEngine = gameEngine;
@@ -57,5 +60,29 @@ export class Player {
     public setImage(imagePath: string) {
         this.currentImagePath = imagePath;
         this.image.src = imagePath;
+    }
+
+    public takeDamage(): void {
+        if (!this.isInvulnerable && !this.isDeadFishActive) {
+            this.currentLives--;
+            this.isInvulnerable = true;
+            
+            // Start invulnerability period
+            setTimeout(() => {
+                this.isInvulnerable = false;
+            }, this.invulnerabilityDuration);
+
+            // Notify game engine of life loss
+            if (this.gameEngine) {
+                this.gameEngine.onLivesChanged(this.currentLives);
+            }
+        }
+    }
+
+    public resetLives(): void {
+        this.currentLives = 5;
+        if (this.gameEngine) {
+            this.gameEngine.onLivesChanged(this.currentLives);
+        }
     }
 }
