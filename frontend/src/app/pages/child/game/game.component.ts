@@ -108,14 +108,14 @@ export class GameComponent implements OnInit, OnDestroy {
         const audio = this.gameMusicRef.nativeElement;
         if (enabled) {
           audio.pause();
-          audio.currentTime = 0; // Reset to the beginning
+          audio.currentTime = 0;
           setTimeout(() => {
-            audio.muted = false; // Unmute after a short delay
+            audio.muted = false;
             audio.play().catch(() => { });
-          }, 0); // Let pause finish before play
+          }, 0);
         } else {
           audio.pause();
-          audio.currentTime = 0; // Reset to the beginning
+          audio.currentTime = 0;
           audio.muted = true;
         }
       }
@@ -208,12 +208,12 @@ export class GameComponent implements OnInit, OnDestroy {
       console.log("No user selected, cannot load new question.");
       return;
     }
-    const userConfig: UserConfig = this.user.userConfig; // Get user configuration
+    const userConfig: UserConfig = this.user.userConfig;
     this.questionService.generateQuestion(userConfig).subscribe(
       (question) => {
         console.log("Received question from backend:", question);
 
-        this.question = question; // Set the new question
+        this.question = question;
         this.expected_answerInputs = this.question.answer.split('');
 
         if (this.gameEngine && this.expected_answerInputs) {
@@ -230,7 +230,7 @@ export class GameComponent implements OnInit, OnDestroy {
       },
       (error) => {
         console.error('Error fetching question:', error);
-        this.hasEnded = true; // End the game if question generation fails
+        this.hasEnded = true;
       }
     );
   }
@@ -326,19 +326,10 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
 
-    // Reset answer inputs
     this.expected_answerInputs = this.question.answer.split("");
     this.proposed_answerInputs = [];
     this.cursorPosition = 0;
   }
-  /*
-  private writeCharacter(c: string): void {
-      this.proposed_answerInputs.splice(
-          this.cursorPosition++, 0, c
-      );
-      this.updateInputs();
-  }
-  */
 
   private writeCharacter(c: string): void {
     this.proposed_answerInputs.splice(
