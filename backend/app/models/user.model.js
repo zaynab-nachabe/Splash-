@@ -88,13 +88,11 @@ const update = (userId, updates) => {
     const idx = users.findIndex(u => u.userId === userId);
     if (idx === -1) throw new Error('User not found');
 
-    // Ensure all optional fields have proper default values
-    const updatedUser = { 
+    const updatedUser = {
         ...users[idx],
         ...updates,
-        money: Number(updates.money || 0),
-        unlockedAvatars: Array.isArray(updates.unlockedAvatars) ? updates.unlockedAvatars : ['yellow_fish'],
-        limitedLives: typeof updates.limitedLives === 'boolean' ? updates.limitedLives : true
+        
+        crabSpeed: ['slow', 'fast', 'normal'].includes(updates.crabSpeed) ? updates.crabSpeed : 'slow',
     };
 
     try {
