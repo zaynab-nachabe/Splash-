@@ -174,7 +174,7 @@ export class ChildConfigService {
         selectedPlayerImage: avatar.path
       };
 
-      // Ensure the object matches the User type exactly
+      
       return this.http.put<User>(`${this.apiUrl}/${this.userId}`, {
         ...updatedUser,
         userConfig: this.currentUser.userConfig || {},

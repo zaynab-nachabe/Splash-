@@ -33,6 +33,7 @@ const userSchema = Joi.object({
     selectedPlayerImage: Joi.string().optional().default('../../../../frontend/src/assets/images/game/player/yellow_fish.png'),
     money: Joi.number().optional().default(0), 
     unlockedAvatars: Joi.array().items(Joi.string()).default(['yellow_fish']),
+    crabSpeed: Joi.string().valid('slow', 'fast').default('slow'),
 });
 
 const validateUser = (user) => {

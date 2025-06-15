@@ -25,11 +25,11 @@ export class GameEngine {
     private errorsByKey: Map<string, number> = new Map();
     private difficultWords: Map<string, { attempts: number, successes: number }> = new Map();
     private answersShown: number = 0;
-    private backgroundBrightness: number = 0.8;
     private keyAppearances: Map<string, number> = new Map();
     public lives: number = 5;
     public onLivesChanged: (lives: number) => void = () => {};
     private limitedLives: boolean = true;
+    private crabSpeedMultiplier: number = 1;
 
     constructor(
         private gameComponent: GameComponent,
@@ -59,6 +59,16 @@ export class GameEngine {
                 this.player.setImage("../../../../assets/images/game/player/yellow_fish.png");
             }
         });
+
+        this.childConfigService.crabSpeed$.subscribe((speed: string) => {
+            this.crabSpeedMultiplier = speed === 'fast' ? 1.5 : 1; 
+            
+            this.enemies.forEach(enemy => {
+                if (enemy instanceof Enemy) {
+                    enemy.setSpeedMultiplier(this.crabSpeedMultiplier);
+                }
+            });
+        });
     }
 
     private checkCollision(obj1: any, obj2: any): boolean {
@@ -85,6 +95,7 @@ export class GameEngine {
 
     private addEnemy(): void {
         let newEnemy = Math.random() > 0.3 ? new Crab(this, this.canvas) : new HiveCrab(this, this.canvas);
+        newEnemy.setSpeedMultiplier(this.crabSpeedMultiplier);
         this.enemies.push(newEnemy);
     }
 
@@ -140,13 +151,11 @@ export class GameEngine {
         if (this.enemies.length < 1) {
             this.addEnemy();
         }
-        // If player is hit, temporarily switch to dead_fish.png
         if (playerHit && !this.player.isDeadFishActive) {
             this.player.isDeadFishActive = true;
             const previousImage = selectedPlayerImage;
             this.player.setImage('../../../../assets/images/game/player/dead_fish.png');
             setTimeout(() => {
-                // Revert to the selected avatar after 2 seconds
                 this.player.setImage(previousImage);
                 this.player.isDeadFishActive = false;
             }, 2000);
@@ -154,14 +163,6 @@ export class GameEngine {
     }
 
     private draw(ctx: CanvasRenderingContext2D): void {
-        // Draw background with brightness
-        ctx.save();
-        ctx.globalAlpha = this.backgroundBrightness;
-        ctx.fillStyle = '#ffffff'; // or your background color
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        ctx.globalAlpha = 1.0;
-        ctx.restore();
-
         if (this.getShowScore()) {
             this.Ui.draw(ctx);
         }
@@ -313,11 +314,6 @@ export class GameEngine {
     public getShowScore(): boolean {
         return this.childConfigService.showScoreSubject?.value !== false;
     }
-
-    public setBackgroundBrightness(brightness: number) {
-        this.backgroundBrightness = brightness;
-    }
-
 
     public logKeyError(key: string): void {
         this.errorsByKey.set(key, (this.errorsByKey.get(key) || 0) + 1);

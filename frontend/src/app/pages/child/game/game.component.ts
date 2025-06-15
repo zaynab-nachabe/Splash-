@@ -56,11 +56,9 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private questionCount: number = -2;
   private MaxQuestions: number = 10;
-
-  public backgroundBrightness: number = 0.8;
   public showPreGameLobby: boolean = false;
 
-  // Add lives property
+  
   public lives: number = 5;
   limitedLives: boolean = true;
 
@@ -130,24 +128,21 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.questionCount = -1; //OPTIONAL TO TEST
+    this.questionCount = -1;
     document.addEventListener("keydown", this.keydownHandler);
     this.updateInputs();
-    // Do not start the game if pre-game lobby is shown
     if (!this.showPreGameLobby) {
       this.loadNewQuestion();
     }
     this.lives = this.gameEngine ? this.gameEngine.lives : 5;
   }
 
-  // Update to listen for lives changes from game engine
   ngAfterViewInit(): void {
     if (this.user) {
       this.childConfigService.loadUserConfig(this.user);
     }
     const canvas = this.canvasRef.nativeElement;
     this.gameEngine = new GameEngine(this, canvas, this.fontService, this.childConfigService);
-    this.gameEngine.setBackgroundBrightness(this.backgroundBrightness);
     //this.startMusic();
 
     this.gameEngine.onLivesChanged = (lives: number) => {

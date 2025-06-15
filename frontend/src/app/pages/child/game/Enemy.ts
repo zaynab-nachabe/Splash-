@@ -15,6 +15,8 @@ export class Enemy {
     protected deathAnimationTimer: number = 0;
     protected deathAnimationImage: HTMLImageElement;
     protected deathAnimationFrameCount: number = 7;
+    protected baseSpeed: number = 0.1;
+    protected speedMultiplier: number = 1;
 
 
     constructor(private gameEngine: GameEngine, private canvas: HTMLCanvasElement, x?: number, y?: number) {
@@ -25,7 +27,7 @@ export class Enemy {
         this.width = 100,
         this.height = 100
         this.alive = true;
-        this.speed = 0.3;
+        this.speed = this.baseSpeed * this.speedMultiplier;
         this.score = 10;
         this.deathAnimationImage = new Image();
         for (let i = 0; i < this.deathAnimationFrameCount; i++) {
@@ -75,6 +77,11 @@ export class Enemy {
         if (distance < 100) {
             this.alive = false;
         }
+    }
+
+    public setSpeedMultiplier(multiplier: number): void {
+        this.speedMultiplier = multiplier;
+        this.speed = this.baseSpeed * this.speedMultiplier;
     }
 }
 
