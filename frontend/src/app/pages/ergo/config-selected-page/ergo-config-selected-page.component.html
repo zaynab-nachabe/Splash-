@@ -80,8 +80,10 @@
         <!-- Frequency inputs for each letter -->
         <div *ngFor="let letter of topMissedLetters" class="advanced-stat-cell">
           <span>{{ letter.label }}</span>
-          <input #letterFreqInput type="text" [value]="letterFrequencies[letter.key] ?? ''"
-            (input)="onFrequencyInput(letterFreqInput, letter.key)" class="frequency-input" />
+          <input #letterFreqInput type="text" 
+       [value]="letterFrequencies[letter.key] || ''"
+       (input)="onFrequencyInput(letterFreqInput, letter.key)" 
+       class="frequency-input" />
         </div>
       </div>
     </div>
