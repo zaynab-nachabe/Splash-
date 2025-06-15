@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, EMPTY, Observable } from "rxjs";
 import { User } from "../models/user.model";
 import { HttpClient } from "@angular/common/http";
-
+import { tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -77,5 +77,41 @@ export class UserService {
 
   setScore(score: number): void {
     this.userScore = score;
+  }
+
+  updateUserMoney(userId: string, newAmount: number) {
+    if (this.selectedUser$.getValue()?.userId === userId) {
+      const updatedUser = { ...this.selectedUser$.getValue(), money: newAmount };
+      return this.http.put<User>(`${this.apiUrl}/${userId}`, updatedUser).pipe(
+        tap((user: User) => {
+          this.selectedUser$.next(user);
+        })
+      );
+    }
+    return EMPTY;
+  }
+
+  addMoney(userId: string, amount: number) {
+    const selectedUser = this.selectedUser$.getValue();
+    if (selectedUser?.userId === userId) {
+      const currentMoney = selectedUser?.money || 0;
+      return this.updateUserMoney(userId, currentMoney + amount);
+    }
+    return EMPTY;
+  }
+
+  updateMoney(userId: string, amount: number) {
+    const user = this.selectedUser$.getValue();
+    if (user) {
+      const currentMoney = user?.money || 0;
+      const updatedUser = { ...user, money: currentMoney + amount };
+
+      return this.http.put<User>(`${this.apiUrl}/${userId}`, updatedUser).pipe(
+        tap((updatedUser: User) => {
+          this.selectedUser$.next(updatedUser);
+        })
+      );
+    }
+    return EMPTY;
   }
 }

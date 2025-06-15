@@ -13,6 +13,7 @@ export type User = {
     backgroundBrightness?: number;
     selectedPlayerImage?: string | null;
     crabSpeed?: string;
+    money?: number;
 }
 
 

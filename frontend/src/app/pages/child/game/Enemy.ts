@@ -11,7 +11,7 @@ export class Enemy {
     protected score: number;
     protected isDying: boolean = false;
     protected deathAnimationFrame: number = 0;
-    protected deathAnimationFrames: HTMLImageElement[] = []; // Number of frames
+    protected deathAnimationFrames: HTMLImageElement[] = [];
     protected deathAnimationTimer: number = 0;
     protected deathAnimationImage: HTMLImageElement;
     protected deathAnimationFrameCount: number = 7;
@@ -25,7 +25,7 @@ export class Enemy {
         this.width = 100,
         this.height = 100
         this.alive = true;
-        this.speed = 0.5; 
+        this.speed = 0.3;
         this.score = 10;
         this.deathAnimationImage = new Image();
         for (let i = 0; i < this.deathAnimationFrameCount; i++) {

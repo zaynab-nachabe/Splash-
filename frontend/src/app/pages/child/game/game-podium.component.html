@@ -3,6 +3,10 @@
   <app-medium-button class="navbar-button red" [routerLink]="['/']" routerLinkActive="active">Retour</app-medium-button>
   <app-inner-box class="main-box blue">
     <div class="podium-container">
+      <div class="money-container">
+        <img src="../../../../assets/images/game/coin.png" alt="coin" class="coin-small">
+        <span class="money-text">{{ user?.money || 0 }}</span>
+      </div>
       <div class="toast-message">
         <p>🎉 Félicitations ! Tu as répondus à {{ questionsAnswered }} questions ! 🎉</p>
       </div>

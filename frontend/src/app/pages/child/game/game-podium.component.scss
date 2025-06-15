@@ -21,4 +21,35 @@
     position: relative;
     margin-top: 0;
   }
+
+  .podium-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .money-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 12px;
+    border-radius: 12px;
+    z-index: 1;
+
+    .coin-small {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    .money-text {
+      color: #ffd700;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+  }
 }

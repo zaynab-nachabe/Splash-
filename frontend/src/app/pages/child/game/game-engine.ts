@@ -54,7 +54,6 @@ export class GameEngine {
             if (img) {
                 this.player.setImage(img);
             } else {
-                // fallback to default if null
                 this.player.setImage("../../../../assets/images/game/player/yellow_fish.png");
             }
         });
@@ -115,10 +114,8 @@ export class GameEngine {
         let playerHit = false;
         let selectedPlayerImage = this.player.currentImagePath;
         
-        // Check for collisions between enemies and player
         this.enemies.forEach(enemy => {
             enemy.update();
-            // Check collision with player
             if (this.checkCollision(enemy, this.player)) {
                 playerHit = true;
                 if (!this.player.isDeadFishActive) {
@@ -234,14 +231,12 @@ export class GameEngine {
     public answerIncorrectly(proposedAnswer: string): void {
         this.incorrectAnswers++;
         this.totalQuestions++;
-        // Only decrease lives when submitting a wrong answer
         this.lives--;
         this.onLivesChanged(this.lives);
         if (this.lives <= 0) {
             this.gameComponent.endGame();
         }
 
-        // Only track the expected answer as a difficult word
         if (this.gameComponent.question) {
             const correctAnswer = this.gameComponent.question.answer;
             if (!this.difficultWords.has(correctAnswer)) {
@@ -253,7 +248,6 @@ export class GameEngine {
             }
         }
 
-        // Track key errors (as before)
         for (let i = 0; i < proposedAnswer.length; i++) {
             const key = `Key${proposedAnswer[i].toUpperCase()}`;
             this.errorsByKey.set(key, (this.errorsByKey.get(key) || 0) + 1);
@@ -269,13 +263,11 @@ export class GameEngine {
         const endTime = new Date();
         const gameTimeMinutes = (endTime.getTime() - this.startTime.getTime()) / 60000;
 
-        // Calculate statistics
         const wordsPerMinute = Math.round(this.wordsTyped.length / gameTimeMinutes) || 0;
         const precision = this.totalQuestions > 0
             ? Math.round((this.correctAnswers / this.totalQuestions) * 100)
             : 0;
 
-        // Format difficult words
         const wordsLeastSuccessful = Array.from(this.difficultWords.entries())
             .filter(([__dirname, stats]) => stats.successes < stats.attempts)
             .map(([word, stats]) => ({
@@ -284,13 +276,12 @@ export class GameEngine {
             }))
             .sort((a, b) => a.successRate - b.successRate);
 
-        // Format heatmap data
         const heatmapData = Array.from(this.errorsByKey.entries())
             .map(([keyCode, errorCount]) => {
                 const appearances = this.keyAppearances.get(keyCode);
                 let errorFrequency: number;
                 if (!appearances || appearances === 0) {
-                    errorFrequency = -1; // never appeared in answers
+                    errorFrequency = -1;
                 } else {
                     errorFrequency = Math.round((errorCount / appearances) * 100);
                 }
@@ -304,7 +295,7 @@ export class GameEngine {
             score: this.score,
             ranking: 0,
             wordsPerMinute,
-            mathNotionUnderstanding: Math.round(precision * 0.8), // Simplified estimation
+            mathNotionUnderstanding: Math.round(precision * 0.8),
             wordsLeastSuccessful,
             precision,
             heatmapData,
@@ -314,7 +305,6 @@ export class GameEngine {
     }
 
     public getShowScore(): boolean {
-        // Defensive: always return true if config is missing
         return this.childConfigService.showScoreSubject?.value !== false;
     }
 

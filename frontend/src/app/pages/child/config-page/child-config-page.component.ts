@@ -38,7 +38,11 @@ export class ChildConfigPageComponent {
             '../../../../assets/images/game/player/dory.png',
             '../../../../assets/images/game/player/nemo.png',
             '../../../../assets/images/game/player/red_fish.png',
-            '../../../../assets/images/game/player/yellow_fish.png'
+            '../../../../assets/images/game/player/yellow_fish.png',
+            '../../../../assets/images/game/player/shark.png',
+            '../../../../assets/images/game/player/starfish.png',
+            '../../../../assets/images/game/player/octopus.png',
+            '../../../../assets/images/game/player/jellyfish.png',
         ];
         if (this.user) {
             this.childConfigService.loadUserConfig(this.user);
