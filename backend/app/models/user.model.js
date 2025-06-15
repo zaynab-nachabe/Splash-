@@ -31,6 +31,7 @@ const userSchema = Joi.object({
     showScore: Joi.boolean().optional().default(true),
     backgroundBrightness: Joi.number().optional().default(0.8),
     selectedPlayerImage: Joi.string().optional().default('../../../../frontend/src/assets/images/game/player/yellow_fish.png'),
+    money: Joi.number().optional().default(0), 
 });
 
 const validateUser = (user) => {

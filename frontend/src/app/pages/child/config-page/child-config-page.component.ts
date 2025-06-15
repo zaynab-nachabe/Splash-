@@ -21,9 +21,11 @@ export class ChildConfigPageComponent {
     constructor(private userService: UserService, private childConfigService: ChildConfigService) {
         this.userService.selectedUser$.subscribe((user: User | null) => {
             if (user) {
-                this.user = user;
+                console.log('User updated in config page:', user);
+                this.user = {...user};
                 this.childConfigService.loadUserConfig(this.user);
                 this.showScore = this.user.showScore ?? true;
+                console.log('Current user money:', this.user.money);
             } else {
                 console.warn('No user selected in config page.');
             }
@@ -34,6 +36,21 @@ export class ChildConfigPageComponent {
     }
 
     ngOnInit() {
+        if (this.user?.userId) {
+            this.userService.getUserById(this.user.userId).subscribe({
+                next: (updatedUser) => {
+                    if (updatedUser) {
+                        this.user = updatedUser;
+                        console.log('Fetched fresh user data:', updatedUser);
+                        this.initializeConfigs();
+                    }
+                },
+                error: (err) => console.error('Error fetching user:', err)
+            });
+        }
+    }
+
+    private initializeConfigs() {
         this.playerImages = [
             '../../../../assets/images/game/player/dory.png',
             '../../../../assets/images/game/player/nemo.png',
@@ -44,16 +61,12 @@ export class ChildConfigPageComponent {
             '../../../../assets/images/game/player/octopus.png',
             '../../../../assets/images/game/player/jellyfish.png',
         ];
-        if (this.user) {
-            this.childConfigService.loadUserConfig(this.user);
-            this.showScore = this.user.showScore ?? true;
-            this.backgroundBrightness = (typeof this.user.backgroundBrightness === 'number') ? this.user.backgroundBrightness : 1.0;
-            this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[4];
-            this.crabSpeed = this.user.crabSpeed || 'normal';
-        }
-        // Optionally set selectedPlayerImage from user if needed
-        // this.selectedPlayerImage = this.user.selectedPlayerImage;
-        console.log(this.user);
+        
+        this.childConfigService.loadUserConfig(this.user);
+        this.showScore = this.user.showScore ?? true;
+        this.backgroundBrightness = this.user.backgroundBrightness ?? 1.0;
+        this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[4];
+        this.crabSpeed = this.user.crabSpeed || 'normal';
     }
 
     toggleMusic() {

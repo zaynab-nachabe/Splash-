@@ -28,6 +28,7 @@ module.exports = [
     backgroundBrightness: 0.1,
     //selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/red_fish.png',
     selectedPlayerImage: '/assets/images/game/player/red_fish.png',
+    money: 0,
   },
   {
     userId: "2",
@@ -50,6 +51,7 @@ module.exports = [
     showScore: true,
     backgroundBrightness: 0.1,
     selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/nemo.png',
+    money: 0,
   },
   {
     userId: "3",
@@ -72,6 +74,7 @@ module.exports = [
     showScore: true,
     backgroundBrightness: 0.1,
     selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/dory.png',
+    money: 0,
   },
   {
     userId: "4",
@@ -94,5 +97,6 @@ module.exports = [
     showScore: true,
     backgroundBrightness: 0.1,
     selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/yellow_fish.png',
+    money: 0,
   },
 ];

@@ -54,11 +54,14 @@ export class UserService {
   }
 
   getUserById(userId: string): Observable<User | undefined> {
-    return new Observable(subscriber => {
-      const user = this.users.find(u => u.userId === userId);
-      subscriber.next(user);
-      subscriber.complete();
-    });
+    return this.http.get<User>(`${this.apiUrl}/${userId}`).pipe(
+      tap(user => {
+        // Update the selected user if it matches
+        if (this.selectedUser$.getValue()?.userId === userId) {
+          this.selectedUser$.next(user);
+        }
+      })
+    );
   }
 
   deleteUser(userId: string): void {
@@ -108,6 +111,12 @@ export class UserService {
 
       return this.http.put<User>(`${this.apiUrl}/${userId}`, updatedUser).pipe(
         tap((updatedUser: User) => {
+          // Update both the users array and the selected user
+          const idx = this.users.findIndex(u => u.userId === userId);
+          if (idx !== -1) {
+            this.users[idx] = updatedUser;
+            this.users$.next([...this.users]);
+          }
           this.selectedUser$.next(updatedUser);
         })
       );
