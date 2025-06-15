@@ -63,6 +63,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   // Add lives property
   public lives: number = 5;
+  limitedLives: boolean = true;
 
   constructor(
     private userService: UserService,
@@ -125,6 +126,13 @@ export class GameComponent implements OnInit, OnDestroy {
       this.backgroundBrightness = brightness;
       if (this.gameEngine) {
         this.gameEngine.setBackgroundBrightness(brightness);
+      }
+    });
+
+    this.childConfigService.limitedLives$.subscribe((val: boolean) => {
+      this.limitedLives = val;
+      if (this.gameEngine) {
+        this.gameEngine.setLimitedLives(val);
       }
     });
   }

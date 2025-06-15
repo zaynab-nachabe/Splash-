@@ -33,10 +33,10 @@
 <ng-template #loading>
   <p>Loading question...</p>
 </ng-template>
-<div class="hearts-container">
-  <img *ngFor="let heart of [].constructor(lives)" 
-       src="../../../../assets/images/game/red_heart.png" 
-       alt="heart"
-       class="heart-icon">
+<div class="hearts-container" *ngIf="limitedLives">
+    <img *ngFor="let heart of [].constructor(lives)" 
+         src="../../../../assets/images/game/red_heart.png" 
+         alt="heart"
+         class="heart-icon">
 </div>
 

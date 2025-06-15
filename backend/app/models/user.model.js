@@ -28,6 +28,7 @@ const userSchema = Joi.object({
     }).required(),
     musicEnabled: Joi.boolean().optional().default(true),
     effectsEnabled: Joi.boolean().optional().default(true),
+    limitedLives: Joi.boolean().optional().default(true),
     showScore: Joi.boolean().optional().default(true),
     backgroundBrightness: Joi.number().optional().default(0.8),
     selectedPlayerImage: Joi.string().optional().default('../../../../frontend/src/assets/images/game/player/yellow_fish.png'),
@@ -36,8 +37,12 @@ const userSchema = Joi.object({
 });
 
 const validateUser = (user) => {
-    const { error, value } = userSchema.validate(user);
+    const { error, value } = userSchema.validate(user, { 
+        allowUnknown: false,  // Ensure strict validation
+        stripUnknown: false   // Don't remove unknown properties
+    });
     if (error) {
+        console.error('Validation error:', error.details);  // Add more detailed logging
         throw new Error(`Invalid user input: ${error.message}`);
     }
     return value;
@@ -80,19 +85,18 @@ const update = (userId, updates) => {
     const idx = users.findIndex(u => u.userId === userId);
     if (idx === -1) throw new Error('User not found');
 
-    // Ensure money and unlockedAvatars are properly handled
+    // Ensure all optional fields have proper default values
     const updatedUser = { 
         ...users[idx],
         ...updates,
         money: Number(updates.money || 0),
-        unlockedAvatars: Array.isArray(updates.unlockedAvatars) ? updates.unlockedAvatars : ['yellow_fish']
+        unlockedAvatars: Array.isArray(updates.unlockedAvatars) ? updates.unlockedAvatars : ['yellow_fish'],
+        limitedLives: typeof updates.limitedLives === 'boolean' ? updates.limitedLives : true
     };
 
     try {
-        // Validate the updated user
         const validUser = validateUser(updatedUser);
         users[idx] = validUser;
-        console.log('[update] User updated in memory:', validUser);
         saveUsersToFile();
         return users[idx];
     } catch (error) {

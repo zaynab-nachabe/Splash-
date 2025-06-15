@@ -15,6 +15,7 @@ export type User = {
     crabSpeed?: string;
     money?: number; // Make money optional
     unlockedAvatars?: string[];
+    limitedLives?: boolean; // Add new property
 }
 
 
@@ -29,7 +30,8 @@ export function createUser(user: Partial<User>): User {
     musicEnabled: user.musicEnabled ?? true,
     effectsEnabled: user.effectsEnabled ?? true,
     showScore: user.showScore ?? true,
-    money: 0, // Set default value when creating a user
-    unlockedAvatars: user.unlockedAvatars || ['yellow_fish']
+    money: 0,
+    unlockedAvatars: user.unlockedAvatars || ['yellow_fish'],
+    limitedLives: user.limitedLives ?? true, // Default to true
   };
 }

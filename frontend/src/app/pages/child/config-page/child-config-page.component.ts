@@ -19,6 +19,7 @@ export class ChildConfigPageComponent {
     backgroundBrightness: number = 1.0;
     crabSpeed: string = 'normal';
     avatars = AVATAR_PRICES;
+    limitedLives: boolean = true;
 
     constructor(private userService: UserService, private childConfigService: ChildConfigService) {
         this.userService.selectedUser$.subscribe((user: User | null) => {
@@ -35,6 +36,7 @@ export class ChildConfigPageComponent {
         this.childConfigService.musicEnabled$.subscribe((val: boolean) => this.musicEnabled = val);
         this.childConfigService.effectsEnabled$.subscribe((val: boolean) => this.effectsEnabled = val);
         this.childConfigService.crabSpeed$.subscribe((speed: string) => this.crabSpeed = speed);
+        this.childConfigService.limitedLives$.subscribe((val: boolean) => this.limitedLives = val);
     }
 
     ngOnInit() {
@@ -129,5 +131,10 @@ export class ChildConfigPageComponent {
             },
             error: (err) => console.error('Error purchasing avatar:', err)
         });
+    }
+
+    toggleLimitedLives() {
+        this.limitedLives = !this.limitedLives;
+        this.childConfigService.updateLimitedLives(this.limitedLives);
     }
 }

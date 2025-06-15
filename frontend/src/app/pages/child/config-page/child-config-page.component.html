@@ -27,8 +27,11 @@
 
         <!-- show deaths -->
         <div class="toggle-row">
-          <span class="toggle-label">Montrer les vie restantes</span>
-              <app-settings-toggle></app-settings-toggle>
+          <span class="toggle-label">Vies limitées</span>
+          <app-settings-toggle 
+              [checked]="limitedLives" 
+              (valueChange)="toggleLimitedLives()">
+          </app-settings-toggle>
         </div>
 
         <!-- show score toggle -->

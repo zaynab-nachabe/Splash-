@@ -29,6 +29,8 @@ export class GameEngine {
     private keyAppearances: Map<string, number> = new Map();
     public lives: number = 5;
     public onLivesChanged: (lives: number) => void = () => {};
+    private limitedLives: boolean = true;
+
     constructor(
         private gameComponent: GameComponent,
         private canvas: HTMLCanvasElement,
@@ -231,10 +233,14 @@ export class GameEngine {
     public answerIncorrectly(proposedAnswer: string): void {
         this.incorrectAnswers++;
         this.totalQuestions++;
-        this.lives--;
-        this.onLivesChanged(this.lives);
-        if (this.lives <= 0) {
-            this.gameComponent.endGame();
+        
+        // Only decrease lives if limitedLives is enabled
+        if (this.limitedLives) {
+            this.lives--;
+            this.onLivesChanged(this.lives);
+            if (this.lives <= 0) {
+                this.gameComponent.endGame();
+            }
         }
 
         if (this.gameComponent.question) {
@@ -319,6 +325,10 @@ export class GameEngine {
 
     public incrementKeyAppearance(key: string): void {
         this.keyAppearances.set(key, (this.keyAppearances.get(key) || 0) + 1);
+    }
+
+    public setLimitedLives(enabled: boolean) {
+        this.limitedLives = enabled;
     }
 
 }

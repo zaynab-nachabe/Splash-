@@ -16,6 +16,7 @@ export class ChildConfigService {
   public backgroundBrightnessSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0.1);
   public selectedPlayerImageSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   private crabSpeedSubject: BehaviorSubject<string> = new BehaviorSubject<string>('normal');
+  private limitedLivesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   musicEnabled$;
   effectsEnabled$;
@@ -23,6 +24,7 @@ export class ChildConfigService {
   backgroundBrightness$ = this.backgroundBrightnessSubject.asObservable();
   selectedPlayerImage$ = this.selectedPlayerImageSubject.asObservable();
   crabSpeed$ = this.crabSpeedSubject.asObservable();
+  limitedLives$ = this.limitedLivesSubject.asObservable();
   private userId: string | null = null;
   private currentUser: User | null = null;
 
@@ -44,6 +46,7 @@ export class ChildConfigService {
         this.backgroundBrightnessSubject.next(userData.backgroundBrightness ?? 0.1);
         this.selectedPlayerImageSubject.next(userData.selectedPlayerImage ?? null);
         this.crabSpeedSubject.next(userData.crabSpeed ?? 'normal');
+        this.limitedLivesSubject.next(userData.limitedLives ?? true);
       });
   }
 
@@ -139,12 +142,29 @@ export class ChildConfigService {
     }
   }
 
+  updateLimitedLives(enabled: boolean) {
+    if (this.userId && this.currentUser) {
+      const updatedUser = { ...this.currentUser, limitedLives: enabled };
+      this.http.put<User>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
+        next: (userData: User) => {
+          this.limitedLivesSubject.next(userData.limitedLives ?? enabled);
+          this.currentUser = userData;
+        },
+        error: (err) => console.error('Error updating limitedLives:', err)
+      });
+    }
+  }
+
   getMusicEnabled(): boolean {
     return this.musicEnabledSubject.value;
   }
 
   getEffectsEnabled(): boolean {
     return this.effectsEnabledSubject.value;
+  }
+
+  getLimitedLives(): boolean {
+    return this.limitedLivesSubject.value;
   }
 
   updateToggles(musicEnabled: boolean, effectsEnabled: boolean) {
