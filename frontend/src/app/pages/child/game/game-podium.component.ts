@@ -21,7 +21,7 @@ export class GamePodiumComponent implements OnInit {
     ngOnInit(): void {
         const state = this.route.snapshot.queryParams;
         this.user = JSON.parse(state['user'] || '{}');
-        this.questionsAnswered = Number(state['questionsAnswered']) || 0;
+        this.questionsAnswered = Number(state['questionsAnswered']) - 1 || 0;
         this.userScore = typeof state['score'] !== 'undefined' ? Number(state['score']) : this.userService.getScore();
         this.showScore = !!(this.user?.showScore ?? this.user?.userConfig?.showScore);
 
