@@ -22,6 +22,7 @@ console.log('words are ', words);
 class FrenchWordDictionary {
     constructor(words) {
         this.letterToWords = {};
+        this.lengthToWords = {};
         // Initialize dictionary with 26 letters
         for (let i = 0; i < 26; i++) {
             const letter = String.fromCharCode(97 + i); // 'a' to 'z'
@@ -39,6 +40,9 @@ class FrenchWordDictionary {
                     this.letterToWords[letter].add(word);
                 }
             }
+            const len = word.length;
+            if (!this.lengthToWords[len]) this.lengthToWords[len] = new Set();
+            this.lengthToWords[len].add(word);
         }
     }
 
@@ -67,6 +71,11 @@ class FrenchWordDictionary {
         letter = letter.toLowerCase();
         return this.letterToWords[letter] ? Array.from(this.letterToWords[letter]) : [];
     }
+
+        getWordsWithLength(len) {
+        return this.lengthToWords[len] ? Array.from(this.lengthToWords[len]) : [];
+    }
+
 }
 module.exports = {
     FrenchWordDictionary,

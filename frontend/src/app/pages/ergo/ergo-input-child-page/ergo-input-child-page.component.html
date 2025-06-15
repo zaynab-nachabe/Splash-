@@ -32,6 +32,10 @@
         <div *ngIf="childForm.get('age')?.invalid && childForm.get('age')?.touched" class="error-message">
           Âge requis (valeur numérique)
         </div>
+        <!-- Add this in your template, e.g. above the form or save button -->
+        <div *ngIf="warningMessage" style="color: red; margin-bottom: 10px;">
+          {{ warningMessage }}
+        </div>
       </div>
 
       <div class="form-group">
@@ -45,6 +49,8 @@
               <span class="remove-trouble" (click)="toggleCondition(condition)">×</span>
             </div>
           </div>
+
+
 
           <!-- Dropdown for existing troubles -->
           <div class="dropdown-wrapper">

@@ -9,9 +9,6 @@
   <app-medium-button class="navbar-button red" [routerLink]="['/ergo-play']"> Retour </app-medium-button>
   <app-medium-button class="navbar-button" [routerLink]="['/ergo-stat-selected']"> Statistiques </app-medium-button>
 
-
-
-
   <!--Zone du main -->
   <app-inner-box class="main-box blue">
     <!-- Save confirmation message -->
@@ -25,63 +22,76 @@
     <span>Âge : {{selectedUser?.age}} ans</span>
     <span>Troubles: {{selectedUser?.conditions}} </span>
 
-
-
-    <div class="config-item operation-selector">
-      <h3>Types de Questions</h3>
-
-      <!-- Selected operations pills (similar to ergo-input-child-page) -->
-      <div class="selected-operations" *ngIf="getSelectedOperations().length > 0">
-        <div *ngFor="let operation of getSelectedOperations()" class="operation-pill">
-          {{getOperationLabel(operation)}}
-          <span class="remove-operation" (click)="toggleOperation(operation)">×</span>
-        </div>
-      </div>
-
-      <!-- Dropdown for question types -->
-      <div class="dropdown-wrapper">
-        <select #operationSelect class="operations-dropdown" (change)="handleOperationSelection(operationSelect.value)">
-          <option value="" disabled selected>Sélectionner un type</option>
-          <option *ngFor="let op of availableOperations" [value]="op.key" [disabled]="isOperationSelected(op.key)">
-            {{op.label}}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="advanced-stats-section">
+    <!-- PART 1: General settings -->
+    <div class="config-section">
+      <h3>Paramètres généraux</h3>
       <div class="advanced-stats-grid">
-        <!-- Show Answers toggle -->
         <div class="advanced-stat-cell">
           <span>Montrer les réponses</span>
           <app-settings-toggle [checked]="currentConfig.showAnswer"
             (valueChange)="onToggleChange('showAnswer', $event)">
           </app-settings-toggle>
         </div>
-        <!-- Show Score toggle -->
         <div class="advanced-stat-cell">
           <span>Afficher le score</span>
           <app-settings-toggle [checked]="currentConfig.showScore" (valueChange)="onToggleChange('showScore', $event)">
           </app-settings-toggle>
         </div>
-        <!-- Nombre de questions input -->
+        <div class="advanced-stat-cell">
+          <span>Afficher les fautes</span>
+          <app-settings-toggle [checked]="currentConfig.showLetterColor ?? false"
+            (valueChange)="onToggleChange('showLetterColor', $event)">
+          </app-settings-toggle>
+        </div>
+        <div class="advanced-stat-cell">
+          <span>Chiffres en lettres</span>
+          <app-settings-toggle [checked]="currentConfig.chiffresEnLettres"
+            (valueChange)="onToggleChange('chiffresEnLettres', $event)">
+          </app-settings-toggle>
+        </div>
         <div class="advanced-stat-cell">
           <span>Nombre de questions</span>
           <input #nombreInput type="text" min="1" [value]="currentConfig.nombresDeQuestion || ''"
             (input)="onNombreDeQuestionInput(nombreInput)" class="frequency-input" />
         </div>
-        <!-- Frequency inputs for each operation -->
-        <div *ngFor="let op of availableOperations" class="advanced-stat-cell">
-          <span>{{ op.label }}</span>
-          <input #freqInput type="text" [value]="currentConfig.questionFrequency?.[op.key] ?? ''"
-            (input)="onFrequencyInput(freqInput, op.key)" class="frequency-input" />
-        </div>
 
-        <!-- Frequency inputs for each letter -->
-        <div *ngFor="let letter of topMissedLetters" class="advanced-stat-cell">
-          <span>{{ letter.label }}</span>
-          <input #letterFreqInput type="text" [value]="letterFrequencies[letter.key] ?? ''"
-            (input)="onFrequencyInput(letterFreqInput, letter.key)" class="frequency-input" />
+        <div class="advanced-stat-cell">
+          <span>Longueur maximale des mots</span>
+          <input #maxLenInput type="number" min="1" [value]="currentConfig.longueurMaximaleDesMots || ''"
+            (input)="onMaxWordLengthInput(maxLenInput)" class="frequency-input" />
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 2: Question frequencies -->
+    <div class="config-section">
+      <h3>Types de Questions</h3>
+      <div class="intro-text">Les fréquences déterminent la probabilité d’apparition de chaque notion ou lettre. Si vous activez une notion mais ne renseignez pas de fréquence, une fréquence automatique sera calculée pour équilibrer le total à 100%. Si vous désactivez une notion, sa fréquence devient 0. Plus la fréquence est élevée, plus la notion apparaîtra souvent.</div>
+      <div *ngIf="frequencyWarning" class="frequency-warning">
+        {{ frequencyWarning }}
+      </div>
+      <div class="question-frequency-list">
+        <div *ngFor="let op of availableOperations" class="question-frequency-row">
+          <span class="question-label">{{ op.label }}</span>
+          <app-settings-toggle [checked]="isOperationSelected(op.key)" (valueChange)="onToggleChange(op.key, $event)">
+          </app-settings-toggle>
+          <input #freqInput type="number" min="0" max="100" [value]="getEffectiveOperationFrequency(op.key)"
+            (input)="onFrequencyInput(freqInput, op.key, 'operation')" class="frequency-input"
+            [disabled]="!isOperationSelected(op.key)" />
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 3: Letter frequencies -->
+    <div class="config-section">
+      <h3>Lettres à surveiller</h3>
+      <div class="intro-text">Les fréquences des lettres déterminent la probabilité que chaque lettre soit utilisée dans un mot. Combiner plusieurs lettres augmente les chances que chacune apparaisse, et donc aussi qu'elles apparaissent ensemble.</div>
+      <div class="letter-frequency-list">
+        <div *ngFor="let letter of topMissedLetters" class="letter-frequency-row">
+          <span class="question-label">{{ letter.label }}</span>
+          <input #letterFreqInput type="number" min="0" max="100"
+            [value]="letterFrequencies[letter.key] !== undefined ? letterFrequencies[letter.key] : 0"
+            (input)="onFrequencyInput(letterFreqInput, letter.key, 'letter')" class="frequency-input" />
         </div>
       </div>
     </div>
