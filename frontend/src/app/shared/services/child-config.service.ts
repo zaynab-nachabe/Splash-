@@ -13,7 +13,6 @@ export class ChildConfigService {
   private musicEnabledSubject: BehaviorSubject<boolean>;
   private effectsEnabledSubject: BehaviorSubject<boolean>;
   public showScoreSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-  public backgroundBrightnessSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0.1);
   public selectedPlayerImageSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   private crabSpeedSubject: BehaviorSubject<string> = new BehaviorSubject<string>('normal');
   private limitedLivesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
@@ -21,7 +20,6 @@ export class ChildConfigService {
   musicEnabled$;
   effectsEnabled$;
   showScore$ = this.showScoreSubject.asObservable();
-  backgroundBrightness$ = this.backgroundBrightnessSubject.asObservable();
   selectedPlayerImage$ = this.selectedPlayerImageSubject.asObservable();
   crabSpeed$ = this.crabSpeedSubject.asObservable();
   limitedLives$ = this.limitedLivesSubject.asObservable();
@@ -43,7 +41,6 @@ export class ChildConfigService {
         this.musicEnabledSubject.next(userData.musicEnabled ?? true);
         this.effectsEnabledSubject.next(userData.effectsEnabled ?? true);
         this.showScoreSubject.next(userData.showScore ?? true);
-        this.backgroundBrightnessSubject.next(userData.backgroundBrightness ?? 0.1);
         this.selectedPlayerImageSubject.next(userData.selectedPlayerImage ?? null);
         this.crabSpeedSubject.next(userData.crabSpeed ?? 'normal');
         this.limitedLivesSubject.next(userData.limitedLives ?? true);
@@ -90,21 +87,6 @@ export class ChildConfigService {
         },
         error: (err) => {
           console.error('Error updating showScore:', err);
-        }
-      });
-    }
-  }
-
-  updateBackgroundBrightness(brightness: number) {
-    if (this.userId && this.currentUser) {
-      const updatedUser = { ...this.currentUser, backgroundBrightness: brightness };
-      this.http.put<any>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
-        next: (userData: any) => {
-          this.backgroundBrightnessSubject.next(userData.backgroundBrightness ?? brightness);
-          this.currentUser = userData;
-        },
-        error: (err) => {
-          console.error('Error updating backgroundBrightness:', err);
         }
       });
     }

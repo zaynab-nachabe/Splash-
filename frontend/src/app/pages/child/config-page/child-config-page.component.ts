@@ -16,7 +16,6 @@ export class ChildConfigPageComponent {
     showScore: boolean = true;
     playerImages: string[] = AVATAR_PRICES.map(a => a.path);
     selectedPlayerImage: string | null = null;
-    backgroundBrightness: number = 1.0;
     crabSpeed: string = 'normal';
     avatars = AVATAR_PRICES;
     limitedLives: boolean = true;
@@ -57,8 +56,7 @@ export class ChildConfigPageComponent {
     private initializeConfigs() {
         this.childConfigService.loadUserConfig(this.user);
         this.showScore = this.user.showScore ?? true;
-        this.backgroundBrightness = this.user.backgroundBrightness ?? 1.0;
-        this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[0]; // Default to yellow fish
+        this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[0];
         this.crabSpeed = this.user.crabSpeed || 'normal';
     }
 
@@ -80,11 +78,6 @@ export class ChildConfigPageComponent {
     selectPlayerImage(img: string) {
         this.selectedPlayerImage = img;
         this.childConfigService.updateSelectedPlayerImage(img);
-    }
-
-    onBrightnessChange(value: number) {
-        this.backgroundBrightness = value;
-        this.childConfigService.updateBackgroundBrightness(value);
     }
 
     updateCrabSpeed(speed: string) {

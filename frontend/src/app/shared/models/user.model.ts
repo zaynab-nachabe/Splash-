@@ -10,7 +10,6 @@ export type User = {
     musicEnabled?: boolean;
     effectsEnabled?: boolean;
     showScore?: boolean;
-    backgroundBrightness?: number;
     selectedPlayerImage?: string | null;
     crabSpeed?: string;
     money?: number; // Make money optional

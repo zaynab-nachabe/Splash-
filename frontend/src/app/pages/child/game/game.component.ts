@@ -37,7 +37,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private configSubscription: Subscription;
   private musicSubscription: Subscription;
-  private brightnessSubscription: Subscription;
   public fontFamily: string = 'Arial';
   public user!: User;
   public question!: Question;
@@ -122,13 +121,6 @@ export class GameComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.brightnessSubscription = this.childConfigService.backgroundBrightness$.subscribe((brightness: number) => {
-      this.backgroundBrightness = brightness;
-      if (this.gameEngine) {
-        this.gameEngine.setBackgroundBrightness(brightness);
-      }
-    });
-
     this.childConfigService.limitedLives$.subscribe((val: boolean) => {
       this.limitedLives = val;
       if (this.gameEngine) {
@@ -173,9 +165,6 @@ export class GameComponent implements OnInit, OnDestroy {
     }
     if (this.musicSubscription) {
       this.musicSubscription.unsubscribe();
-    }
-    if (this.brightnessSubscription) {
-      this.brightnessSubscription.unsubscribe();
     }
     this.stopMusic();
   }

@@ -57,16 +57,6 @@
           </div>
         </div>
 
-        <!-- Background brightness slider -->
-        <div class="toggle-row brightness-slider-row">
-          <span class="toggle-label">Luminosité du fond</span>
-          <app-settings-slider 
-              [(ngModel)]="backgroundBrightness" 
-              (valueChange)="onBrightnessChange($event)"
-              name="brightnessSlider">  <!-- Added name attribute -->
-          </app-settings-slider>
-        </div>
-
         <!-- Player avatar selection -->
         <div class="toggle-row player-select-row">
           <span class="toggle-label">Choisir un avatar</span>
