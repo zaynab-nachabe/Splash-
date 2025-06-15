@@ -168,7 +168,11 @@ class QuestionGenerator {
                 case 'rewrite': {
                     const nb = this.chooseTupleOfInputs(1, 0, 50, QuestionNotion.REWRITE)[0];
                     questionString = `Ecrire ${nb} : `;
-                    answerString = FrenchNumberConverter.convertToWords(nb);
+                    if (userConfig.chiffresEnLettres) {
+                        answerString = FrenchNumberConverter.convertToWords(nb);
+                    } else {
+                        answerString = nb.toString();
+                    }
                     notion = QuestionNotion.REWRITE;
                     break;
                 }
@@ -198,46 +202,54 @@ class QuestionGenerator {
                             selectedLetters.push(letter.toLowerCase());
                         }
                     }
-
                     console.log('Selected letters for this word:', selectedLetters);
 
+                    // 2. Get allowed word lengths from config (as an array of numbers)
+                    let allowedLengths = [];
+                    if (userConfig.longueurMaximaleDesMots) {
+                        // Example: allow all lengths up to the max
+                        for (let l = 1; l <= userConfig.longueurMaximaleDesMots; l++) allowedLengths.push(l);
+                    }
+                    // If you want to allow only a specific set, adjust here
 
-                    let candidateWords = null;
+                    console.log('Allowed word lengths:', allowedLengths);
 
-                    if (selectedLetters.length > 0) {
-                        // 3. Build sets for each selected letter
-                        const sets = selectedLetters.map(l => new Set(frenchWordDict.getWordsWithLetter(l)));
-                        console.log('Word sets for selected letters:', sets.map(s => Array.from(s).slice(0, 5))); // show first 5 words per set
+                    // 3. Build sets for each selected letter
+                    const letterSets = selectedLetters.map(l => new Set(frenchWordDict.getWordsWithLetter(l)));
+                    // 4. Build sets for each allowed length
+                    const lengthSets = allowedLengths.map(len => new Set(frenchWordDict.getWordsWithLength(len)));
 
-                        // 4. Try intersection, reduce if empty
-                        for (let n = sets.length; n > 0; n--) {
-                            // Try all combinations of n sets
-                            const combos = getCombinations(sets, n);
-                            let found = false;
-                            for (const combo of combos) {
-                                // Intersect all sets in combo
-                                let intersection = new Set(combo[0]);
-                                for (let i = 1; i < combo.length; i++) {
-                                    intersection = new Set([...intersection].filter(x => combo[i].has(x)));
-                                }
-                                if (intersection.size > 0) {
-                                    candidateWords = Array.from(intersection);
-                                    console.log(`Intersection found with ${n} sets, size: ${candidateWords.length}`);
+                    // 5. Union of letter sets
+                    let unionLetterSet = new Set();
+                    for (const s of letterSets) for (const w of s) unionLetterSet.add(w);
 
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found) break;
-                            else console.log(`No intersection found with ${n} sets, trying with fewer letters...`);
+                    // 6. Union of length sets
+                    let unionLengthSet = new Set();
+                    for (const s of lengthSets) for (const w of s) unionLengthSet.add(w);
 
-                        }
+                    console.log('Union of letter sets size:', unionLetterSet.size);
+                    console.log('Union of length sets size:', unionLengthSet.size);
+
+                    // 7. Intersection of both unions
+                    let candidateWords = [];
+                    if (unionLetterSet.size && unionLengthSet.size) {
+                        candidateWords = Array.from([...unionLetterSet].filter(w => unionLengthSet.has(w)));
+                        console.log('Intersection size:', candidateWords.length);
+                    } else if (unionLetterSet.size) {
+                        candidateWords = Array.from(unionLetterSet);
+                        console.log('No length restriction, using union of letter sets:', candidateWords.length);
+                    } else if (unionLengthSet.size) {
+                        candidateWords = Array.from(unionLengthSet);
+                        console.log('No letter restriction, using union of length sets:', candidateWords.length);
+                    } else {
+                        candidateWords = words;
+                        console.log('No restriction, using all words.');
                     }
 
-                    // 5. If no candidates, pick from all words
+                    // Fallback: if intersection is empty, use all words
                     if (!candidateWords || candidateWords.length === 0) {
                         candidateWords = words;
-                        console.log('No candidate words from letter sets, using all words.');
+                        console.log('No candidate words after intersection, using all words.');
                     }
 
                     // Pick a random word from candidateWords
@@ -262,8 +274,11 @@ class QuestionGenerator {
                         throw new Error('Generated answer is not a finite number');
                     }
                     questionString = `Calcules ${QuestionGenerator.stringifyQuestion(pairOfValues, op)}`;
-                    answerString = FrenchNumberConverter.convertToWords(answer);
-                    notion = questionNotion;
+                    if (userConfig.chiffresEnLettres) {
+                        answerString = FrenchNumberConverter.convertToWords(answer);
+                    } else {
+                        answerString = answer.toString();
+                    } notion = questionNotion;
                 }
             }
             console.log('Generated QnA:', { questionString, answerString, notion });

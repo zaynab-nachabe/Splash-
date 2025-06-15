@@ -21,6 +21,9 @@ const userSchema = Joi.object({
         word: Joi.boolean().optional().default(false),
         showScore: Joi.boolean().optional().default(false),
         nombresDeQuestion: Joi.number().optional().default(10),
+        chiffresEnLettres: Joi.boolean().optional().default(false),
+        longueurMaximaleDesMots: Joi.number().optional().default(5),
+        showLetterColor: Joi.boolean().optional().default(false),
         questionFrequency: Joi.object().pattern(
             /^(addition|subtraction|multiplication|division|rewrite|encryption|word|[A-Za-z])$/,
             Joi.number().optional()

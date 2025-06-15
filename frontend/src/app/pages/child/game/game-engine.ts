@@ -30,7 +30,6 @@ export class GameEngine {
     public onLivesChanged: (lives: number) => void = () => {};
     private limitedLives: boolean = true;
     private crabSpeedMultiplier: number = 1;
-
     constructor(
         private gameComponent: GameComponent,
         private canvas: HTMLCanvasElement,
@@ -235,7 +234,6 @@ export class GameEngine {
         this.incorrectAnswers++;
         this.totalQuestions++;
         
-        // Only decrease lives if limitedLives is enabled
         if (this.limitedLives) {
             this.lives--;
             this.onLivesChanged(this.lives);

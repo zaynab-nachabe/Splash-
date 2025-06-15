@@ -12,10 +12,11 @@ import { QuestionService } from 'src/app/shared/services/question.service';
 import { UserConfig } from 'src/app/shared/models/user-config.model';
 import { ChildConfigService } from 'src/app/shared/services/child-config.service';
 import { WordStats } from 'src/app/shared/models/game-statistics.model';
+import { QuestionNotion } from 'src/app/shared/models/QuestionGenerationUtils/QuestionNotionEnum';
 
 type Input = {
   letter: string,
-  status: "correct" | "wrong" | "pending",
+  status: "correct" | "wrong" | "pending" | "neutral",
 };
 
 
@@ -41,12 +42,13 @@ export class GameComponent implements OnInit, OnDestroy {
   public user!: User;
   public question!: Question;
   private keydownHandler: (event: KeyboardEvent) => void;
+  private enterTimeoutActive: boolean = false;
 
   private wordAttempts: { [word: string]: string[] } = {};
 
   public expected_answerInputs: string[] = [];
   public proposed_answerInputs: string[] = [];
-  public inputs: { letter: string, status: "correct" | "wrong" | "pending" }[] = [];
+  public inputs: { letter: string, status: "correct" | "wrong" | "pending" | "neutral" }[] = [];
 
   public cursorPosition: number = 0;
   public score: number = 0;
@@ -231,6 +233,9 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private updateInputs(): void {
     const showsAnswer = this.questionConfigService.getCurrentConfig()?.showAnswer ?? false;
+    const showLetterColor = this.user?.userConfig?.showLetterColor ?? true;
+
+
     const PENDING_SPACE: Input = { letter: '\xa0', status: "pending" };
     const CORRECT_SPACE: Input = { letter: '\xa0', status: "correct" };
     const WRONG_SPACE: Input = { letter: '·', status: "wrong" };
@@ -242,13 +247,33 @@ export class GameComponent implements OnInit, OnDestroy {
       const proposed_letter = this.proposed_answerInputs[i];
       const expected_letter = this.expected_answerInputs[i];
 
-      if (proposed_letter === expected_letter) {
-        ret[i] = proposed_letter !== ' ' ? { letter: proposed_letter, status: "correct" } : CORRECT_SPACE;
-      } else if (proposed_letter === undefined) {
-        if (!showsAnswer) break;
-        ret[i] = expected_letter !== ' ' ? { letter: expected_letter, status: "pending" } : PENDING_SPACE;
+      if (proposed_letter === undefined) {
+        // Before user types
+        if (showsAnswer) {
+          // Show expected letter in grey (pending)
+          if (expected_letter !== ' ') {
+            ret[i] = { letter: expected_letter, status: "pending" };
+          } else {
+            ret[i] = PENDING_SPACE;
+          }
+        }
+        // If showAnswer is false, do not show anything (skip)
+        else {
+          break;
+        }
       } else {
-        ret[i] = proposed_letter !== ' ' ? { letter: proposed_letter, status: "wrong" } : WRONG_SPACE;
+        // User has typed a letter
+        if (showLetterColor) {
+          // Colorful feedback
+          if (proposed_letter === expected_letter) {
+            ret[i] = proposed_letter !== ' ' ? { letter: proposed_letter, status: "correct" } : CORRECT_SPACE;
+          } else {
+            ret[i] = proposed_letter !== ' ' ? { letter: proposed_letter, status: "wrong" } : WRONG_SPACE;
+          }
+        } else {
+          // Always black (use a new status "neutral" for black in CSS)
+          ret[i] = proposed_letter !== ' ' ? { letter: proposed_letter, status: "neutral" } : { letter: '\xa0', status: "neutral" };
+        }
       }
     }
 
@@ -303,7 +328,7 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
 
-    if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
+    if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs, this.question.notion)) {
       this.score += 10;
       this.gameEngine.score = this.score;
       this.gameEngine.answerCorrectly();
@@ -366,7 +391,13 @@ export class GameComponent implements OnInit, OnDestroy {
         break;
 
       case "Enter":
-        this.submitAnswer();
+        if (!this.enterTimeoutActive) {
+          this.enterTimeoutActive = true;
+          this.submitAnswer();
+          setTimeout(() => {
+            this.enterTimeoutActive = false;
+          }, 500); // 0.5 seconds
+        }
         break;
 
       default:
@@ -431,6 +462,35 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 }
 
+
+
+class AnswerChecker {
+  public static checkAnswer(proposed_answer: string[], expected_answer: string[], question_type: QuestionNotion): boolean {
+    const proposed = proposed_answer.join('').replace(/\s+/g, ' ').trim();
+    const expected = expected_answer.join('').replace(/\s+/g, ' ').trim();
+
+    // Accept if exact match
+    if (proposed === expected) return true;
+
+    if (question_type === QuestionNotion.REWRITING || question_type === QuestionNotion.ADDITION || question_type === QuestionNotion.SUBTRACTION || question_type === QuestionNotion.MULTIPLICATION || question_type === QuestionNotion.DIVISION) {
+      // Accept if replacing dashes with spaces matches
+      const expectedWithSpaces = expected.replace(/-/g, ' ');
+      if (proposed === expectedWithSpaces) return true;
+
+      // Accept if replacing spaces with dashes matches
+      const expectedWithDashes = expected.replace(/ /g, '-');
+      if (proposed === expectedWithDashes) return true;
+
+      // Accept if both normalized (collapse multiple spaces/dashes)
+      const normalize = (s: string) => s.replace(/[-\s]+/g, ' ').trim();
+      if (normalize(proposed) === normalize(expected)) return true;
+    }
+    return false;
+
+  }
+}
+
+/*
 class AnswerChecker {
   public static checkAnswer(proposed_answer: string[], expected_answer: string[]): boolean {
     if (proposed_answer.length !== expected_answer.length) {
@@ -445,6 +505,7 @@ class AnswerChecker {
     return true;
   }
 }
+  */
 
 
 
