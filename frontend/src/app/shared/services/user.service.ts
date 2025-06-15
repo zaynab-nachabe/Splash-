@@ -33,7 +33,15 @@ export class UserService {
   }
 
   updateUser(user: User): void {
-    this.http.put<User>(`${this.apiUrl}/${user.userId}`, user).subscribe(updatedUser => {
+    const { backgroundBrightness, ...userWithoutBg } = user as any;
+    let userConfig = userWithoutBg.userConfig;
+    if (userConfig && typeof userConfig === 'object') {
+      const { backgroundBrightness, ...configWithoutBg } = userConfig as any;
+      userConfig = configWithoutBg;
+    }
+    const cleanUser = { ...userWithoutBg, userConfig };
+
+    this.http.put<User>(`${this.apiUrl}/${user.userId}`, cleanUser).subscribe(updatedUser => {
       const idx = this.users.findIndex(u => u.userId === user.userId);
       if (idx !== -1) {
         this.users[idx] = updatedUser;
@@ -106,9 +114,9 @@ export class UserService {
     const user = this.selectedUser$.getValue();
     if (user) {
       const currentMoney = Number(user.money || 0);
-      const updatedUser = { 
-        ...user, 
-        money: currentMoney + amount 
+      const updatedUser = {
+        ...user,
+        money: currentMoney + amount
       };
 
       return this.http.put<User>(`${this.apiUrl}/${userId}`, updatedUser).pipe(

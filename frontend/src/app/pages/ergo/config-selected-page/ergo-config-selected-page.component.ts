@@ -229,6 +229,8 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy {
 
   onSaveConfig(): void {
     console.log('Saving config:', this.currentConfig);
+    //const { backgroundBrightness, ...cleanConfig } = this.currentConfig as any;
+
     this.questionConfigService.updateConfig(this.currentConfig);
     this.saveConfirmationVisible = true;
     setTimeout(() => {
@@ -240,6 +242,7 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy {
 
   onNombreDeQuestionChange(value: string) {
     const num = Number(value);
+    console.log('Nombre de question input:', value, 'Processed number:', num);
     if (!isNaN(num) && num > 0) {
       this.currentConfig.nombresDeQuestion = num;
       this.questionConfigService.updateNotion('nombresDeQuestion' as any, num);

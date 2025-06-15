@@ -73,6 +73,10 @@ export class QuestionConfigService {
     }
     const currentConfig = this.configSubject.getValue();
     const newConfig = { ...currentConfig, [notion]: value } as UserConfig;
+
+    if ('backgroundBrightness' in newConfig) {
+      delete (newConfig as any).backgroundBrightness;
+    }
     this.configSubject.next(newConfig);
     this.currentUser.userConfig = newConfig;
     this.userService.updateUser(this.currentUser); // Persist to backend via UserService
@@ -82,10 +86,12 @@ export class QuestionConfigService {
     if (!this.currentUser) {
       throw new Error('Cannot update configuration: No user selected');
     }
-    this.currentUser.userConfig = config;
-    this.configSubject.next(config);
+    const { backgroundBrightness, ...cleanConfig } = config as any;
+
+    this.currentUser.userConfig = cleanConfig;
+    this.configSubject.next(cleanConfig);
     this.userService.updateUser(this.currentUser); // Persist to backend via UserService
-    console.log('Configuration updated:', config);
+    console.log('Configuration updated:', cleanConfig);
   }
 }
 

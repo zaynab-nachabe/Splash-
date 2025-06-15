@@ -60,7 +60,7 @@ export class GameComponent implements OnInit, OnDestroy {
   private MaxQuestions: number = 10;
   public showPreGameLobby: boolean = false;
 
-  
+
   public lives: number = 5;
   limitedLives: boolean = true;
 
@@ -191,7 +191,7 @@ export class GameComponent implements OnInit, OnDestroy {
       console.log("Game has ended, not loading new question.");
       return;
     }
-    if (this.questionCount >= this.MaxQuestions) {
+    if (this.questionCount > this.MaxQuestions) {
       console.log("Maximum number of questions reached, ending game.");
       this.endGame();
       return;
@@ -355,10 +355,11 @@ export class GameComponent implements OnInit, OnDestroy {
     this.updateInputs();
 
     if (this.proposed_answerInputs.length === this.expected_answerInputs.length) {
-      if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
+      if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs, this.question.notion)) {
         this.submitAnswer();
       }
     }
+
   }
 
 
