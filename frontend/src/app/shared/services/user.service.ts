@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, EMPTY, Observable } from "rxjs";
 import { User } from "../models/user.model";
 import { HttpClient } from "@angular/common/http";
-
+import { tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -54,11 +54,13 @@ export class UserService {
   }
 
   getUserById(userId: string): Observable<User | undefined> {
-    return new Observable(subscriber => {
-      const user = this.users.find(u => u.userId === userId);
-      subscriber.next(user);
-      subscriber.complete();
-    });
+    return this.http.get<User>(`${this.apiUrl}/${userId}`).pipe(
+      tap(user => {
+        if (this.selectedUser$.getValue()?.userId === userId) {
+          this.selectedUser$.next(user);
+        }
+      })
+    );
   }
 
   deleteUser(userId: string): void {
@@ -77,5 +79,50 @@ export class UserService {
 
   setScore(score: number): void {
     this.userScore = score;
+  }
+
+  updateUserMoney(userId: string, newAmount: number) {
+    if (this.selectedUser$.getValue()?.userId === userId) {
+      const updatedUser = { ...this.selectedUser$.getValue(), money: newAmount };
+      return this.http.put<User>(`${this.apiUrl}/${userId}`, updatedUser).pipe(
+        tap((user: User) => {
+          this.selectedUser$.next(user);
+        })
+      );
+    }
+    return EMPTY;
+  }
+
+  addMoney(userId: string, amount: number) {
+    const selectedUser = this.selectedUser$.getValue();
+    if (selectedUser?.userId === userId) {
+      const currentMoney = selectedUser?.money || 0;
+      return this.updateUserMoney(userId, currentMoney + amount);
+    }
+    return EMPTY;
+  }
+
+  updateMoney(userId: string, amount: number) {
+    const user = this.selectedUser$.getValue();
+    if (user) {
+      const currentMoney = Number(user.money || 0);
+      const updatedUser = { 
+        ...user, 
+        money: currentMoney + amount 
+      };
+
+      return this.http.put<User>(`${this.apiUrl}/${userId}`, updatedUser).pipe(
+        tap((updatedUser: User) => {
+          updatedUser.money = Number(updatedUser.money);
+          const idx = this.users.findIndex(u => u.userId === userId);
+          if (idx !== -1) {
+            this.users[idx] = updatedUser;
+            this.users$.next([...this.users]);
+          }
+          this.selectedUser$.next(updatedUser);
+        })
+      );
+    }
+    return EMPTY;
   }
 }

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TemplateComponent } from './shared/components/template/template.component';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
@@ -29,15 +29,15 @@ import { ChildConfigPageComponent } from './pages/child/config-page/child-config
 import { ChildStatPageComponent } from './pages/child/stat-page/child-stat-page.component';
 import { ChildLobbyGameComponent } from './pages/child/lobby-game/child-lobby-game.component';
 import { ErgoLobbyGameComponent } from './pages/ergo/lobby-game/ergo-lobby-game.component';
-import { ErgoConfigSelectedPageComponent} from './pages/ergo/config-selected-page/ergo-config-selected-page.component';
+import { ErgoConfigSelectedPageComponent } from './pages/ergo/config-selected-page/ergo-config-selected-page.component';
 import { ErgoStatSelectedPageComponent } from './pages/ergo/stat-selected-page/ergo-stat-selected-page.component';
 import { GameComponent } from './pages/child/game/game.component';
 import { GamePodiumComponent } from './pages/child/game/game-podium.component';
 import { FontService } from './shared/services/font.service';
 import { QuestionConfigService } from './shared/services/question-config.service';
-import {RouterModule} from "@angular/router";
-import {ErgoInputChildComponent} from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
-import {TabBoxComponent} from "./shared/components/tab-box/tab-box.component";
+import { RouterModule } from "@angular/router";
+import { ErgoInputChildComponent } from "./pages/ergo/ergo-input-child-page/ergo-input-child-page.component";
+import { TabBoxComponent } from "./shared/components/tab-box/tab-box.component";
 import { SearchBarComponent } from './shared/components/search-bar/search-bar.component';
 import { SessionStatisticsComponent } from './shared/components/session-statistics/session-statistics.component';
 @NgModule({
@@ -74,8 +74,8 @@ import { SessionStatisticsComponent } from './shared/components/session-statisti
     MediumButtonComponent,
     InnerBoxComponent,
     SettingsToggleComponent,
-    ErgoLobbyGameComponent, 
-    SearchBarComponent, 
+    ErgoLobbyGameComponent,
+    SearchBarComponent,
     SessionStatisticsComponent,
     StatisticsBoxComponent
 
@@ -83,13 +83,13 @@ import { SessionStatisticsComponent } from './shared/components/session-statisti
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
     FormsModule,
     HttpClientModule
   ],
   providers: [FontService,
     RouterModule,
-  [QuestionConfigService]
+    [QuestionConfigService]
   ],
   bootstrap: [AppComponent]
 })

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
+import { Avatar } from '../models/avatar.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +13,16 @@ export class ChildConfigService {
   private musicEnabledSubject: BehaviorSubject<boolean>;
   private effectsEnabledSubject: BehaviorSubject<boolean>;
   public showScoreSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-  public backgroundBrightnessSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0.1);
   public selectedPlayerImageSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  private crabSpeedSubject: BehaviorSubject<string> = new BehaviorSubject<string>('normal');
+  private limitedLivesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   musicEnabled$;
   effectsEnabled$;
   showScore$ = this.showScoreSubject.asObservable();
-  backgroundBrightness$ = this.backgroundBrightnessSubject.asObservable();
   selectedPlayerImage$ = this.selectedPlayerImageSubject.asObservable();
+  crabSpeed$ = this.crabSpeedSubject.asObservable();
+  limitedLives$ = this.limitedLivesSubject.asObservable();
   private userId: string | null = null;
   private currentUser: User | null = null;
 
@@ -37,8 +41,9 @@ export class ChildConfigService {
         this.musicEnabledSubject.next(userData.musicEnabled ?? true);
         this.effectsEnabledSubject.next(userData.effectsEnabled ?? true);
         this.showScoreSubject.next(userData.showScore ?? true);
-        this.backgroundBrightnessSubject.next(userData.backgroundBrightness ?? 0.1);
         this.selectedPlayerImageSubject.next(userData.selectedPlayerImage ?? null);
+        this.crabSpeedSubject.next(userData.crabSpeed ?? 'normal');
+        this.limitedLivesSubject.next(userData.limitedLives ?? true);
       });
   }
 
@@ -87,21 +92,6 @@ export class ChildConfigService {
     }
   }
 
-  updateBackgroundBrightness(brightness: number) {
-    if (this.userId && this.currentUser) {
-      const updatedUser = { ...this.currentUser, backgroundBrightness: brightness };
-      this.http.put<any>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
-        next: (userData: any) => {
-          this.backgroundBrightnessSubject.next(userData.backgroundBrightness ?? brightness);
-          this.currentUser = userData;
-        },
-        error: (err) => {
-          console.error('Error updating backgroundBrightness:', err);
-        }
-      });
-    }
-  }
-
   updateSelectedPlayerImage(image: string) {
     if (this.userId && this.currentUser) {
       console.log('current user:', this.currentUser);
@@ -119,12 +109,44 @@ export class ChildConfigService {
     }
   }
 
+  updateCrabSpeed(speed: string) {
+    if (this.userId && this.currentUser) {
+      const updatedUser = { ...this.currentUser, crabSpeed: speed };
+      this.http.put<any>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
+        next: (userData: any) => {
+          this.crabSpeedSubject.next(userData.crabSpeed ?? speed);
+          this.currentUser = userData;
+        },
+        error: (err) => {
+          console.error('Error updating crab speed:', err);
+        }
+      });
+    }
+  }
+
+  updateLimitedLives(enabled: boolean) {
+    if (this.userId && this.currentUser) {
+      const updatedUser = { ...this.currentUser, limitedLives: enabled };
+      this.http.put<User>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
+        next: (userData: User) => {
+          this.limitedLivesSubject.next(userData.limitedLives ?? enabled);
+          this.currentUser = userData;
+        },
+        error: (err) => console.error('Error updating limitedLives:', err)
+      });
+    }
+  }
+
   getMusicEnabled(): boolean {
     return this.musicEnabledSubject.value;
   }
 
   getEffectsEnabled(): boolean {
     return this.effectsEnabledSubject.value;
+  }
+
+  getLimitedLives(): boolean {
+    return this.limitedLivesSubject.value;
   }
 
   updateToggles(musicEnabled: boolean, effectsEnabled: boolean) {
@@ -141,5 +163,34 @@ export class ChildConfigService {
         }
       });
     }
+  }
+
+  purchaseAvatar(avatar: Avatar): Observable<User> {
+    if (this.userId && this.currentUser) {
+      const updatedUser: User = {
+        ...this.currentUser,
+        money: Number(this.currentUser.money || 0) - avatar.price,
+        unlockedAvatars: [...(this.currentUser.unlockedAvatars || []), avatar.id],
+        selectedPlayerImage: avatar.path
+      };
+
+      
+      return this.http.put<User>(`${this.apiUrl}/${this.userId}`, {
+        ...updatedUser,
+        userConfig: this.currentUser.userConfig || {},
+        conditions: this.currentUser.conditions || [],
+        icon: this.currentUser.icon || 'pp-9.png',
+      }).pipe(
+        tap((userData: User) => {
+          this.currentUser = userData;
+          this.selectedPlayerImageSubject.next(avatar.path);
+        })
+      );
+    }
+    return EMPTY;
+  }
+
+  isAvatarUnlocked(avatarId: string): boolean {
+    return this.currentUser?.unlockedAvatars?.includes(avatarId) || avatarId === 'yellow_fish';
   }
 }

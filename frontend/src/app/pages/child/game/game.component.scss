@@ -17,7 +17,7 @@
     background-image: url('/assets/images/game/sea2.jpg');
     background-size: cover;
     background-position: center;
-    filter: brightness(60%);
+    filter: brightness(70%);
     z-index: -1;
 }
 
@@ -151,4 +151,19 @@ span.neutral {
 
 .pre-game-lobby-box .main-button {
   margin-top: 1.5rem;
+}
+
+.hearts-container {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.heart-icon {
+  width: 48px; 
+  height: 48px;
+  image-rendering: pixelated;
 }

@@ -24,6 +24,17 @@ export class GamePodiumComponent implements OnInit {
         this.questionsAnswered = Number(state['questionsAnswered']) || 0;
         this.userScore = typeof state['score'] !== 'undefined' ? Number(state['score']) : this.userService.getScore();
         this.showScore = !!(this.user?.showScore ?? this.user?.userConfig?.showScore);
+
+        // Update user's money with the score
+        if (this.user && this.userScore > 0) {
+            this.userService.updateMoney(this.user.userId, this.userScore).subscribe({
+                next: (updatedUser) => {
+                    this.user = updatedUser;
+                    console.log('Money updated successfully:', updatedUser.money);
+                },
+                error: (err) => console.error('Error updating money:', err)
+            });
+        }
     }
 
     ngAfterViewInit(): void {

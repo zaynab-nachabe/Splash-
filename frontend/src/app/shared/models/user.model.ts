@@ -10,8 +10,11 @@ export type User = {
     musicEnabled?: boolean;
     effectsEnabled?: boolean;
     showScore?: boolean;
-    backgroundBrightness?: number;
     selectedPlayerImage?: string | null;
+    crabSpeed?: 'slow' | 'fast';  // Add this type
+    money?: number; // Make money optional
+    unlockedAvatars?: string[];
+    limitedLives?: boolean; // Add new property
 }
 
 
@@ -25,6 +28,10 @@ export function createUser(user: Partial<User>): User {
     userConfig: user.userConfig || {} as UserConfig,
     musicEnabled: user.musicEnabled ?? true,
     effectsEnabled: user.effectsEnabled ?? true,
-    showScore: user.showScore ?? true
+    showScore: user.showScore ?? true,
+    money: 0,
+    unlockedAvatars: user.unlockedAvatars || ['yellow_fish'],
+    limitedLives: user.limitedLives ?? true, // Default to true
+    crabSpeed: user.crabSpeed || 'slow',  // Default to slow speed
   };
 }

@@ -47,7 +47,6 @@ export class Ui implements OnInit{
     }
 
     public draw(ctx: CanvasRenderingContext2D): void{
-        // Only draw the score if showScore is true
         if (this.gameEngine.getShowScore()) {
             ctx.save();
             ctx.fillStyle = this.fontColor;

@@ -38,7 +38,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private configSubscription: Subscription;
   private musicSubscription: Subscription;
-  private brightnessSubscription: Subscription;
   public fontFamily: string = 'Arial';
   public user!: User;
   public question!: Question;
@@ -59,9 +58,11 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private questionCount: number = -2;
   private MaxQuestions: number = 10;
-
-  public backgroundBrightness: number = 0.8;
   public showPreGameLobby: boolean = false;
+
+  
+  public lives: number = 5;
+  limitedLives: boolean = true;
 
   constructor(
     private userService: UserService,
@@ -79,7 +80,6 @@ export class GameComponent implements OnInit, OnDestroy {
         this.MaxQuestions = user.userConfig.nombresDeQuestion ?? 10;
         this.childConfigService.loadUserConfig(this.user);
       } else {
-        // Handle the case where no user is selected, e.g. redirect or show a message
         console.warn('No user selected in game.');
       }
     });
@@ -108,35 +108,35 @@ export class GameComponent implements OnInit, OnDestroy {
         const audio = this.gameMusicRef.nativeElement;
         if (enabled) {
           audio.pause();
-          audio.currentTime = 0; // Reset to the beginning
+          audio.currentTime = 0;
           setTimeout(() => {
-            audio.muted = false; // Unmute after a short delay
+            audio.muted = false;
             audio.play().catch(() => { });
-          }, 0); // Let pause finish before play
+          }, 0);
         } else {
           audio.pause();
-          audio.currentTime = 0; // Reset to the beginning
+          audio.currentTime = 0;
           audio.muted = true;
         }
       }
     });
 
-    this.brightnessSubscription = this.childConfigService.backgroundBrightness$.subscribe((brightness: number) => {
-      this.backgroundBrightness = brightness;
+    this.childConfigService.limitedLives$.subscribe((val: boolean) => {
+      this.limitedLives = val;
       if (this.gameEngine) {
-        this.gameEngine.setBackgroundBrightness(brightness);
+        this.gameEngine.setLimitedLives(val);
       }
     });
   }
 
   ngOnInit(): void {
-    this.questionCount = -1; //OPTIONAL TO TEST
+    this.questionCount = -1;
     document.addEventListener("keydown", this.keydownHandler);
     this.updateInputs();
-    // Do not start the game if pre-game lobby is shown
     if (!this.showPreGameLobby) {
       this.loadNewQuestion();
     }
+    this.lives = this.gameEngine ? this.gameEngine.lives : 5;
   }
 
   ngAfterViewInit(): void {
@@ -145,8 +145,14 @@ export class GameComponent implements OnInit, OnDestroy {
     }
     const canvas = this.canvasRef.nativeElement;
     this.gameEngine = new GameEngine(this, canvas, this.fontService, this.childConfigService);
-    this.gameEngine.setBackgroundBrightness(this.backgroundBrightness);
     //this.startMusic();
+
+    this.gameEngine.onLivesChanged = (lives: number) => {
+      this.lives = lives;
+      if (lives <= 0) {
+        this.endGame();
+      }
+    };
   }
 
   ngOnDestroy(): void {
@@ -157,18 +163,14 @@ export class GameComponent implements OnInit, OnDestroy {
     if (this.musicSubscription) {
       this.musicSubscription.unsubscribe();
     }
-    if (this.brightnessSubscription) {
-      this.brightnessSubscription.unsubscribe();
-    }
     this.stopMusic();
   }
 
   private startMusic(): void {
     const audioElement = this.gameMusicRef.nativeElement;
-    // Only play music if music is enabled
     if (this.childConfigService.getMusicEnabled()) {
-      audioElement.pause(); // Reset audio playback
-      audioElement.currentTime = 0; // Reset to the beginning
+      audioElement.pause();
+      audioElement.currentTime = 0;
       audioElement.play().catch((error) => {
         console.error('Error playing music:', error);
       });
@@ -200,12 +202,12 @@ export class GameComponent implements OnInit, OnDestroy {
       console.log("No user selected, cannot load new question.");
       return;
     }
-    const userConfig: UserConfig = this.user.userConfig; // Get user configuration
+    const userConfig: UserConfig = this.user.userConfig;
     this.questionService.generateQuestion(userConfig).subscribe(
       (question) => {
         console.log("Received question from backend:", question);
 
-        this.question = question; // Set the new question
+        this.question = question;
         this.expected_answerInputs = this.question.answer.split('');
 
         if (this.gameEngine && this.expected_answerInputs) {
@@ -222,7 +224,7 @@ export class GameComponent implements OnInit, OnDestroy {
       },
       (error) => {
         console.error('Error fetching question:', error);
-        this.hasEnded = true; // End the game if question generation fails
+        this.hasEnded = true;
       }
     );
   }
@@ -275,7 +277,7 @@ export class GameComponent implements OnInit, OnDestroy {
       }
     }
 
-    ret.push(GameComponent.INPUTS_END as Input); // Explicitly cast INPUTS_END to Input
+    ret.push(GameComponent.INPUTS_END as Input);
     this.inputs = ret;
   }
 
@@ -341,33 +343,22 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
 
-    // Reset answer inputs
     this.expected_answerInputs = this.question.answer.split("");
     this.proposed_answerInputs = [];
     this.cursorPosition = 0;
   }
-  /*
-  private writeCharacter(c: string): void {
-      this.proposed_answerInputs.splice(
-          this.cursorPosition++, 0, c
-      );
-      this.updateInputs();
-  }
-  */
 
   private writeCharacter(c: string): void {
-    // Check if the character is wrong at the current position
-    const expected = this.expected_answerInputs[this.cursorPosition];
-    if (expected && c !== expected) {
-      // Log the error to the game engine's errorsByKey map
-      const key = `Key${expected.toUpperCase()}`;
-      this.gameEngine.logKeyError(key);
-    }
-
     this.proposed_answerInputs.splice(
       this.cursorPosition++, 0, c
     );
     this.updateInputs();
+
+    if (this.proposed_answerInputs.length === this.expected_answerInputs.length) {
+      if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
+        this.submitAnswer();
+      }
+    }
   }
 
 
@@ -419,14 +410,12 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private showAnswer(): void {
-    // Whatever logic you use to show answers
     this.gameEngine.showAnswer();
   }
 
-  private endGame(): void {
+  public endGame(): void {
     this.hasEnded = true;
     this.stopMusic();
-    // Get statistics from game engine
     const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
 
     // Attach attempts to wordsLeastSuccessful if present
