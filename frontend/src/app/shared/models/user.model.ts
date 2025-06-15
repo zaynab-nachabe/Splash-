@@ -13,7 +13,8 @@ export type User = {
     backgroundBrightness?: number;
     selectedPlayerImage?: string | null;
     crabSpeed?: string;
-    money?: number;
+    money?: number; // Make money optional
+    unlockedAvatars?: string[];
 }
 
 
@@ -27,6 +28,8 @@ export function createUser(user: Partial<User>): User {
     userConfig: user.userConfig || {} as UserConfig,
     musicEnabled: user.musicEnabled ?? true,
     effectsEnabled: user.effectsEnabled ?? true,
-    showScore: user.showScore ?? true
+    showScore: user.showScore ?? true,
+    money: 0, // Set default value when creating a user
+    unlockedAvatars: user.unlockedAvatars || ['yellow_fish']
   };
 }

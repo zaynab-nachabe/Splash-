@@ -67,6 +67,7 @@ span {
   justify-content: center;
   transition: border 0.2s;
   box-sizing: border-box;
+  position: relative;
 
   img {
     width: 84px;
@@ -74,6 +75,56 @@ span {
     border-radius: 16px;
     object-fit: cover;
     display: block;
+
+    &.grayscale {
+      filter: brightness(0.6) grayscale(0.3);
+      transition: filter 0.3s ease;
+      width: 84px;  
+      height: 84px; 
+    }
+  }
+
+  &.locked {
+    img.grayscale {
+      filter: brightness(0.6) grayscale(0.3);
+      transition: filter 0.3s ease;
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  .price-tag {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+
+    .coin-small {
+      width: 14px;
+      height: 14px;
+      image-rendering: pixelated;
+    }
+
+    span {
+      color: #FFD700;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 0;
+      padding: 0;
+
+      &.affordable {
+        color: #4CAF50;
+      }
+    }
   }
 }
 

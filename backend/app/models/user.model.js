@@ -32,6 +32,7 @@ const userSchema = Joi.object({
     backgroundBrightness: Joi.number().optional().default(0.8),
     selectedPlayerImage: Joi.string().optional().default('../../../../frontend/src/assets/images/game/player/yellow_fish.png'),
     money: Joi.number().optional().default(0), 
+    unlockedAvatars: Joi.array().items(Joi.string()).default(['yellow_fish']),
 });
 
 const validateUser = (user) => {
@@ -78,14 +79,26 @@ const create = (user) => {
 const update = (userId, updates) => {
     const idx = users.findIndex(u => u.userId === userId);
     if (idx === -1) throw new Error('User not found');
-    // Merge updates
-    const updatedUser = { ...users[idx], ...updates };
-    // Validate
-    const validUser = validateUser(updatedUser);
-    users[idx] = validUser;
-    console.log('[update] User updated in memory:', validUser);
-    saveUsersToFile();
-    return users[idx];
+
+    // Ensure money and unlockedAvatars are properly handled
+    const updatedUser = { 
+        ...users[idx],
+        ...updates,
+        money: Number(updates.money || 0),
+        unlockedAvatars: Array.isArray(updates.unlockedAvatars) ? updates.unlockedAvatars : ['yellow_fish']
+    };
+
+    try {
+        // Validate the updated user
+        const validUser = validateUser(updatedUser);
+        users[idx] = validUser;
+        console.log('[update] User updated in memory:', validUser);
+        saveUsersToFile();
+        return users[idx];
+    } catch (error) {
+        console.error('[update] Validation error:', error);
+        throw error;
+    }
 };
 
 const del = (userId) => {

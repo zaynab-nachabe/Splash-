@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
+import { Avatar } from '../models/avatar.model';
 
 @Injectable({
   providedIn: 'root'
@@ -159,5 +161,34 @@ export class ChildConfigService {
         }
       });
     }
+  }
+
+  purchaseAvatar(avatar: Avatar): Observable<User> {
+    if (this.userId && this.currentUser) {
+      const updatedUser: User = {
+        ...this.currentUser,
+        money: Number(this.currentUser.money || 0) - avatar.price,
+        unlockedAvatars: [...(this.currentUser.unlockedAvatars || []), avatar.id],
+        selectedPlayerImage: avatar.path
+      };
+
+      // Ensure the object matches the User type exactly
+      return this.http.put<User>(`${this.apiUrl}/${this.userId}`, {
+        ...updatedUser,
+        userConfig: this.currentUser.userConfig || {},
+        conditions: this.currentUser.conditions || [],
+        icon: this.currentUser.icon || 'pp-9.png',
+      }).pipe(
+        tap((userData: User) => {
+          this.currentUser = userData;
+          this.selectedPlayerImageSubject.next(avatar.path);
+        })
+      );
+    }
+    return EMPTY;
+  }
+
+  isAvatarUnlocked(avatarId: string): boolean {
+    return this.currentUser?.unlockedAvatars?.includes(avatarId) || avatarId === 'yellow_fish';
   }
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/shared/models/user.model';
 import { ChildConfigService } from 'src/app/shared/services/child-config.service';
+import { AVATAR_PRICES, Avatar } from '../../../shared/models/avatar.model';
 
 @Component({
   selector: 'app-child-config-page',
@@ -13,10 +14,11 @@ export class ChildConfigPageComponent {
     musicEnabled: boolean = true;
     effectsEnabled: boolean = true;
     showScore: boolean = true;
-    playerImages: string[] = [];
+    playerImages: string[] = AVATAR_PRICES.map(a => a.path);
     selectedPlayerImage: string | null = null;
     backgroundBrightness: number = 1.0;
     crabSpeed: string = 'normal';
+    avatars = AVATAR_PRICES;
 
     constructor(private userService: UserService, private childConfigService: ChildConfigService) {
         this.userService.selectedUser$.subscribe((user: User | null) => {
@@ -51,21 +53,10 @@ export class ChildConfigPageComponent {
     }
 
     private initializeConfigs() {
-        this.playerImages = [
-            '../../../../assets/images/game/player/dory.png',
-            '../../../../assets/images/game/player/nemo.png',
-            '../../../../assets/images/game/player/red_fish.png',
-            '../../../../assets/images/game/player/yellow_fish.png',
-            '../../../../assets/images/game/player/shark.png',
-            '../../../../assets/images/game/player/starfish.png',
-            '../../../../assets/images/game/player/octopus.png',
-            '../../../../assets/images/game/player/jellyfish.png',
-        ];
-        
         this.childConfigService.loadUserConfig(this.user);
         this.showScore = this.user.showScore ?? true;
         this.backgroundBrightness = this.user.backgroundBrightness ?? 1.0;
-        this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[4];
+        this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[0]; // Default to yellow fish
         this.crabSpeed = this.user.crabSpeed || 'normal';
     }
 
@@ -85,9 +76,9 @@ export class ChildConfigPageComponent {
     }
 
     selectPlayerImage(img: string) {
-    this.selectedPlayerImage = img;
-    this.childConfigService.updateSelectedPlayerImage(img);
-}
+        this.selectedPlayerImage = img;
+        this.childConfigService.updateSelectedPlayerImage(img);
+    }
 
     onBrightnessChange(value: number) {
         this.backgroundBrightness = value;
@@ -106,5 +97,37 @@ export class ChildConfigPageComponent {
     toggleCrabSpeed(isFast: boolean) {
         const newSpeed = isFast ? 'fast' : 'normal';
         this.updateCrabSpeed(newSpeed);
+    }
+
+    isAvatarUnlocked(avatarId: string): boolean {
+        return this.childConfigService.isAvatarUnlocked(avatarId);
+    }
+
+    getUserMoney(): number {
+        return this.user?.money ?? 0;
+    }
+
+    handleAvatarClick(avatar: Avatar) {
+        if (this.isAvatarUnlocked(avatar.id)) {
+            this.selectPlayerImage(avatar.path);
+        } else if (this.getUserMoney() >= avatar.price) {
+            this.purchaseAvatar(avatar);
+        }
+    }
+
+    private purchaseAvatar(avatar: Avatar) {
+        if (!this.user) return;
+        
+        this.childConfigService.purchaseAvatar(avatar).subscribe({
+            next: (updatedUser: User) => {
+                this.user = updatedUser;
+                // Update selected avatar
+                this.selectedPlayerImage = avatar.path;
+                // Force UI refresh
+                this.initializeConfigs();
+                console.log('Avatar purchased successfully:', avatar.id);
+            },
+            error: (err) => console.error('Error purchasing avatar:', err)
+        });
     }
 }

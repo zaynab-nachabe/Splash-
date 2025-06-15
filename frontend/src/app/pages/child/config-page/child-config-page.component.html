@@ -57,7 +57,11 @@
         <!-- Background brightness slider -->
         <div class="toggle-row brightness-slider-row">
           <span class="toggle-label">Luminosité du fond</span>
-          <app-settings-slider [(ngModel)]="backgroundBrightness" (valueChange)="onBrightnessChange($event)"></app-settings-slider>
+          <app-settings-slider 
+              [(ngModel)]="backgroundBrightness" 
+              (valueChange)="onBrightnessChange($event)"
+              name="brightnessSlider">  <!-- Added name attribute -->
+          </app-settings-slider>
         </div>
 
         <!-- Player avatar selection -->
@@ -65,13 +69,19 @@
           <span class="toggle-label">Choisir un avatar</span>
           <div class="player-image-list">
             <button
-              *ngFor="let img of playerImages; let i = index"
+              *ngFor="let avatar of avatars"
               class="player-image-btn"
-              [class.selected]="selectedPlayerImage === img"
-              (click)="selectPlayerImage(img)"
+              [class.selected]="selectedPlayerImage === avatar.path"
+              [class.locked]="!isAvatarUnlocked(avatar.id)"
+              [disabled]="!isAvatarUnlocked(avatar.id) && (getUserMoney() < avatar.price)"
+              (click)="handleAvatarClick(avatar)"
               type="button"
             >
-              <img [src]="img" alt="Avatar" />
+              <img [src]="avatar.path" [class.grayscale]="!isAvatarUnlocked(avatar.id)" alt="Avatar" />
+              <div *ngIf="!isAvatarUnlocked(avatar.id)" class="price-tag">
+                <img src="../../../../assets/images/game/coin.png" class="coin-small" />
+                <span [class.affordable]="getUserMoney() >= avatar.price">{{avatar.price}}</span>
+              </div>
             </button>
           </div>
         </div>

@@ -26,9 +26,9 @@ module.exports = [
     effectsEnabled: true,
     showScore: false,
     backgroundBrightness: 0.1,
-    //selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/red_fish.png',
-    selectedPlayerImage: '/assets/images/game/player/red_fish.png',
+    selectedPlayerImage: '/assets/images/game/player/yellow_fish.png',
     money: 0,
+    unlockedAvatars: ['yellow_fish'],
   },
   {
     userId: "2",
@@ -50,8 +50,9 @@ module.exports = [
     effectsEnabled: true,
     showScore: true,
     backgroundBrightness: 0.1,
-    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/nemo.png',
+    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/yellow_fish.png',
     money: 0,
+    unlockedAvatars: ['yellow_fish'],
   },
   {
     userId: "3",
@@ -73,8 +74,9 @@ module.exports = [
     effectsEnabled: false,
     showScore: true,
     backgroundBrightness: 0.1,
-    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/dory.png',
+    selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/yellow_fish.png',
     money: 0,
+    unlockedAvatars: ['yellow_fish'],
   },
   {
     userId: "4",
@@ -98,5 +100,6 @@ module.exports = [
     backgroundBrightness: 0.1,
     selectedPlayerImage: '../../../../frontend/src/assets/images/game/player/yellow_fish.png',
     money: 0,
+    unlockedAvatars: ['yellow_fish'],
   },
 ];

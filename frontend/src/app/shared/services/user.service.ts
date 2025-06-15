@@ -56,7 +56,6 @@ export class UserService {
   getUserById(userId: string): Observable<User | undefined> {
     return this.http.get<User>(`${this.apiUrl}/${userId}`).pipe(
       tap(user => {
-        // Update the selected user if it matches
         if (this.selectedUser$.getValue()?.userId === userId) {
           this.selectedUser$.next(user);
         }
@@ -106,12 +105,15 @@ export class UserService {
   updateMoney(userId: string, amount: number) {
     const user = this.selectedUser$.getValue();
     if (user) {
-      const currentMoney = user?.money || 0;
-      const updatedUser = { ...user, money: currentMoney + amount };
+      const currentMoney = Number(user.money || 0);
+      const updatedUser = { 
+        ...user, 
+        money: currentMoney + amount 
+      };
 
       return this.http.put<User>(`${this.apiUrl}/${userId}`, updatedUser).pipe(
         tap((updatedUser: User) => {
-          // Update both the users array and the selected user
+          updatedUser.money = Number(updatedUser.money);
           const idx = this.users.findIndex(u => u.userId === userId);
           if (idx !== -1) {
             this.users[idx] = updatedUser;
