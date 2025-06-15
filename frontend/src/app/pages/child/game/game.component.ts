@@ -355,7 +355,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.updateInputs();
 
     if (this.proposed_answerInputs.length === this.expected_answerInputs.length) {
-      if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs)) {
+      if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs, this.question.notion)) {
         this.submitAnswer();
       }
     }
