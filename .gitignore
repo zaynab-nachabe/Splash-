@@ -5,3 +5,13 @@
 
 node_modules/
 maquette_matrio/dist/
+
+# E2E Test Reports
+/frontend/playwright-report/
+/frontend/test-results/
+/frontend/allure-results/
+/frontend/allure-report/
+/frontend/.playwright/
+/frontend/e2e-coverage/
+/frontend/coverage/
+*.log
