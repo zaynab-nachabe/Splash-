@@ -49,3 +49,9 @@ Thumbs.db
 # E2E folder
 /playwright-report
 /test-results
+/allure-results/
+/allure-report/
+/.playwright/
+/e2e-coverage/
+/coverage/
+*.log

@@ -14,7 +14,7 @@ export class ChildConfigService {
   private effectsEnabledSubject: BehaviorSubject<boolean>;
   public showScoreSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public selectedPlayerImageSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
-  private crabSpeedSubject: BehaviorSubject<string> = new BehaviorSubject<string>('normal');
+  private crabSpeedSubject: BehaviorSubject<string> = new BehaviorSubject<string>('slow');
   private limitedLivesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   musicEnabled$;
@@ -42,7 +42,7 @@ export class ChildConfigService {
         this.effectsEnabledSubject.next(userData.effectsEnabled ?? true);
         this.showScoreSubject.next(userData.showScore ?? true);
         this.selectedPlayerImageSubject.next(userData.selectedPlayerImage ?? null);
-        this.crabSpeedSubject.next(userData.crabSpeed ?? 'normal');
+        this.crabSpeedSubject.next(userData.crabSpeed ?? 'slow');
         this.limitedLivesSubject.next(userData.limitedLives ?? true);
       });
   }
@@ -109,16 +109,28 @@ export class ChildConfigService {
     }
   }
 
-  updateCrabSpeed(speed: string) {
+  updateCrabSpeed(speed: 'slow' | 'fast') {
     if (this.userId && this.currentUser) {
-      const updatedUser = { ...this.currentUser, crabSpeed: speed };
-      this.http.put<any>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
-        next: (userData: any) => {
-          this.crabSpeedSubject.next(userData.crabSpeed ?? speed);
+      const updatedUser = { 
+        ...this.currentUser,
+        crabSpeed: speed,
+        // Ensure required fields are present
+        userId: this.currentUser.userId,
+        name: this.currentUser.name,
+        age: this.currentUser.age,
+        icon: this.currentUser.icon,
+        conditions: this.currentUser.conditions || [],
+        userConfig: this.currentUser.userConfig || {}
+      };
+
+      this.http.put<User>(`${this.apiUrl}/${this.userId}`, updatedUser).subscribe({
+        next: (userData: User) => {
+          this.crabSpeedSubject.next(userData.crabSpeed || 'slow');
           this.currentUser = userData;
         },
         error: (err) => {
           console.error('Error updating crab speed:', err);
+          this.crabSpeedSubject.next(this.currentUser?.crabSpeed || 'slow');
         }
       });
     }

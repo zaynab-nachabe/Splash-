@@ -16,7 +16,7 @@ export class ChildConfigPageComponent {
     showScore: boolean = true;
     playerImages: string[] = AVATAR_PRICES.map(a => a.path);
     selectedPlayerImage: string | null = null;
-    crabSpeed: string = 'normal';
+    crabSpeed: 'slow' | 'fast' = 'slow';
     avatars = AVATAR_PRICES;
     limitedLives: boolean = true;
 
@@ -34,7 +34,13 @@ export class ChildConfigPageComponent {
         });
         this.childConfigService.musicEnabled$.subscribe((val: boolean) => this.musicEnabled = val);
         this.childConfigService.effectsEnabled$.subscribe((val: boolean) => this.effectsEnabled = val);
-        this.childConfigService.crabSpeed$.subscribe((speed: string) => this.crabSpeed = speed);
+        this.childConfigService.crabSpeed$.subscribe((speed: string) => {
+            if (speed === 'slow' || speed === 'fast') {
+                this.crabSpeed = speed;
+            } else {
+                this.crabSpeed = 'slow';
+            }
+        });
         this.childConfigService.limitedLives$.subscribe((val: boolean) => this.limitedLives = val);
     }
 
@@ -57,7 +63,7 @@ export class ChildConfigPageComponent {
         this.childConfigService.loadUserConfig(this.user);
         this.showScore = this.user.showScore ?? true;
         this.selectedPlayerImage = this.user.selectedPlayerImage || this.playerImages[0];
-        this.crabSpeed = this.user.crabSpeed || 'normal';
+        this.crabSpeed = this.user.crabSpeed || 'slow';
     }
 
     toggleMusic() {
@@ -80,7 +86,7 @@ export class ChildConfigPageComponent {
         this.childConfigService.updateSelectedPlayerImage(img);
     }
 
-    updateCrabSpeed(speed: string) {
+    updateCrabSpeed(speed: 'slow' | 'fast') {
         this.crabSpeed = speed;
         this.childConfigService.updateCrabSpeed(speed);
     }
@@ -90,7 +96,7 @@ export class ChildConfigPageComponent {
     }
 
     toggleCrabSpeed(isFast: boolean) {
-        const newSpeed = isFast ? 'fast' : 'normal';
+        const newSpeed: 'slow' | 'fast' = isFast ? 'fast' : 'slow';
         this.updateCrabSpeed(newSpeed);
     }
 
