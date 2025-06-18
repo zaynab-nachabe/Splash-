@@ -137,6 +137,7 @@ export class GameComponent implements OnInit, OnDestroy {
       this.loadNewQuestion();
     }
     this.lives = this.gameEngine ? this.gameEngine.lives : 5;
+    (window as any).gameEngine = this.gameEngine;
   }
 
   ngAfterViewInit(): void {
@@ -419,7 +420,6 @@ export class GameComponent implements OnInit, OnDestroy {
     this.stopMusic();
     const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
 
-    // Attach attempts to wordsLeastSuccessful if present
     if (gameStats.wordsLeastSuccessful) {
       gameStats.wordsLeastSuccessful = (gameStats.wordsLeastSuccessful as WordStats[]).map(entry => ({
         ...entry,

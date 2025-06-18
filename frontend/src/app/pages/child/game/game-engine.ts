@@ -70,7 +70,7 @@ export class GameEngine {
         });
     }
 
-    private checkCollision(obj1: any, obj2: any): boolean {
+    public checkCollision(obj1: any, obj2: any): boolean {
         if (!obj1 || !obj2) return false;
         if (!obj1.position || !obj2.position) return false;
 
@@ -128,14 +128,13 @@ export class GameEngine {
         
         this.enemies.forEach(enemy => {
             enemy.update();
-            if (this.checkCollision(enemy, this.player)) {
+            if (this.checkCollision(enemy, this.player) && !enemy.hasDealtDamage() && !this.player.isDeadFishActive) {
                 playerHit = true;
-                if (!this.player.isDeadFishActive) {
-                    this.lives--;
-                    this.onLivesChanged(this.lives);
-                    if (this.lives <= 0) {
-                        this.gameComponent.endGame();
-                    }
+                enemy.markAsDamageDealt();
+                this.lives--;
+                this.onLivesChanged(this.lives);
+                if (this.lives <= 0) {
+                    this.gameComponent.endGame();
                 }
             }
             this.player.projectiles.forEach(projectile => {
@@ -164,6 +163,11 @@ export class GameEngine {
     private draw(ctx: CanvasRenderingContext2D): void {
         if (this.getShowScore()) {
             this.Ui.draw(ctx);
+            //add data-testid to lives counter
+            const livesElement = document.getElementById('lives-counter');
+            if (livesElement) {
+                livesElement.setAttribute('data-testid', 'lives-counter');
+            }
         }
         this.player.draw(ctx);
         this.enemies.forEach(enemy => {

@@ -15,8 +15,9 @@ export class Enemy {
     protected deathAnimationTimer: number = 0;
     protected deathAnimationImage: HTMLImageElement;
     protected deathAnimationFrameCount: number = 7;
-    protected baseSpeed: number = 0.1;
+    protected baseSpeed: number = 0.05;
     protected speedMultiplier: number = 1;
+    protected hasDamagedPlayer: boolean = false;
 
 
     constructor(private gameEngine: GameEngine, private canvas: HTMLCanvasElement, x?: number, y?: number) {
@@ -82,6 +83,14 @@ export class Enemy {
     public setSpeedMultiplier(multiplier: number): void {
         this.speedMultiplier = multiplier;
         this.speed = this.baseSpeed * this.speedMultiplier;
+    }
+
+    public hasDealtDamage(): boolean {
+        return this.hasDamagedPlayer;
+    }
+
+    public markAsDamageDealt(): void {
+        this.hasDamagedPlayer = true;
     }
 }
 
