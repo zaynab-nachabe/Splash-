@@ -75,7 +75,6 @@ export class ErgoInputChildComponent implements OnInit {
     this.availableConditions = [...this.defaultConditions];
     this.saveAvailableConditions();
 
-    // Update selected conditions - only keep those that still exist in the defaults
     this.selectedConditions = currentSelections.filter(
       condition => this.defaultConditions.includes(condition)
     );
@@ -102,16 +101,13 @@ export class ErgoInputChildComponent implements OnInit {
     if (this.newCondition && this.newCondition.trim() !== '') {
       const formattedCondition = this.newCondition.trim();
 
-      // Check if condition already exists
       if (!this.availableConditions.includes(formattedCondition)) {
         this.availableConditions.push(formattedCondition);
         this.saveAvailableConditions();
 
-        // Select the newly added condition
         this.selectedConditions.push(formattedCondition);
       }
 
-      // Reset the input
       this.newCondition = '';
       this.showNewConditionInput = false;
     }
@@ -133,19 +129,19 @@ export class ErgoInputChildComponent implements OnInit {
 
   onSaveChild(): void {
     this.warningMessage = '';
-    if (this.childForm.valid) {
+    if (this.childForm.valid && this.selectedIcon && this.selectedConditions.length > 0) {
       const age = Number(this.childForm.value.age);
       if (age < 3 || age > 100) {
         this.warningMessage = 'L\'âge doit être compris entre 3 et 100 ans.';
         return;
       }
       const newChild = {
-        userId: Date.now().toString(), // Generate a unique ID
+        userId: Date.now().toString(),
         name: `${this.childForm.value.firstName} ${this.childForm.value.lastName}`.trim(),
-        age: this.childForm.value.age, // <-- Add this line
+        age: this.childForm.value.age,
 
         icon: this.selectedIcon,
-        conditions: this.selectedConditions, // <-- Add this line
+        conditions: this.selectedConditions,
 
         userConfig: {
           showAnswer: false,
@@ -164,7 +160,11 @@ export class ErgoInputChildComponent implements OnInit {
       };
 
       this.userService.addUser(newChild);
-      this.router.navigate(['/child-list']);
+      this.router.navigate(['/ergo-stat-selected'], {
+        queryParams: { userId: newChild.userId }
+      });
+    } else {
+      this.warningMessage = 'Veuillez remplir tous les champs requis';
     }
   }
 
@@ -175,7 +175,6 @@ export class ErgoInputChildComponent implements OnInit {
   handleTroubleSelection(value: string): void {
     if (value === 'add') {
       this.showAddNewCondition();
-      // Reset the dropdown
       setTimeout(() => {
         const selectElement = document.querySelector('.troubles-dropdown') as HTMLSelectElement;
         if (selectElement) {
@@ -183,14 +182,11 @@ export class ErgoInputChildComponent implements OnInit {
         }
       });
     } else if (value === 'reset') {
-      // Reset to default conditions
       this.resetToDefaultConditions();
-      // Show confirmation message (optional)
       alert('La liste des troubles a été réinitialisée aux valeurs par défaut.');
       this.resetDropdown();
     }
     else if (value) {
-      // Only add if not already in the array
       if (!this.selectedConditions.includes(value)) {
         this.selectedConditions.push(value);
       }
@@ -210,11 +206,8 @@ export class ErgoInputChildComponent implements OnInit {
 
 
   removeAvailableCondition(condition: string): void {
-    // Remove from availableConditions
     this.availableConditions = this.availableConditions.filter(c => c !== condition);
-    // Remove from selectedConditions if present
     this.selectedConditions = this.selectedConditions.filter(c => c !== condition);
-    // Save updated list
     this.saveAvailableConditions();
   }
 
