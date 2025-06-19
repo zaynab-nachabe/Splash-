@@ -4,12 +4,13 @@ import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
 import { Avatar } from '../models/avatar.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChildConfigService {
-  private apiUrl = 'http://localhost:9428/api/users';
+  private apiUrl = environment.apiUrl;
   private musicEnabledSubject: BehaviorSubject<boolean>;
   private effectsEnabledSubject: BehaviorSubject<boolean>;
   public showScoreSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);

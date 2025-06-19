@@ -3,15 +3,15 @@
   <app-medium-button class="navbar-button red" [routerLink]="['/']" routerLinkActive="active">Retour</app-medium-button>
   <app-inner-box class="main-box blue">
     <div class="podium-container">
-      <div class="money-container">
-        <img src="../../../../assets/images/game/coin.png" alt="coin" class="coin-small">
-        <span class="money-text">{{ user?.money || 0 }}</span>
-      </div>
       <div class="toast-message">
         <p>🎉 Félicitations ! Tu as répondus à {{ questionsAnswered }} questions ! 🎉</p>
       </div>
       <div class="score" *ngIf="showScore">
         <p>Score: {{ userScore }}</p>
+      </div>
+      <div class="money-container">
+        <img src="../../../../assets/images/game/coin.png" alt="coin" class="coin-small">
+        <span class="money-text">{{ user?.money || 0 }}</span>
       </div>
       <div style="text-align:center; font-weight:600; font-size:1.2rem; margin-bottom:0.5rem; cursor:pointer;"
         (click)="goToStats()">
