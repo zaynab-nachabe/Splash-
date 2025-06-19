@@ -444,6 +444,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   public endGame(): void {
+    if (this.hasEnded) return;
     this.hasEnded = true;
     this.stopMusic();
     const gameStats = this.gameEngine.getGameStatistics(this.user.userId);
