@@ -76,8 +76,15 @@ export class GameComponent implements OnInit, OnDestroy {
   ) {
     this.userService.selectedUser$.subscribe((user: User | null) => {
       if (user) {
-        this.user = user;
+        this.user = {...user}; // Create a deep copy
         this.MaxQuestions = user.userConfig.nombresDeQuestion ?? 10;
+        // Ensure purchased items are preserved
+        if (user.unlockedAvatars) {
+          this.user.unlockedAvatars = [...user.unlockedAvatars];
+        }
+        if (user.selectedPlayerImage) {
+          this.user.selectedPlayerImage = user.selectedPlayerImage;
+        }
         this.childConfigService.loadUserConfig(this.user);
       } else {
         console.warn('No user selected in game.');

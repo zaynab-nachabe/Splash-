@@ -12,9 +12,9 @@ export type User = {
     showScore?: boolean;
     selectedPlayerImage?: string | null;
     crabSpeed?: 'slow' | 'fast';  // Add this type
-    money?: number; // Make money optional
+    money?: number;
     unlockedAvatars?: string[];
-    limitedLives?: boolean; // Add new property
+    limitedLives?: boolean;
 }
 
 
@@ -31,7 +31,7 @@ export function createUser(user: Partial<User>): User {
     showScore: user.showScore ?? true,
     money: 0,
     unlockedAvatars: user.unlockedAvatars || ['yellow_fish'],
-    limitedLives: user.limitedLives ?? true, // Default to true
-    crabSpeed: user.crabSpeed || 'slow',  // Default to slow speed
+    limitedLives: user.limitedLives ?? true,
+    crabSpeed: user.crabSpeed || 'slow',
   };
 }
