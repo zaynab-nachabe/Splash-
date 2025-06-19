@@ -1,12 +1,15 @@
-FROM node:24.0.1 AS build
-ARG ENVIRONMENT=docker
-WORKDIR /usr/local/app
-COPY package*.json .
+FROM node:24.0.1 AS builder
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
-COPY . . 
-RUN npm run build:$ENVIRONMENT
+COPY . .
+ARG ENVIRONMENT=production
+RUN npm run build:${ENVIRONMENT}
 
-FROM nginx:latest
-COPY --from=build /usr/local/app/dist/front-end /usr/share/nginx/html 
-COPY /nginx.conf etc/nginx/conf.d/default.conf
+FROM nginx:alpine AS production
+COPY --from=builder --chown=nginx:nginx /app/dist/front-end /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+RUN apk add --no-cache curl
+
 EXPOSE 80

@@ -14,7 +14,7 @@ export class UserService {
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = environment.apiUrl+'/users';
 
   constructor(private http: HttpClient) {
     this.fetchUsersFromBackend();

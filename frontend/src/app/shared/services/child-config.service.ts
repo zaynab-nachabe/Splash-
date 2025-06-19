@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class ChildConfigService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl+'/users';
   private musicEnabledSubject: BehaviorSubject<boolean>;
   private effectsEnabledSubject: BehaviorSubject<boolean>;
   public showScoreSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);

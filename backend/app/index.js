@@ -1,5 +1,3 @@
 const buildServer = require('./build-server.js')
 const logger = require('./utils/logger.js')
-//const gameStatisticsRouter = require('./routes/game-statistics.routes.js')
-//app.use('/api/game-statistics', gameStatisticsRouter)
 buildServer((server) => logger.info(`Server is listening on port ${server.address().port}`))

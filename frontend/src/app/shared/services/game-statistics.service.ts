@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class GameStatisticsService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl+'/game-statistics';
   private readonly STATS_STORAGE_KEY = 'game_statistics';
   private statisticsSubject = new BehaviorSubject<GameStatistics[]>([]);
   public statistics$ = this.statisticsSubject.asObservable();
