@@ -9,7 +9,7 @@
       "ADHD"
     ],
     "userConfig": {
-      "showAnswer": false,
+      "showAnswer": true,
       "addition": true,
       "subtraction": true,
       "multiplication": true,
@@ -17,16 +17,17 @@
       "rewrite": true,
       "encryption": true,
       "word": true,
-      "nombresDeQuestion": 3,
+      "nombresDeQuestion": 8,
       "questionFrequency": {
         "division": 0.25,
         "multiplication": 0,
-        "addition": 0.2
+        "addition": 0.7,
+        "subtraction": 0.3
       },
-      "showScore": true,
+      "showScore": false,
       "chiffresEnLettres": false,
       "longueurMaximaleDesMots": 5,
-      "showLetterColor": true
+      "showLetterColor": false
     },
     "musicEnabled": false,
     "effectsEnabled": true,
