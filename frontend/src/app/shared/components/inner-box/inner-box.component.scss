@@ -1,38 +1,61 @@
+// inner-box.component.scss
 :host {
-    border-radius: 20px;
-    display:flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    overflow-y: hidden;
-    height: 70vh;
-    width: 77vh;
-    padding:1%;
-    margin: 1%;
+  border-radius: 20px;
+  display: flex;
+  align-content: flex-start;
+  height: 70vh; // Set to exactly 50% of viewport height
+  width: 80%;
+  padding: 1%;
+  margin: 1%;
+  background-color: #E0E7FA; // Blue background for the host
+  overflow: hidden; // Hide overflow on the host element
+  box-sizing: border-box; // Include padding in width calculation
+
+  // Add min and max height constraints for better responsiveness
+  min-height: 400px; // Minimum height to ensure usability on small screens
+  max-height: 800px; // Maximum height to prevent excessive size on large screens
 }
 
 :host(.blue) {
-    background-color: #E0E7FA;
-    color: black;
+  background-color: #E0E7FA;
+  color: black;
 }
 
 :host(.little) {
-    width: 35vh;
-    flex-direction: column;
-    align-items: center;
-    align-content: normal;
+  width: 35vh;
+  flex-direction: column;
+  align-items: center;
+  align-content: normal;
 }
 
 :host(.medium) {
-    width: 50vh;
+  width: 50vh;
 }
 
 :host(.button-list) {
-    flex-direction: column;
-    align-items: center;
-    height: 70vh;
-    width: 20vh;
-    color: #000000;
-    font-size: large;
-    font-weight: bold;
-    overflow-x: hidden;
+  flex-direction: column;
+  align-items: center;
+  height: 70vh; // Also update this to match the new standard height
+  width: 20vh;
+  color: #000000;
+  font-size: large;
+  font-weight: bold;
+  overflow-x: hidden;
+}
+
+// Special styling for user-list container
+:host(.user-list-container) .box-content {
+  overflow: hidden; // Disable scrolling on the box-content itself
+  padding: 20px;
+  padding-left: 5px;
+  padding-right: 20px;
+}
+
+.box-content {
+  background-color: white;
+  border-radius: 15px;
+  width: 100%; /* Take full width of parent */
+  height: 100%; /* Take full height of parent */
+  padding: 20px;
+  box-sizing: border-box; /* Include padding in width calculation */
 }

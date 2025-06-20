@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { UserService } from 'src/app/shared/services/user.service';
+import { User } from 'src/app/shared/models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-child-play-page',
@@ -6,5 +9,24 @@ import { Component } from '@angular/core';
   styleUrl: './child-play-page.component.scss'
 })
 export class ChildPlayPageComponent {
-  
+    user!: User;
+
+    constructor(private userService: UserService, private router: Router) {
+        this.userService.selectedUser$.subscribe((user: User | null) => {
+            if (user) {
+                this.user = user;
+            } else {
+                // Handle the case where no user is selected, e.g. redirect or show a message
+                console.warn('No user selected in play page.');
+            }
+        });
+    }
+
+    ngOnInit() {
+        console.log(this.user);
+    }
+
+    goToGameWithLobby() {
+        this.router.navigate(['/game'], { queryParams: { preGameLobby: 'true' } });
+    }
 }

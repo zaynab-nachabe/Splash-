@@ -1,0 +1,13 @@
+app-inner-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    text-align: center;
+}
+
+app-small-button {
+    background-color: aquamarine;
+    margin-top: 20px;
+    align-self: center;
+}

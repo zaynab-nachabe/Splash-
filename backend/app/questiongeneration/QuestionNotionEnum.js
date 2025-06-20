@@ -1,0 +1,10 @@
+const QuestionNotion = {
+  MULTIPLICATION: 'MULTIPLICATION',
+  ENCRYPTION: 'ENCRYPTION',
+  ADDITION: 'ADDITION',
+  SUBTRACTION: 'SUBTRACTION',
+  DIVISION: 'DIVISION',
+  REWRITE: 'REWRITE',
+};
+
+module.exports = { QuestionNotion };

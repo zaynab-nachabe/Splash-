@@ -1,16 +1,446 @@
-
 .name{
-    text-align: left;
-    width: 55%;
-    position: relative;
-    left: 3rem;
+  text-align: left;
+  width: 55%;
+  position: relative;
+  left: 3rem;
 }
 
 span {
-    font-size: 15px;
+  font-size: 15px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+  app-settings-font {
+    flex-grow: 1;
+    width: 200px
+  }
+}
+
+
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h3 {
+    margin-right: 15px;
+    font-size: 20px;
+  }
+
+  .user-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+.config-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px; /* Slightly smaller padding */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden; /* Prevent content overflow */
+  min-width: 0; /* Allow for text compression */
+}
+
+.toggle-label {
+  font-weight: 500;
+  white-space: nowrap; /* Optional: prevent wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+  margin-right: 5px; /* Ensure space for the toggle */
+  display: flex;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+:host ::ng-deep app-inner-box .box-content {
+  max-height: 70vh; /* Adjust this value based on your needs */
+  overflow-y: auto;
+  padding-right: 10px; /* Add some padding for the scrollbar */
+}
+
+/* Customize the scrollbar appearance */
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+:host ::ng-deep app-inner-box .box-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.save-confirmation {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.config-item {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+  }
+}
+
+.grid-span-2 {
+  grid-column: span 2;
+}
+
+
+
+.operation-selector {
+
+  .selected-operations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .operation-pill {
+    background-color: #FFD466;
+    border-radius: 20px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+    .remove-operation {
+      margin-left: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+
+      &:hover {
+        color: #e74c3c;
+      }
+    }
+  }
+
+  .dropdown-wrapper {
     width: 100%;
-    display: flex; 
-    flex-direction: row; 
-    gap: 15px;
-    margin-bottom: 15px;
+    margin-top: 10px;
+  }
+
+  .operations-dropdown {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+
+    &:focus {
+      outline: none;
+      border-color: #FFD466;
+      box-shadow: 0 0 0 2px rgba(255, 212, 102, 0.3);
+    }
+  }
+}
+
+
+.custom-checkbox {
+  position: relative;
+  margin-top: 8px;
+
+  input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+
+    &:checked + label {
+      background-color: #FFD466;
+
+      &:after {
+        left: 22px;
+        background-color: #E5B672;
+      }
+    }
+
+    &:focus + label {
+      box-shadow: 0 0 0 2px rgba(255, 212, 102, 0.3);
+    }
+  }
+
+  label {
+    display: block;
+    width: 40px;
+    height: 20px;
+    border-radius: 20px;
+    background-color: #ccc;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: #858585;
+      top: 2px;
+      left: 2px;
+      transition: left 0.3s, background-color 0.3s;
+    }
+  }
+}
+
+.dropdown-method {
+  grid-column: span 2; /* Make dropdown take up 2 columns */
+
+  .dropdown-wrapper {
+    width: 100%;
+  }
+
+  .multiple-select {
+    width: 100%;
+    min-height: 150px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+
+    &:focus {
+      outline: none;
+      border-color: #FFD466;
+      box-shadow: 0 0 0 2px rgba(255, 212, 102, 0.3);
+    }
+
+    option {
+      padding: 8px;
+      margin-bottom: 2px;
+
+      &:checked {
+        background-color: #FFD466;
+        color: #000;
+      }
+    }
+  }
+
+  .help-text {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+    text-align: center;
+  }
+}
+
+
+.operation-selector {
+  width: 100%;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 15px;
+}
+
+/* Styling for toggle rows */
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.toggle-label {
+  font-weight: 500;
+}
+
+
+.grid-span-2 {
+  grid-column: span 2;
+}
+
+/* Operation selector styling */
+.operation-selector {
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%; /* Ensure it uses available width */
+  box-sizing: border-box;
+}
+
+/* Empty cell styling */
+.empty-cell {
+  min-height: 10px;
+}
+
+/* Make dropdown take available width */
+.dropdown-wrapper {
+  width: 100%;
+}
+
+.operations-dropdown {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* Style for operation pills */
+.selected-operations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.operation-pill {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 5px 10px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.remove-operation {
+  margin-left: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+
+.main-box {
+  overflow-x: hidden;
+  width: 80%;
+  box-sizing: border-box;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+.advanced-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 8px 8px;
+}
+.advanced-stat-cell {
+  display: flex;
+  align-items: center;
+  gap: 0; /* or 4px for even less space */
+  width: auto;
+  min-width: 0;
+
+}
+
+.advanced-stat-cell span {
+  margin: 0;
+  white-space: nowrap;
+  font-size: 15px;
+  width: auto;
+  display: inline;
+}
+
+.frequency-input,
+.advanced-stat-cell input[type="text"] {
+  margin-left: 4px !important; /* Small space, adjust as needed */
+  width: 60px;
+}
+
+.app-settings-toggle, 
+.advanced-stat-cell app-settings-toggle {
+  margin-left: 4px;
+}
+
+.frequency-warning {
+  color: #fff;
+  background: #e74c3c;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+
+
+
+
+.config-section {
+  margin-bottom: 32px;
+}
+
+.intro-text {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.question-frequency-list,
+.letter-frequency-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.question-frequency-row,
+.letter-frequency-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.question-label {
+  min-width: 120px;
+  font-weight: 500;
 }

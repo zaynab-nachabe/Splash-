@@ -1,0 +1,22 @@
+<app-template>
+    <app-home-button></app-home-button>
+    <app-user-card class="navbar-profile-image">
+    <img [src]="userIconPath" alt="PP 1" class="icon"/>
+    </app-user-card>
+    <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active"><p class="name">{{ selectedUser?.name }}</p></app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']"> Configuration </app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/ergo-stat-selected']"> Statistiques </app-medium-button>
+
+    <app-inner-box class="main-box blue">
+    <!-- Save confirmation message -->
+    <div class="save-confirmation-container">
+      <div class="save-confirmation" *ngIf="saveConfirmationVisible">
+        Configuration sauvegardée automatiquement a chaque modification.
+      </div>
+    </div>
+
+    <span>NOM : {{ selectedUser?.name }}</span>
+    <span>Âge : {{selectedUser?.age}} ans</span>
+    <span>Troubles: {{selectedUser?.conditions}} </span>
+    </app-inner-box>
+</app-template>

@@ -1,0 +1,31 @@
+<div class="user-list-container">
+  <!-- List of users -->
+  <div class="user-grid">
+    <div class="user-card" *ngFor="let user of userList" (click)="selectUser(user.userId)" data-testid="user-card">
+      <div class="user-content">
+        <img [src]="'assets/images/child-pps/' + user.icon" [alt]="user.name">
+        <p class="user-name">{{ user.name }}</p>
+        <span class="delete-icon" *ngIf="showDeleteButtons" (click)="promptDeleteUser($event, user)">×</span>
+      </div>
+    </div>
+
+    <!-- Add user button as a card -->
+    <div class="user-card add-user-card" *ngIf="showAddButton" (click)="navigateToAddUser()">
+      <div class="user-content">
+        <div class="plus-icon">+</div>
+        <p class="user-name">Ajouter</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div class="confirm-delete-popup" *ngIf="showConfirmDeletePopup">
+    <div class="confirm-delete-content">
+      <p>Voulez-vous vraiment supprimer {{ userToDelete?.name }}?</p>
+      <div class="confirm-delete-buttons">
+        <button class="confirm-button" (click)="confirmDeleteUser()">Confirmer</button>
+        <button class="cancel-button" (click)="cancelDeleteUser()">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>

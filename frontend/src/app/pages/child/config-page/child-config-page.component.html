@@ -1,29 +1,82 @@
 <app-template>
     <!--Zone de la navbar -->
-    <app-user-card class="navbar-profile-image">
-        <img src="assets/images/child-pps/red_fish.png" alt="PP 1" class="icon"/>
-    </app-user-card>
-    <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"><p class="name">Eli KOPTER</p></app-medium-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/child-play']" routerLinkActive="active"> Jouer </app-medium-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"> Mon classement </app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/child-stats']" routerLinkActive="active"><p class="name">
+    <app-user-card [user]="user" class="horizontal navbar"/>
+    </app-medium-button>
+    <app-medium-button class="navbar-button red" [routerLink]="['/child-play']" routerLinkActive="active"> Retour </app-medium-button>
+    <app-medium-button class="navbar-button" [routerLink]="['/child-config']" routerLinkActive="active"> Mon aquarium </app-medium-button>
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue">
-        <span>
-            LeaderBoard :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Aide à la lecture :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Taille de la police :
-            <app-settings-slider></app-settings-slider>
-        </span>
-        <span>
-            Son :
-            <app-settings-slider></app-settings-slider>
-        </span>
+        <div class="money-display">
+            <img src="../../../../assets/images/game/coin.png" alt="coin" class="coin-icon">
+            <span class="money-amount">{{ getUserMoney() }}</span>
+        </div>
+
+        <!--effects on or off-->
+         <div class="toggle-row">
+          <span class="toggle-label">Effets sonore</span>
+          <app-settings-toggle [checked]="effectsEnabled" (valueChange)="toggleEffects()"></app-settings-toggle>
+        </div>
+
+        <!-- sound toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label"> Musique </span>
+              <app-settings-toggle [checked]="musicEnabled" (valueChange)="toggleMusic()"></app-settings-toggle>
+        </div>
+
+        <!-- show deaths -->
+        <div class="toggle-row">
+          <span class="toggle-label">Vies limitées</span>
+          <app-settings-toggle 
+              [checked]="limitedLives" 
+              (valueChange)="toggleLimitedLives()">
+          </app-settings-toggle>
+        </div>
+
+        <!-- show score toggle -->
+        <div class="toggle-row">
+          <span class="toggle-label">Montrer le score</span>
+          <app-settings-toggle [checked]="showScore" (valueChange)="toggleShowScore()"></app-settings-toggle>
+        </div>
+
+        <!-- Crab speed selection -->
+        <div class="toggle-row crab-speed-row">
+          <span class="toggle-label">Vitesse des crabes</span>
+          <div class="speed-buttons">
+            <button class="speed-button"
+                    [class.selected]="!isFastCrabs"
+                    (click)="toggleCrabSpeed(false)">
+                Petits pinces
+            </button>
+            <button class="speed-button"
+                    [class.selected]="isFastCrabs"
+                    (click)="toggleCrabSpeed(true)">
+                Grands crabes en colère
+            </button>
+          </div>
+        </div>
+
+        <!-- Player avatar selection -->
+        <div class="toggle-row player-select-row">
+          <span class="toggle-label">Choisir un avatar</span>
+          <div class="player-image-list">
+            <button
+              *ngFor="let avatar of avatars"
+              class="player-image-btn"
+              [class.selected]="selectedPlayerImage === avatar.path"
+              [class.locked]="!isAvatarUnlocked(avatar.id)"
+              [disabled]="!isAvatarUnlocked(avatar.id) && (getUserMoney() < avatar.price)"
+              (click)="handleAvatarClick(avatar)"
+              type="button"
+            >
+              <img [src]="avatar.path" [class.grayscale]="!isAvatarUnlocked(avatar.id)" alt="Avatar" />
+              <div *ngIf="!isAvatarUnlocked(avatar.id)" class="price-tag">
+                <img src="../../../../assets/images/game/coin.png" class="coin-small" />
+                <span [class.affordable]="getUserMoney() >= avatar.price">{{avatar.price}}</span>
+              </div>
+            </button>
+          </div>
+        </div>
     </app-inner-box>
 </app-template>

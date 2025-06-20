@@ -1,0 +1,143 @@
+[
+  {
+    "userId": "1",
+    "name": "Eli KOPTER",
+    "age": "9",
+    "icon": "red_fish.png",
+    "conditions": [
+      "Dyslexia",
+      "ADHD"
+    ],
+    "userConfig": {
+      "showAnswer": true,
+      "addition": true,
+      "subtraction": true,
+      "multiplication": true,
+      "division": true,
+      "rewrite": true,
+      "encryption": true,
+      "word": true,
+      "nombresDeQuestion": 8,
+      "questionFrequency": {
+        "division": 0.25,
+        "multiplication": 0,
+        "addition": 0.7,
+        "subtraction": 0.3
+      },
+      "showScore": false,
+      "chiffresEnLettres": false,
+      "longueurMaximaleDesMots": 5,
+      "showLetterColor": false
+    },
+    "musicEnabled": false,
+    "effectsEnabled": true,
+    "limitedLives": true,
+    "showScore": false,
+    "crabSpeed": "slow",
+    "selectedPlayerImage": "/assets/images/game/player/yellow_fish.png",
+    "money": 0,
+    "unlockedAvatars": [
+      "yellow_fish"
+    ]
+  },
+  {
+    "userId": "2",
+    "name": "Judas BRICOT",
+    "age": "9",
+    "icon": "yellow_fish.png",
+    "conditions": [
+      "Dyscalculia"
+    ],
+    "userConfig": {
+      "showAnswer": true,
+      "addition": false,
+      "subtraction": false,
+      "multiplication": true,
+      "division": true,
+      "rewrite": true,
+      "encryption": false,
+      "word": false,
+      "showScore": false,
+      "nombresDeQuestion": 2,
+      "chiffresEnLettres": false,
+      "longueurMaximaleDesMots": 8,
+      "showLetterColor": false
+    },
+    "musicEnabled": true,
+    "effectsEnabled": true,
+    "limitedLives": true,
+    "showScore": true,
+    "crabSpeed": "slow",
+    "selectedPlayerImage": "/assets/images/game/player/yellow_fish.png",
+    "money": 0,
+    "unlockedAvatars": [
+      "yellow_fish"
+    ]
+  },
+  {
+    "userId": "3",
+    "name": "Lucie FERT",
+    "age": "9",
+    "icon": "blue_fish.png",
+    "conditions": [],
+    "userConfig": {
+      "showAnswer": false,
+      "addition": true,
+      "subtraction": true,
+      "multiplication": true,
+      "division": true,
+      "rewrite": true,
+      "encryption": true,
+      "word": true,
+      "showScore": false,
+      "nombresDeQuestion": 10,
+      "chiffresEnLettres": false,
+      "longueurMaximaleDesMots": 5,
+      "showLetterColor": false
+    },
+    "musicEnabled": true,
+    "effectsEnabled": false,
+    "limitedLives": true,
+    "showScore": true,
+    "crabSpeed": "slow",
+    "selectedPlayerImage": "/assets/images/game/player/yellow_fish.png",
+    "money": 0,
+    "unlockedAvatars": [
+      "yellow_fish"
+    ]
+  },
+  {
+    "userId": "4",
+    "name": "Justin BRACAGE",
+    "age": "9",
+    "icon": "turtle.png",
+    "conditions": [
+      "Visual Processing Disorder"
+    ],
+    "userConfig": {
+      "showAnswer": true,
+      "addition": false,
+      "subtraction": false,
+      "multiplication": false,
+      "division": false,
+      "rewrite": true,
+      "encryption": false,
+      "word": true,
+      "showScore": false,
+      "nombresDeQuestion": 10,
+      "chiffresEnLettres": false,
+      "longueurMaximaleDesMots": 5,
+      "showLetterColor": false
+    },
+    "musicEnabled": false,
+    "effectsEnabled": false,
+    "limitedLives": true,
+    "showScore": true,
+    "crabSpeed": "slow",
+    "selectedPlayerImage": "/assets/images/game/player/yellow_fish.png",
+    "money": 0,
+    "unlockedAvatars": [
+      "yellow_fish"
+    ]
+  }
+]

@@ -1,11 +1,17 @@
 <app-template>
     <!--Zone de la navbar -->
-    <app-medium-button class="navbar-button" [routerLink]="['/ergo-config']" routerLinkActive="active">Configuration joueurs</app-medium-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/ergo-play']" routerLinkActive="active"> Jouer </app-medium-button>
-    <app-medium-button class="navbar-button" [routerLink]="['/ergo-stats']" routerLinkActive="active"> Statistiques joueurs </app-medium-button>
+    <app-home-button>Home</app-home-button>
+    <h1 class="navbar-text">Choisir un enfant</h1>
 
     <!--Zone du main -->
-    <app-inner-box class="main-box blue">
-        <app-big-button class="main-box orange" [routerLink]="['/ergo-lobby']"> Lancer la partie </app-big-button>
+    <app-inner-box class="main-box blue user-list-container">
+        <app-search-bar (searchText)="filterUsers($event)"></app-search-bar>
+        <app-user-list
+        [users]="filteredUsers"
+        [navigateTo]="'/ergo-config-selected'"
+        [showAddButton]="true"
+        [addButtonRoute]="'/ergo-input-child'"
+        [showDeleteButtons]="true">
+    </app-user-list>
     </app-inner-box>
 </app-template>

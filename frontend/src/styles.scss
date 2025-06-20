@@ -1,8 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 html {
-    //font-family: 'Roboto', sans-serif;
-    font-family: 'Press Start 2P';font-size: 22px;
-
+    //font-family: 'Roboto';
+    font-size: 22px;
 }
 
 html,body {
@@ -10,4 +9,9 @@ html,body {
     padding: 0;
     height: 100%;
     width: 100%;
+}
+
+@font-face {
+    font-family: 'Cursive';
+    src: url('/assets/fonts/cursive.ttf') format('truetype');
 }

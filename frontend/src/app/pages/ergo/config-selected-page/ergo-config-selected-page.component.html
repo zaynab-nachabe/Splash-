@@ -1,65 +1,98 @@
 <app-template>
-    <!--Zone de la navbar -->
-    <app-user-card class="navbar-profile-image">
-        <img src="assets/images/child-pps/red_fish.png" alt="PP 1" class="icon"/>
-    </app-user-card>
-    <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active"><p class="name">Eli KOPTER</p></app-medium-button>
-    <app-medium-button class="navbar-button red" [routerLink]="['/ergo-config']"> Retour </app-medium-button>
-    <app-medium-button class="navbar-button green" [routerLink]="['/ergo-config']"> Sauvegarder </app-medium-button>
+  <!--Zone de la navbar -->
+  <app-home-button></app-home-button>
+  <app-medium-button class="navbar-button" [routerLink]="['/ergo-config-selected']" routerLinkActive="active">
+    <p class="name">
+      <app-user-card [user]="selectedUser" class="horizontal navbar" />
+    </p>
+  </app-medium-button>
+  <app-medium-button class="navbar-button red" [routerLink]="['/ergo-play']"> Retour </app-medium-button>
+  <app-medium-button class="navbar-button" [routerLink]="['/ergo-stat-selected']"> Statistiques </app-medium-button>
 
-    <!--Zone du main -->
-    <app-inner-box class="main-box blue">
+  <!--Zone du main -->
+  <app-inner-box class="main-box blue">
+    <!-- Save confirmation message -->
+    <div class="save-confirmation-container">
+      <div class="save-confirmation" *ngIf="saveConfirmationVisible">
+        Configuration sauvegardée automatiquement a chaque modification.
+      </div>
+    </div>
 
-        <span>NOM : KOPTER</span>
-        <span>Prénom : Eli</span>
-        <span>Âge : 7ans</span>
-        <span>Troubles: Dysgraphie</span>
-        <span>
-            LeaderBoard :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Statistiques avancées :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Aide à la lecture :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Taille de la police :
-            <app-settings-slider></app-settings-slider>
-        </span>
-        <span>
-            Son :
-            <app-settings-slider></app-settings-slider>
-        </span>
-        <span>
-            Réponses affichées :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Réécriture des nombres :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Addition :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Soustraction :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Multiplication : 
-            <app-settings-toggle></app-settings-toggle>
-        </span>
-        <span>
-            Division :
-            <app-settings-toggle></app-settings-toggle>
-        </span>
+    <span>NOM : {{ selectedUser?.name }}</span>
+    <span>Âge : {{selectedUser?.age}} ans</span>
+    <span>Troubles: {{selectedUser?.conditions}} </span>
 
-        
+    <!-- PART 1: General settings -->
+    <div class="config-section">
+      <h3>Paramètres généraux</h3>
+      <div class="advanced-stats-grid">
+        <div class="advanced-stat-cell">
+          <span>Montrer les réponses</span>
+          <app-settings-toggle [checked]="currentConfig.showAnswer"
+            (valueChange)="onToggleChange('showAnswer', $event)">
+          </app-settings-toggle>
+        </div>
+        <div class="advanced-stat-cell">
+          <span>Afficher le score</span>
+          <app-settings-toggle [checked]="currentConfig.showScore" (valueChange)="onToggleChange('showScore', $event)">
+          </app-settings-toggle>
+        </div>
+        <div class="advanced-stat-cell">
+          <span>Afficher les fautes</span>
+          <app-settings-toggle [checked]="currentConfig.showLetterColor ?? false"
+            (valueChange)="onToggleChange('showLetterColor', $event)">
+          </app-settings-toggle>
+        </div>
+        <div class="advanced-stat-cell">
+          <span>Chiffres en lettres</span>
+          <app-settings-toggle [checked]="currentConfig.chiffresEnLettres"
+            (valueChange)="onToggleChange('chiffresEnLettres', $event)">
+          </app-settings-toggle>
+        </div>
+        <div class="advanced-stat-cell">
+          <span>Nombre de questions</span>
+          <input #nombreInput type="text" min="1" [value]="currentConfig.nombresDeQuestion || ''"
+            (input)="onNombreDeQuestionInput(nombreInput)" class="frequency-input" />
+        </div>
 
-    </app-inner-box>
+        <div class="advanced-stat-cell">
+          <span>Longueur maximale des mots</span>
+          <input #maxLenInput type="number" min="1" [value]="currentConfig.longueurMaximaleDesMots || ''"
+            (input)="onMaxWordLengthInput(maxLenInput)" class="frequency-input" />
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 2: Question frequencies -->
+    <div class="config-section">
+      <h3>Types de Questions</h3>
+      <div class="intro-text">Les fréquences déterminent la probabilité d’apparition de chaque notion ou lettre. Si vous activez une notion mais ne renseignez pas de fréquence, une fréquence automatique sera calculée pour équilibrer le total à 100%. Si vous désactivez une notion, sa fréquence devient 0. Plus la fréquence est élevée, plus la notion apparaîtra souvent.</div>
+      <div *ngIf="frequencyWarning" class="frequency-warning">
+        {{ frequencyWarning }}
+      </div>
+      <div class="question-frequency-list">
+        <div *ngFor="let op of availableOperations" class="question-frequency-row">
+          <span class="question-label">{{ op.label }}</span>
+          <app-settings-toggle [checked]="isOperationSelected(op.key)" (valueChange)="onToggleChange(op.key, $event)">
+          </app-settings-toggle>
+          <input #freqInput type="number" min="0" max="100" [value]="getEffectiveOperationFrequency(op.key)"
+            (input)="onFrequencyInput(freqInput, op.key, 'operation')" class="frequency-input"
+            [disabled]="!isOperationSelected(op.key)" />
+        </div>
+      </div>
+    </div>
+    <!-- PART 3: Letter frequencies -->
+    <div class="config-section">
+      <h3>Lettres à surveiller</h3>
+      <div class="intro-text">Les fréquences des lettres déterminent la probabilité que chaque lettre soit utilisée dans un mot. Combiner plusieurs lettres augmente les chances que chacune apparaisse, et donc aussi qu'elles apparaissent ensemble.</div>
+      <div class="letter-frequency-list">
+        <div *ngFor="let letter of topMissedLetters" class="letter-frequency-row">
+          <span class="question-label">{{ letter.label }}</span>
+          <input #letterFreqInput type="number" min="0" max="100"
+            [value]="letterFrequencies[letter.key] !== undefined ? letterFrequencies[letter.key] : 0"
+            (input)="onFrequencyInput(letterFreqInput, letter.key, 'letter')" class="frequency-input" />
+        </div>
+      </div>
+    </div>
+  </app-inner-box>
 </app-template>

@@ -27,7 +27,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/assets/fonts"
             ],
             "styles": [
               "src/styles.scss"
@@ -56,12 +57,41 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.ts"
+                }
+              ]
+            },
+            "docker": {
+              "budgets": [],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.docker.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "docker-e2e": {
+              "budgets": [],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.docker-e2e.ts"
+                }
+              ],
+              "outputHashing": "all"
             }
           },
+
           "defaultConfiguration": "production"
         },
+
         "serve": {
+
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {

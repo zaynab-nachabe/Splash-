@@ -1,31 +1,24 @@
 <app-template>
     <!--Zone de la navbar -->
+    <app-home-button></app-home-button>
     <app-medium-button class="navbar-button red" [routerLink]="['/ergo-play']" routerLinkActive="active">Retour</app-medium-button>
     <app-medium-button class="navbar-button" [routerLink]="['/ergo-lobby']" routerLinkActive="active"> Lancement de la partie </app-medium-button>
-    <app-medium-button class="navbar-button green"> Démarrer </app-medium-button>
+    <app-medium-button class="navbar-button green" [routerLink]="['/game']" routerLinkActive="active"> Démarrer </app-medium-button>
+
 
     <!--Zone du main -->
     <app-inner-box class="main-box blue little">
+        <app-user-list 
+            [navigateTo]="'/ergo-config-selected'"
+            [showAddButton]="true"
+            [addButtonRoute]="'/ergo-input-child'"
+            [showDeleteButtons]="true">
+        </app-user-list>
     </app-inner-box>
     <app-inner-box class="main-box blue medium">
             <span>
-                Encyrptage des questions :
-                <app-settings-toggle></app-settings-toggle>
-            </span>
-            <span>
-                Temps de la partie : 20min
-            </span>
-            <span>
-                Fréquence d'apparition des méduses : 
-                <app-settings-slider></app-settings-slider>
-            </span>
-            <span>
-                Fréquence d'apparition des crabes : 
-                <app-settings-slider></app-settings-slider>
-            </span>
-            <span>
-                Vitesse des crabes : 
-                <app-settings-slider></app-settings-slider>
+                Font:
+                <app-settings-font></app-settings-font>
             </span>
     </app-inner-box>
 </app-template>
