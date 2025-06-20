@@ -17,7 +17,7 @@
 ```bash
 Backend  [localhost:8081] : ✅ UP (last check: 200 OK)
 Frontend [localhost:8080] : ✅ UP (last check: 200 OK)
-E2E Tests: ⚠️ 9 Failed, 23 Passed
+E2E Tests: ⚠️ 9 Failed, 2 Passed
 ```
 
 ---
@@ -124,7 +124,7 @@ docker-compose logs -f
 ### C. Tests E2E
 Dernière exécution:
 - Total: 32 tests
-- Réussis: 23
+- Réussis: 2
 - Échoués: 9
 - Principaux échecs:
   - Navigation utilisateur (3 tests)

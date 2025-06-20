@@ -1,5 +1,4 @@
 import { test, expect, Page } from '@playwright/test';
-import { testUrl } from 'e2e/e2e.config';
 import { AppFixture } from 'src/app/app.fixture';
 
 
@@ -24,11 +23,15 @@ class WelcomePageFixture {
 
 // https://playwright.dev/docs/locators
 test.describe('Welcome page display', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://frontend-test');
+    await page.waitForTimeout(1000); // Add small delay
+    await page.waitForLoadState('networkidle');
+  });
+
   test('Basic test', async ({ page }) => {
-    await page.goto(testUrl);
     const welcomePage = new WelcomePageFixture(page);
 
-    // Using locators functions:
     const title = await welcomePage.getTitle();
     const ergoButton = await welcomePage.getErgoButton();
     const childButton = await welcomePage.getChildButton();

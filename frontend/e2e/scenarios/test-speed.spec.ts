@@ -12,7 +12,7 @@ test.describe('Game Speed Tests', () => {
 
   test.beforeEach(async ({ page }) => {
     console.log('Starting test - navigating to welcome page');
-    await page.goto('/'); // Use root, relies on baseURL in config
+    await page.goto('http://frontend-test');
     await page.waitForLoadState('networkidle');
   });
 

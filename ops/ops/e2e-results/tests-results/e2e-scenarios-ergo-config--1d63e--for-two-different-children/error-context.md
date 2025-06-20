@@ -2,45 +2,8 @@
 
 ```yaml
 - text: Accueil
-- paragraph:
-  - img "icone de Judas BRICOT"
-  - text: Judas BRICOT
-- text: "Retour Statistiques NOM : Judas BRICOT Âge : 9 ans Troubles: Dyscalculia"
-- heading "Paramètres généraux" [level=3]
-- text: Montrer les réponses
-- checkbox [checked]
-- text: Afficher le score
-- checkbox
-- text: Afficher les fautes
-- checkbox
-- text: Chiffres en lettres
-- checkbox
-- text: Nombre de questions
-- textbox: "2"
-- text: Longueur maximale des mots
-- spinbutton: "8"
-- heading "Types de Questions" [level=3]
-- text: Les fréquences déterminent la probabilité d’apparition de chaque notion ou lettre. Si vous activez une notion mais ne renseignez pas de fréquence, une fréquence automatique sera calculée pour équilibrer le total à 100%. Si vous désactivez une notion, sa fréquence devient 0. Plus la fréquence est élevée, plus la notion apparaîtra souvent. Addition
-- checkbox
-- spinbutton [disabled]: "0"
-- text: Soustraction
-- checkbox
-- spinbutton [disabled]: "0"
-- text: Multiplication
-- checkbox [checked]
-- spinbutton: "33"
-- text: Division
-- checkbox [checked]
-- spinbutton: "33"
-- text: Chiffres
-- checkbox [checked]
-- spinbutton: "33"
-- text: Caractères spéciaux
-- checkbox
-- spinbutton [disabled]: "0"
-- text: Mot français
-- checkbox
-- spinbutton [disabled]: "0"
-- heading "Lettres à surveiller" [level=3]
-- text: Les fréquences des lettres déterminent la probabilité que chaque lettre soit utilisée dans un mot. Combiner plusieurs lettres augmente les chances que chacune apparaisse, et donc aussi qu'elles apparaissent ensemble.
+- heading "Choisir un enfant" [level=1]
+- searchbox "Tapez un nom"
+- text:  +
+- paragraph: Ajouter
 ```

@@ -1,11 +1,9 @@
 # Page snapshot
 
 ```yaml
-- paragraph: Calcules 25 / 5 =
-- text: c i n q
-- img "heart"
-- img "heart"
-- img "heart"
-- img "heart"
-- img "heart"
+- text: Accueil
+- heading "Choisir un enfant" [level=1]
+- searchbox "Tapez un nom"
+- text:  +
+- paragraph: Ajouter
 ```

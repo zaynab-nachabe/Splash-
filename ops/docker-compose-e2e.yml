@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  backend:
+  backend-e2e:
     build:
       context: ../backend
       target: production
@@ -13,15 +13,16 @@ services:
       retries: 5
       start_period: 20s
 
-  frontend:
+  frontend-e2e:
     build:
       context: ../frontend
-      target: production
+      dockerfile: Dockerfile
       args:
-        - ENVIRONMENT=docker
+        ENVIRONMENT: docker-e2e
     container_name: frontend-test
     depends_on:
-      - backend
+      backend-e2e:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost" ]
       interval: 10s
@@ -34,12 +35,12 @@ services:
       context: ../frontend
       dockerfile: Dockerfile-e2e
     environment:
-      - PLAYWRIGHT_TEST_BASE_URL=http://frontend-test:80
+      - PLAYWRIGHT_TEST_BASE_URL=http://frontend-e2e
     volumes:
       - ./ops/e2e-results/playwright-report:/app/playwright-report
       - ./ops/e2e-results/tests-results:/app/test-results
     depends_on:
-      frontend:
+      frontend-e2e:
         condition: service_healthy
-      backend:
+      backend-e2e:
         condition: service_healthy
