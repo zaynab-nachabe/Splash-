@@ -13,7 +13,9 @@ export class Player {
     private image: HTMLImageElement;
 
     public isDeadFishActive: boolean = false;
-    public currentImagePath: string = "../../../../assets/images/game/player/yellow_fish.png";
+    //public currentImagePath: string = "../../../../assets/images/game/player/yellow_fish.png";
+    public currentImagePath: string = "assets/images/game/player/yellow_fish.png";
+
     public currentLives: number = 5;
     public isInvulnerable: boolean = false;
     private invulnerabilityDuration: number = 2000;

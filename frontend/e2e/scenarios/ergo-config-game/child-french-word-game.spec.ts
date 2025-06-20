@@ -64,6 +64,7 @@ class GamePageFixture {
 }
 /*
 
+/*
 test('should set 10% addition, 90% french word, 5 questions, then play as the child', async ({ page }) => {
     test.setTimeout(90000); // 90 seconds
 

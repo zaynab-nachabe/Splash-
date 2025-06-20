@@ -12,5 +12,6 @@ export type UserConfig = {
     longueurMaximaleDesMots: number,
     nombresDeQuestion: number,
     showLetterColor?: boolean,
-    questionFrequency?: { [key: string]: number }
+    questionFrequency?: { [key: string]: number },
+    letterFrequency?: { [key: string]: number }
 };
