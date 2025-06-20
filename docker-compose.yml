@@ -6,8 +6,6 @@ services:
       context: ./backend
       target: production
     container_name: backend
-    ports:
-      - "8081:9428"
     volumes:
       - ./backend/data:/app/data
       - ./backend/logs:/app/logs
@@ -27,8 +25,6 @@ services:
       args:
         - ENVIRONMENT=docker
     container_name: frontend
-    ports:
-      - "8080:80"
     depends_on:
       backend:
         condition: service_healthy

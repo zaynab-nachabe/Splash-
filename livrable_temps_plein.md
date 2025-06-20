@@ -90,3 +90,5 @@ Objectif : Évaluer si le jeu contribue effectivement à améliorer les compéte
 # Lancer l'application localement
 npm install
 npm run dev
+```
+Credit : Copilot (Please help me clean up my markdown)
