@@ -320,14 +320,18 @@ export class ErgoConfigSelectedPageComponent implements OnInit, OnDestroy {
       }
       this.questionConfigService.updateNotion('questionFrequency' as any, { ...this.currentConfig.questionFrequency });
     } else if (type === 'letter') {
-      // Letter frequencies: 0–100 only
-      if (num < 0 || num > 100) {
-        this.frequencyWarning = 'La fréquence de chaque lettre doit être comprise entre 0 et 100.';
-      } else {
-        this.frequencyWarning = '';
-      }
-      this.letterFrequencies[key] = num;
-      // Optionally update wherever you store letter frequencies
+        if (!this.currentConfig.letterFrequency) {
+            this.currentConfig.letterFrequency = {};
+        }
+        if (num < 0 || num > 100) {
+            this.frequencyWarning = 'La fréquence de chaque lettre doit être comprise entre 0 et 100.';
+        } else {
+            this.frequencyWarning = '';
+        }
+        this.currentConfig.letterFrequency[key] = num / 100; // store as 0-1 float
+        this.letterFrequencies[key] = num;
+        // Optionally update wherever you store letter frequencies
+        this.questionConfigService.updateNotion('letterFrequency' as any, { ...this.currentConfig.letterFrequency });
     }
   }
 

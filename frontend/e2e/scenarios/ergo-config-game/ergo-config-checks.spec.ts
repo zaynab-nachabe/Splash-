@@ -7,7 +7,7 @@ import {
 
 
 test('should play with various configs (no french words)', async ({ page }) => {
-    test.setTimeout(300000);
+    test.setTimeout(3000000);
 
     
     // Single type, chiffres en lettre

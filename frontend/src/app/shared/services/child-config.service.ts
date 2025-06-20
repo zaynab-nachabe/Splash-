@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
 import { Avatar } from '../models/avatar.model';
@@ -116,7 +116,7 @@ export class ChildConfigService {
 
   updateCrabSpeed(speed: 'slow' | 'fast') {
     if (this.userId && this.currentUser) {
-      const updatedUser = { 
+      const updatedUser = {
         ...this.currentUser,
         crabSpeed: speed,
         // Ensure required fields are present
@@ -182,6 +182,7 @@ export class ChildConfigService {
     }
   }
 
+  /*
   purchaseAvatar(avatar: Avatar): Observable<User> {
     if (this.userId && this.currentUser) {
       const updatedUser: User = {
@@ -206,6 +207,30 @@ export class ChildConfigService {
     }
     return EMPTY;
   }
+    */
+
+  purchaseAvatar(avatar: Avatar): Observable<User> {
+  if (this.userId) {
+    // Fetch latest user before updating, then update and return the result of the PUT
+    return this.http.get<User>(`${this.apiUrl}/${this.userId}`).pipe(
+      switchMap((latestUser: User) => {
+        const updatedUser: User = {
+          ...latestUser,
+          money: Number(latestUser.money || 0) - avatar.price,
+          unlockedAvatars: Array.from(new Set([...(latestUser.unlockedAvatars || []), avatar.id])),
+          selectedPlayerImage: avatar.path
+        };
+        return this.http.put<User>(`${this.apiUrl}/${this.userId}`, updatedUser).pipe(
+          tap((userData: User) => {
+            this.currentUser = userData;
+            this.selectedPlayerImageSubject.next(avatar.path);
+          })
+        );
+      })
+    );
+  }
+  return EMPTY;
+}
 
   isAvatarUnlocked(avatarId: string): boolean {
     return this.currentUser?.unlockedAvatars?.includes(avatarId) || avatarId === 'yellow_fish';

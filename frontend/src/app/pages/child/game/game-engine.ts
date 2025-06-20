@@ -28,7 +28,7 @@ export class GameEngine {
     private answersShown: number = 0;
     private keyAppearances: Map<string, number> = new Map();
     public lives: number = 5;
-    public onLivesChanged: (lives: number) => void = () => {};
+    public onLivesChanged: (lives: number) => void = () => { };
     private limitedLives: boolean = true;
     private crabSpeedMultiplier: number = 1;
     constructor(
@@ -52,23 +52,51 @@ export class GameEngine {
             this.enemyKilledAudio.muted = !enabled;
         });
 
+
+        /*
         this.childConfigService.selectedPlayerImage$.subscribe((img: string | null) => {
             if (img) {
                 this.player.setImage(img);
             } else {
-                this.player.setImage("../../../../assets/images/game/player/yellow_fish.png");
+                this.player.setImage("assets/images/game/player/yellow_fish.png"); // <-- FIXED
+            }
+        });
+        */
+
+        // Always set the image at construction, regardless of observable emissions
+        const currentImg = this.childConfigService.selectedPlayerImageSubject.value;
+        if (currentImg) {
+            this.player.setImage(currentImg);
+        } else {
+            this.player.setImage("assets/images/game/player/yellow_fish.png");
+        }
+
+        // Listen for future changes (avatar selection)
+        this.childConfigService.selectedPlayerImage$.subscribe((img: string | null) => {
+            if (img) {
+                this.player.setImage(img);
+            } else {
+                this.player.setImage("assets/images/game/player/yellow_fish.png");
             }
         });
 
+
         this.childConfigService.crabSpeed$.subscribe((speed: string) => {
-            this.crabSpeedMultiplier = speed === 'fast' ? 1.5 : 1; 
-            
+            this.crabSpeedMultiplier = speed === 'fast' ? 1.5 : 1;
+
             this.enemies.forEach(enemy => {
                 if (enemy instanceof Enemy) {
                     enemy.setSpeedMultiplier(this.crabSpeedMultiplier);
                 }
             });
         });
+    }
+
+    public getCorrectAnswers(): number {
+        return this.correctAnswers;
+    }
+    public getTotalQuestions(): number {
+        return this.totalQuestions;
     }
 
     public checkCollision(obj1: any, obj2: any): boolean {
@@ -134,7 +162,7 @@ export class GameEngine {
         this.player.update();
         let playerHit = false;
         let selectedPlayerImage = this.player.currentImagePath;
-        
+
         this.enemies.forEach(enemy => {
             enemy.update();
             if (this.checkCollision(enemy, this.player) && !enemy.hasDealtDamage() && !this.player.isDeadFishActive) {
@@ -161,7 +189,8 @@ export class GameEngine {
         if (playerHit && !this.player.isDeadFishActive) {
             this.player.isDeadFishActive = true;
             const previousImage = selectedPlayerImage;
-            this.player.setImage('../../../../assets/images/game/player/dead_fish.png');
+            //this.player.setImage('../../../../assets/images/game/player/dead_fish.png');
+            this.player.setImage("assets/images/game/player/dead_fish.png");
             setTimeout(() => {
                 this.player.setImage(previousImage);
                 this.player.isDeadFishActive = false;
@@ -246,7 +275,7 @@ export class GameEngine {
     public answerIncorrectly(proposedAnswer: string): void {
         this.incorrectAnswers++;
         this.totalQuestions++;
-        
+
         if (this.limitedLives) {
             this.lives--;
             this.onLivesChanged(this.lives);

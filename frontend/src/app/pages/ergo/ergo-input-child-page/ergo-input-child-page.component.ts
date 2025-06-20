@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../shared/services/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStorageService } from "../../../shared/services/localStorage.service";
+import { AVATAR_PRICES } from 'src/app/shared/models/avatar.model';
 
 @Component({
   selector: 'app-ergo-input-child',
@@ -156,7 +157,9 @@ export class ErgoInputChildComponent implements OnInit {
           nombresDeQuestion: 10,
           chiffresEnLettres: false,
           longueurMaximaleDesMots: 10
-        }
+        },
+        selectedPlayerImage: AVATAR_PRICES.find(a => a.id === 'yellow_fish')?.path || 'assets/images/game/player/yellow_fish.png',
+        unlockedAvatars: ['yellow_fish']
       };
 
       this.userService.addUser(newChild);
