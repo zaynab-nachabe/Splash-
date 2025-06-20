@@ -8,6 +8,7 @@ import { Drone } from "./Drone";
 import { Ui } from "./Ui";
 import { FontService } from "../../../shared/services/font.service"
 import { ChildConfigService } from '../../../shared/services/child-config.service';
+import { KingCrab } from "./KingCrab";
 
 export class GameEngine {
     private ctx: CanvasRenderingContext2D;
@@ -121,7 +122,15 @@ export class GameEngine {
     }
 
     private addEnemy(): void {
-        let newEnemy = Math.random() > 0.3 ? new Crab(this, this.canvas) : new HiveCrab(this, this.canvas);
+        let newEnemy: Enemy;
+        
+        if (this.gameComponent.questionCount === (this.gameComponent.MaxQuestions - 2)) {
+            console.log('Spawning King Crab for final question!');
+            newEnemy = new KingCrab(this, this.canvas);
+        } else {
+            newEnemy = Math.random() > 0.3 ? new Crab(this, this.canvas) : new HiveCrab(this, this.canvas);
+        }
+        
         newEnemy.setSpeedMultiplier(this.crabSpeedMultiplier);
         this.enemies.push(newEnemy);
     }

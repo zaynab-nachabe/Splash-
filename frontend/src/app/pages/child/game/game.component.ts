@@ -56,8 +56,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private gameEngine!: GameEngine;
 
-  private questionCount: number = -2;
-  private MaxQuestions: number = 10;
+  public questionCount: number = -2;
+  public MaxQuestions: number = 10;
   public showPreGameLobby: boolean = false;
 
 
@@ -76,8 +76,15 @@ export class GameComponent implements OnInit, OnDestroy {
   ) {
     this.userService.selectedUser$.subscribe((user: User | null) => {
       if (user) {
-        this.user = user;
+        this.user = {...user}; // Create a deep copy
         this.MaxQuestions = user.userConfig.nombresDeQuestion ?? 10;
+        // Ensure purchased items are preserved
+        if (user.unlockedAvatars) {
+          this.user.unlockedAvatars = [...user.unlockedAvatars];
+        }
+        if (user.selectedPlayerImage) {
+          this.user.selectedPlayerImage = user.selectedPlayerImage;
+        }
         this.childConfigService.loadUserConfig(this.user);
       } else {
         console.warn('No user selected in game.');
@@ -189,13 +196,13 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private loadNewQuestion(): void {
     if (this.hasEnded) {
-      console.log("Game has ended, not loading new question.");
-      return;
+        console.log("Game has ended, not loading new question.");
+        return;
     }
-    if (this.questionCount > this.MaxQuestions) {
-      console.log("Maximum number of questions reached, ending game.");
-      this.endGame();
-      return;
+    if (this.questionCount >= this.MaxQuestions) {
+        console.log("Maximum number of questions reached, ending game.");
+        this.endGame();
+        return;
     }
 
     console.log("Requesting new question");
@@ -258,21 +265,17 @@ export class GameComponent implements OnInit, OnDestroy {
             ret[i] = PENDING_SPACE;
           }
         }
-        // If showAnswer is false, do not show anything (skip)
         else {
           break;
         }
       } else {
-        // User has typed a letter
         if (showLetterColor) {
-          // Colorful feedback
           if (proposed_letter === expected_letter) {
             ret[i] = proposed_letter !== ' ' ? { letter: proposed_letter, status: "correct" } : CORRECT_SPACE;
           } else {
             ret[i] = proposed_letter !== ' ' ? { letter: proposed_letter, status: "wrong" } : WRONG_SPACE;
           }
         } else {
-          // Always black (use a new status "neutral" for black in CSS)
           ret[i] = proposed_letter !== ' ' ? { letter: proposed_letter, status: "neutral" } : { letter: '\xa0', status: "neutral" };
         }
       }
@@ -399,10 +402,12 @@ export class GameComponent implements OnInit, OnDestroy {
       case "Enter":
         if (!this.enterTimeoutActive) {
           this.enterTimeoutActive = true;
-          this.submitAnswer();
+          if (this.proposed_answerInputs.length > 0) {
+            this.submitAndProceed();
+          }
           setTimeout(() => {
             this.enterTimeoutActive = false;
-          }, 500); // 0.5 seconds
+          }, 500);
         }
         break;
 
@@ -412,7 +417,38 @@ export class GameComponent implements OnInit, OnDestroy {
         }
         break;
     }
-    //break;
+  }
+
+  private submitAndProceed(): void {
+    if (this.question) {
+      const word = this.question.answer;
+      const attempt = this.proposed_answerInputs.join('');
+      if (!this.wordAttempts[word]) {
+        this.wordAttempts[word] = [];
+      }
+      this.wordAttempts[word].push(attempt);
+
+      // Check if answer is correct
+      if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs, this.question.notion)) {
+        // Correct answer
+        this.score += 10;
+        this.gameEngine.score = this.score;
+        this.gameEngine.answerCorrectly();
+      } else {
+        // Wrong answer
+        this.gameEngine.answerIncorrectly(this.proposed_answerInputs.join(''));
+      }
+
+      this.loadNewQuestion();
+      if (!this.question) {
+        this.endGame();
+        return;
+      }
+
+      this.expected_answerInputs = this.question.answer.split("");
+      this.proposed_answerInputs = [];
+      this.cursorPosition = 0;
+    }
   }
 
   private showAnswer(): void {
@@ -449,7 +485,6 @@ export class GameComponent implements OnInit, OnDestroy {
       },
       (error) => {
         console.error('Failed to save game statistics', error);
-        // Navigate to podium anyway
         this.userService.setScore(this.score);
         this.router.navigate(['/game-podium'], {
           queryParams: {
@@ -475,19 +510,15 @@ class AnswerChecker {
     const proposed = proposed_answer.join('').replace(/\s+/g, ' ').trim();
     const expected = expected_answer.join('').replace(/\s+/g, ' ').trim();
 
-    // Accept if exact match
     if (proposed === expected) return true;
 
     if (question_type === QuestionNotion.REWRITING || question_type === QuestionNotion.ADDITION || question_type === QuestionNotion.SUBTRACTION || question_type === QuestionNotion.MULTIPLICATION || question_type === QuestionNotion.DIVISION) {
-      // Accept if replacing dashes with spaces matches
       const expectedWithSpaces = expected.replace(/-/g, ' ');
       if (proposed === expectedWithSpaces) return true;
 
-      // Accept if replacing spaces with dashes matches
       const expectedWithDashes = expected.replace(/ /g, '-');
       if (proposed === expectedWithDashes) return true;
 
-      // Accept if both normalized (collapse multiple spaces/dashes)
       const normalize = (s: string) => s.replace(/[-\s]+/g, ' ').trim();
       if (normalize(proposed) === normalize(expected)) return true;
     }

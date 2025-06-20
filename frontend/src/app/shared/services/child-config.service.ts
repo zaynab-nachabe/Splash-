@@ -4,12 +4,14 @@ import { switchMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
 import { Avatar } from '../models/avatar.model';
+import { environment } from 'src/environments/environment';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChildConfigService {
-  private apiUrl = 'http://localhost:9428/api/users';
+  private apiUrl = environment.apiUrl+'/users';
   private musicEnabledSubject: BehaviorSubject<boolean>;
   private effectsEnabledSubject: BehaviorSubject<boolean>;
   public showScoreSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
@@ -26,7 +28,10 @@ export class ChildConfigService {
   private userId: string | null = null;
   private currentUser: User | null = null;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private userService: UserService
+  ) {
     this.musicEnabledSubject = new BehaviorSubject<boolean>(true);
     this.effectsEnabledSubject = new BehaviorSubject<boolean>(true);
     this.musicEnabled$ = this.musicEnabledSubject.asObservable();
@@ -184,19 +189,19 @@ export class ChildConfigService {
         ...this.currentUser,
         money: Number(this.currentUser.money || 0) - avatar.price,
         unlockedAvatars: [...(this.currentUser.unlockedAvatars || []), avatar.id],
-        selectedPlayerImage: avatar.path
+        selectedPlayerImage: avatar.path,
+        userConfig: this.currentUser.userConfig || {},
+        icon: this.currentUser.icon || '',
+        conditions: this.currentUser.conditions || []
       };
 
+      this.userService.updateUser(updatedUser);
       
-      return this.http.put<User>(`${this.apiUrl}/${this.userId}`, {
-        ...updatedUser,
-        userConfig: this.currentUser.userConfig || {},
-        conditions: this.currentUser.conditions || [],
-        icon: this.currentUser.icon || 'pp-9.png',
-      }).pipe(
+      return this.http.put<User>(`${this.apiUrl}/${this.userId}`, updatedUser).pipe(
         tap((userData: User) => {
           this.currentUser = userData;
           this.selectedPlayerImageSubject.next(avatar.path);
+          this.userService.selectUser(userData.userId);
         })
       );
     }

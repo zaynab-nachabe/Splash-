@@ -3,6 +3,7 @@ import { BehaviorSubject, EMPTY, Observable } from "rxjs";
 import { User } from "../models/user.model";
 import { HttpClient } from "@angular/common/http";
 import { tap } from "rxjs/operators";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class UserService {
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
-  private readonly apiUrl = 'http://localhost:9428/api/users';
+  private readonly apiUrl = environment.apiUrl+'/users';
 
   constructor(private http: HttpClient) {
     this.fetchUsersFromBackend();

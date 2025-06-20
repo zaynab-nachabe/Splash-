@@ -62,6 +62,7 @@ class GamePageFixture {
         return this.page.getByTestId('question-text');
     }
 }
+/*
 
 /*
 test('should set 10% addition, 90% french word, 5 questions, then play as the child', async ({ page }) => {

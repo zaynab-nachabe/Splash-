@@ -1,5 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 import { testUrl } from 'e2e/e2e.config';
+import { runGame, setupAndRunGame } from 'e2e/utils/SetErgoConfigPlayGame';
 
 class ErgoConfigSelectedPageFixture {
     constructor(private page: Page) { }
@@ -46,12 +47,48 @@ class GamePageFixture {
     }
 }
 
+
+
+
+test('should change config, play, then change config again and play with new config', async ({ page }) => {
+    test.setTimeout(60000);
+
+    // --- First config: Addition only, 5 questions ---
+    await setupAndRunGame(page, {
+        numQuestions: 5,
+        toggles: [true, false, false, false, false, false, false], // Only addition enabled
+        frequencies: [],
+        expectedRegexes: [ /Calcules\s+\d+\s*\+\s*\d+\s*=/i ],
+    });
+
+    // --- Change config: not french word---
+    await setupAndRunGame(page, {
+        numQuestions: 3,
+        toggles: [false, false, false, false, true, false, false], 
+        frequencies: [],
+        expectedRegexes: [ /Recopies\s+[!@#$%&*()]+\s*:/i ],
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 test('should change config, play, then change config again and play with new config', async ({ page }) => {
     test.setTimeout(60000); // 60 seconds
 
 
     // --- First config: Addition only, 5 questions ---
-    await page.goto(`${testUrl}/ergo-play`);
+    await page.goto(`/ergo-play`);
     const childCard = page.locator('.user-card:not(.add-user-card)').first();
     await expect(childCard).toBeVisible({ timeout: 10000 });
     await childCard.click();
@@ -196,3 +233,4 @@ test('should change config, play, then change config again and play with new con
     await expect(accueilButtonOnPodium2).toBeVisible({ timeout: 10000 });
     await accueilButtonOnPodium2.click();
 });
+*/

@@ -4,12 +4,13 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 import { GameStatistics } from '../models/game-statistics.model';
 import { tap, catchError, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameStatisticsService {
-  private apiUrl = 'http://localhost:9428/api/game-statistics';
+  private apiUrl = environment.apiUrl+'/game-statistics';
   private readonly STATS_STORAGE_KEY = 'game_statistics';
   private statisticsSubject = new BehaviorSubject<GameStatistics[]>([]);
   public statistics$ = this.statisticsSubject.asObservable();

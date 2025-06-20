@@ -1,1 +1,1 @@
-export const testUrl = 'http://localhost:4200';
+export const testUrl = process.env['PLAYWRIGHT_TEST_BASE_URL'] || 'http://frontend-test';
