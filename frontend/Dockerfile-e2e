@@ -1,10 +1,11 @@
-FROM mcr.microsoft.com/playwright:v1.53.0-focal
+FROM mcr.microsoft.com/playwright:v1.53.0-jammy
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
 COPY . .
 
-RUN npx playwright install --with-deps
+#RUN npx playwright install --with-deps
 
-CMD ["npm", "run", "test:e2e"]
+#CMD ["npm", "run", "test:e2e"]
+CMD ["npx", "playwright", "test", "e2e/scenarios", "--reporter=html"]

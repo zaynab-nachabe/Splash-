@@ -51,7 +51,7 @@ test('should change config, play, then change config again and play with new con
 
 
     // --- First config: Addition only, 5 questions ---
-    await page.goto(`${testUrl}/ergo-play`);
+    await page.goto(`/ergo-play`);
     const childCard = page.locator('.user-card:not(.add-user-card)').first();
     await expect(childCard).toBeVisible({ timeout: 10000 });
     await childCard.click();

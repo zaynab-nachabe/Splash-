@@ -12,6 +12,16 @@ class QuestionGenerator {
             console.error('Seed is NaN, resetting to 1');
             this.seed = 1;
         }
+        // Precompute sets for each letter and length
+        this.letterSets = {};
+        for (let c = 0; c < 26; c++) {
+            const letter = String.fromCharCode(97 + c); // 'a' to 'z'
+            this.letterSets[letter] = new Set(frenchWordDict.getWordsWithLetter(letter));
+        }
+        this.lengthSets = {};
+        for (let l = 1; l <= 20; l++) { // adjust max length as needed
+            this.lengthSets[l] = new Set(frenchWordDict.getWordsWithLength(l));
+        }
     }
 
     // Seeded random number generator
@@ -40,7 +50,7 @@ class QuestionGenerator {
         return operands[type] || ['NA', QuestionNotion.REWRITE];
     }
 
-    chooseTupleOfInputs(nbNumbers = 2, minValue = 1, maxValue = 10, notion) {
+    chooseTupleOfInputs(nbNumbers = 2, minValue = 1, maxValue = 5, notion) {
         if (notion === QuestionNotion.DIVISION) {
             const quotient = Math.floor(this.seededRandom() * (maxValue - minValue + 1)) + minValue;
             const divisor = Math.floor(this.seededRandom() * (maxValue - minValue + 1)) + minValue + 1;
@@ -166,7 +176,7 @@ class QuestionGenerator {
 
             switch (type) {
                 case 'rewrite': {
-                    const nb = this.chooseTupleOfInputs(1, 0, 50, QuestionNotion.REWRITE)[0];
+                    const nb = this.chooseTupleOfInputs(1, 0, 25, QuestionNotion.REWRITE)[0];
                     questionString = `Ecrire ${nb} : `;
                     if (userConfig.chiffresEnLettres) {
                         answerString = FrenchNumberConverter.convertToWords(nb);
@@ -187,8 +197,8 @@ class QuestionGenerator {
                 }
                 case 'word': {
                     // 1. Get letter frequencies from userConfig.questionFrequency
-                    const letterFreqs = userConfig.questionFrequency
-                        ? Object.entries(userConfig.questionFrequency)
+                    const letterFreqs = userConfig.letterFrequency
+                        ? Object.entries(userConfig.letterFrequency)
                             .filter(([k, v]) => /^[a-zA-Z]$/.test(k) && typeof v === 'number' && v > 0 && v <= 1)
                         : [];
                     console.log('Letter frequencies found in config:', letterFreqs);
@@ -211,39 +221,38 @@ class QuestionGenerator {
                         for (let l = 1; l <= userConfig.longueurMaximaleDesMots; l++) allowedLengths.push(l);
                     }
                     // If you want to allow only a specific set, adjust here
-
                     console.log('Allowed word lengths:', allowedLengths);
 
                     // 3. Build sets for each selected letter
-                    const letterSets = selectedLetters.map(l => new Set(frenchWordDict.getWordsWithLetter(l)));
+                    const letterSets = selectedLetters.map(l => this.letterSets[l]);
                     // 4. Build sets for each allowed length
-                    const lengthSets = allowedLengths.map(len => new Set(frenchWordDict.getWordsWithLength(len)));
+                    const lengthSets = allowedLengths.map(len => this.lengthSets[len]);
 
-                    // 5. Union of letter sets
-                    let unionLetterSet = new Set();
-                    for (const s of letterSets) for (const w of s) unionLetterSet.add(w);
+                    // 5. Intersection of letter sets
+                    let intersectionLetterSet;
+                    if (letterSets.length > 0) {
+                        intersectionLetterSet = new Set(letterSets[0]);
+                        for (let i = 1; i < letterSets.length; i++) {
+                            intersectionLetterSet = new Set([...intersectionLetterSet].filter(w => letterSets[i].has(w)));
+                        }
+                    } else {
+                        intersectionLetterSet = new Set();
+                    }
 
-                    // 6. Union of length sets
+                    // 6. Union of length sets (unchanged)
                     let unionLengthSet = new Set();
                     for (const s of lengthSets) for (const w of s) unionLengthSet.add(w);
 
-                    console.log('Union of letter sets size:', unionLetterSet.size);
-                    console.log('Union of length sets size:', unionLengthSet.size);
-
-                    // 7. Intersection of both unions
+                    // 7. Intersection of both
                     let candidateWords = [];
-                    if (unionLetterSet.size && unionLengthSet.size) {
-                        candidateWords = Array.from([...unionLetterSet].filter(w => unionLengthSet.has(w)));
-                        console.log('Intersection size:', candidateWords.length);
-                    } else if (unionLetterSet.size) {
-                        candidateWords = Array.from(unionLetterSet);
-                        console.log('No length restriction, using union of letter sets:', candidateWords.length);
+                    if (intersectionLetterSet.size && unionLengthSet.size) {
+                        candidateWords = Array.from([...intersectionLetterSet].filter(w => unionLengthSet.has(w)));
+                    } else if (intersectionLetterSet.size) {
+                        candidateWords = Array.from(intersectionLetterSet);
                     } else if (unionLengthSet.size) {
                         candidateWords = Array.from(unionLengthSet);
-                        console.log('No letter restriction, using union of length sets:', candidateWords.length);
                     } else {
                         candidateWords = words;
-                        console.log('No restriction, using all words.');
                     }
 
                     // Fallback: if intersection is empty, use all words
@@ -265,7 +274,7 @@ class QuestionGenerator {
 
                 default: {
                     const [op, questionNotion] = QuestionGenerator.convertToOperand(type);
-                    const pairOfValues = this.chooseTupleOfInputs(2, 1, 10, questionNotion);
+                    const pairOfValues = this.chooseTupleOfInputs(2, 1, 5, questionNotion);
                     console.log('pairOfValues:', pairOfValues, 'op:', op, 'notion:', questionNotion);
                     const answer = QuestionGenerator.getAnswer(pairOfValues, op);
                     console.log('Raw answer:', answer);
