@@ -13,6 +13,8 @@ services:
     build: 
       context: ./frontend
       target: production
+      args:
+        - ENVIRONMENT=docker
     container_name: frontend-test
     depends_on:
       - backend

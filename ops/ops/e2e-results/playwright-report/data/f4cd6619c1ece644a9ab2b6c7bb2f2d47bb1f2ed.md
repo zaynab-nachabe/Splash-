@@ -1,9 +1,8 @@
 # Page snapshot
 
 ```yaml
-- paragraph: Calcules 25 / 5 =
-- text: c i n q
-- img "heart"
+- paragraph: Calcules 4 × 4 =
+- text: s e i z e
 - img "heart"
 - img "heart"
 - img "heart"

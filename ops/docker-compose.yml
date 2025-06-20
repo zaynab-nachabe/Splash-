@@ -2,26 +2,26 @@ version: '3.8'
 
 services:
   backend:
-    build: 
+    build:
       context: ../backend
       target: production
     container_name: backend
     volumes:
-      - ./backend/data:/app/data
+      - ./backend/database:/app/database
       - ./backend/logs:/app/logs
     ports:
       - "8081:9428"
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9428/api/status"]
+      test: [ "CMD", "curl", "-f", "http://localhost:9428/api/status" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
   frontend:
-    build: 
+    build:
       context: ../frontend
       target: production
       args:
@@ -35,7 +35,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -1,9 +1,9 @@
 # Page snapshot
 
 ```yaml
-- text: Accueil
-- heading "Choisir un enfant" [level=1]
-- searchbox "Tapez un nom"
-- text:  +
-- paragraph: Ajouter
+- paragraph: Calcules 16 / 4 =
+- img "heart"
+- img "heart"
+- img "heart"
+- img "heart"
 ```

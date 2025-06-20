@@ -89,6 +89,9 @@ export async function setupConfig(
 
 
     await page.goto(`${testUrl}/ergo-play`);
+    //await page.waitForSelector('.user-card:not(.add-user-card)', { timeout: 10000 });
+    const userCardsCount = await page.locator('.user-card:not(.add-user-card)').count();
+    console.log('User cards found:', userCardsCount);
     // Use childIndex if provided, otherwise default to first child
     const childCard = typeof childIndex === 'number'
         ? page.locator('.user-card:not(.add-user-card)').nth(childIndex)
@@ -111,6 +114,8 @@ export async function setupConfig(
             await toggle.click();
         }
     }
+
+    /*
     // Set frequencies
     for (let i = 0; i < frequencies.length; i++) {
         if (toggles[i]) {
@@ -120,6 +125,18 @@ export async function setupConfig(
             await freqInput.fill(frequencies[i].toString());
         }
     }
+        */
+    let freqIdx = 0;
+    for (let i = 0; i < toggles.length; i++) {
+        if (toggles[i] && frequencies[freqIdx] !== undefined) {
+            const freqInput = fixture.getFrequencyInputForOperation(i);
+            await expect(freqInput).toBeVisible({ timeout: 5000 });
+            await expect(freqInput).toBeEnabled({ timeout: 5000 });
+            await freqInput.fill(frequencies[freqIdx].toString());
+            freqIdx++;
+        }
+    }
+
 
     // Set afficher le score
     if (afficherScore !== undefined) {
@@ -355,6 +372,7 @@ async function addChild(page: Page, firstName: string, lastName: string, age: st
     //await expect(page).toHaveURL(/ergo-stat-selected/);
     // Go back to /ergo-play for next child
     await page.goto(`${testUrl}/ergo-play`);
+    console.log(`Added child: ${firstName} ${lastName}, age ${age}`);
 }
 
 export async function setupAndRunGame(

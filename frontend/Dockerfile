@@ -4,6 +4,9 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 ARG ENVIRONMENT=production
+#next line new
+COPY src/environments/environment.${ENVIRONMENT}.ts src/environments/environment.ts
+
 RUN npm run build:${ENVIRONMENT}
 
 FROM nginx:alpine AS production

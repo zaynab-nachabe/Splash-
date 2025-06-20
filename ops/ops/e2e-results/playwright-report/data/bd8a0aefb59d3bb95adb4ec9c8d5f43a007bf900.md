@@ -8,36 +8,36 @@
 - text: "Retour Statistiques NOM : Eli KOPTER Âge : 9 ans Troubles: Dyslexia,ADHD"
 - heading "Paramètres généraux" [level=3]
 - text: Montrer les réponses
-- checkbox
-- text: Afficher le score
 - checkbox [checked]
+- text: Afficher le score
+- checkbox
 - text: Afficher les fautes
 - checkbox [checked]
 - text: Chiffres en lettres
 - checkbox [checked]
 - text: Nombre de questions
-- textbox: "12"
+- textbox: "8"
 - text: Longueur maximale des mots
-- spinbutton: "8"
+- spinbutton: "5"
 - heading "Types de Questions" [level=3]
 - text: Les fréquences déterminent la probabilité d’apparition de chaque notion ou lettre. Si vous activez une notion mais ne renseignez pas de fréquence, une fréquence automatique sera calculée pour équilibrer le total à 100%. Si vous désactivez une notion, sa fréquence devient 0. Plus la fréquence est élevée, plus la notion apparaîtra souvent. Addition
 - checkbox
 - spinbutton [disabled]: "0"
 - text: Soustraction
 - checkbox [checked]
-- spinbutton: "25"
+- spinbutton: "0"
 - text: Multiplication
-- checkbox
-- spinbutton [disabled]: "0"
+- checkbox [checked]
+- spinbutton: "100"
 - text: Division
 - checkbox [checked]
 - spinbutton: "25"
 - text: Chiffres
 - checkbox [checked]
-- spinbutton: "25"
+- spinbutton: "0"
 - text: Caractères spéciaux
 - checkbox [checked]
-- spinbutton: "25"
+- spinbutton: "0"
 - text: Mot français
 - checkbox
 - spinbutton [disabled]: "0"
