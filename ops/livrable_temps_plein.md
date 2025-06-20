@@ -100,36 +100,75 @@ Objectif : Évaluer si le jeu contribue effectivement à améliorer les compéte
 
 ## 5. Documentation OPS
 
-### A. Démarrage du projet
+### Étape 1: Dockerisation Frontend/Backend
+#### Frontend
 ```bash
-# Lancer l'application en production
-docker-compose up -d
-
-# Vérifier l'état des services
-docker-compose ps
-
-# Lancer les tests E2E
-docker-compose -f docker-compose.e2e.yml up --build
-
-# Consulter les logs
-docker-compose logs -f
+# Configuration dans frontend/Dockerfile
+- Base image: node:24.0.1 pour build
+- Installation des dépendances
+- Build Angular avec configuration Docker
+- Nginx pour servir l'application
+- Healthcheck intégré
 ```
 
-### B. Monitoring
-- Healthchecks toutes les 30s
-- Retry: 3 tentatives
-- Timeout: 10s
-- Start period: 40s
+#### Backend
+```bash
+# Configuration dans backend/Dockerfile
+- Base image: node:24.0.1
+- Multi-stage build pour optimisation
+- Installation des dépendances
+- Exposition du port 9428
+- Healthcheck endpoint /api/status
+```
 
-### C. Tests E2E
-Dernière exécution:
-- Total: 32 tests
-- Réussis: 2
-- Échoués: 9
-- Principaux échecs:
-  - Navigation utilisateur (3 tests)
-  - Persistance des données (4 tests)
-  - Performance du jeu (2 tests)
+### Étape 2: Attachement Frontend/Backend
+```yaml
+# Configuration dans docker-compose.yml
+services:
+  backend:
+    - Port mapping: 8081:9428
+    - Volumes pour données et logs
+    - Healthcheck toutes les 30s
+    
+  frontend:
+    - Port mapping: 8080:80
+    - Dépendance sur backend
+    - Configuration environnement Docker
+
+networks:
+  - Bridge network dédié
+  - Communication inter-services
+```
+
+#### Points clés de l'attachement:
+- Communication via réseau Docker interne
+- Variables d'environnement pour URLs
+- Persistance des données
+- Gestion des dépendances
+
+### Étape 3: Dockerisation des Tests
+```yaml
+# Configuration dans docker-compose.e2e.yml
+services:
+  backend-test:
+    - Configuration spécifique aux tests
+    - Base de données de test isolée
+    
+  frontend-test:
+    - Build avec configuration e2e
+    - Tests Playwright intégrés
+    
+  e2e:
+    - Image Playwright
+    - Volumes pour rapports de tests
+    - Dépendances sur services de test
+```
+
+#### Infrastructure de Test:
+- Environnement isolé
+- Tests end-to-end automatisés
+- Génération de rapports
+- 11 tests actifs (2 passent, 9 échouent)
 
 ---
 
