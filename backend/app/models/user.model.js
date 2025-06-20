@@ -27,6 +27,10 @@ const userSchema = Joi.object({
         questionFrequency: Joi.object().pattern(
             /^(addition|subtraction|multiplication|division|rewrite|encryption|word|[A-Za-z])$/,
             Joi.number().optional()
+        ).optional(),
+        letterFrequency: Joi.object().pattern(
+            /^[A-Za-z]$/,
+            Joi.number().optional()
         ).optional()
     }).required(),
     musicEnabled: Joi.boolean().optional().default(true),
@@ -34,13 +38,13 @@ const userSchema = Joi.object({
     limitedLives: Joi.boolean().optional().default(true),
     showScore: Joi.boolean().optional().default(true),
     selectedPlayerImage: Joi.string().optional().default('../../../../frontend/src/assets/images/game/player/yellow_fish.png'),
-    money: Joi.number().optional().default(0), 
+    money: Joi.number().optional().default(0),
     unlockedAvatars: Joi.array().items(Joi.string()).default(['yellow_fish']),
     crabSpeed: Joi.string().valid('slow', 'fast').default('slow'),
 });
 
 const validateUser = (user) => {
-    const { error, value } = userSchema.validate(user, { 
+    const { error, value } = userSchema.validate(user, {
         allowUnknown: false,  // Ensure strict validation
         stripUnknown: false   // Don't remove unknown properties
     });
@@ -54,9 +58,17 @@ const validateUser = (user) => {
 let users;
 if (fs.existsSync(USERS_FILE)) {
     try {
+        /*
         const fileData = fs.readFileSync(USERS_FILE, 'utf-8');
         users = JSON.parse(fileData);
         if (!Array.isArray(users)) throw new Error('users.json is not an array');
+        */
+        const fileData = fs.readFileSync(USERS_FILE, 'utf-8');
+        users = JSON.parse(fileData);
+        if (!Array.isArray(users)) throw new Error('users.json is not an array');
+        // Validate and complete all users with defaults
+        users = users.map(u => validateUser(u));
+        saveUsersToFile();
     } catch (e) {
         console.error('Failed to load users.json, using seedUsers:', e.message);
         users = seedUsers.map(user => user);
@@ -88,10 +100,16 @@ const update = (userId, updates) => {
     const idx = users.findIndex(u => u.userId === userId);
     if (idx === -1) throw new Error('User not found');
 
+    // Merge unlockedAvatars if present
+    let mergedUnlockedAvatars = Array.isArray(users[idx].unlockedAvatars) ? users[idx].unlockedAvatars : [];
+    if (updates.unlockedAvatars) {
+        // Merge and deduplicate
+        mergedUnlockedAvatars = Array.from(new Set([...mergedUnlockedAvatars, ...updates.unlockedAvatars]));
+    }
     const updatedUser = {
         ...users[idx],
         ...updates,
-        
+
         crabSpeed: ['slow', 'fast', 'normal'].includes(updates.crabSpeed) ? updates.crabSpeed : 'slow',
     };
 
