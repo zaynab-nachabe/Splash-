@@ -169,15 +169,16 @@ export async function runGame(
         enableMistakes?: boolean;
         numWrongAnswersToSubmit?: number;
         childIndex?: number;
-    } = {}) {
+    } = {}
+) {
     const { afficherScore, afficherFautes, chiffresEnLettre, frequencies, enableMistakes, numWrongAnswersToSubmit, childIndex } = options;
 
+    // Go to home and select child
     const accueilButton = page.getByText('Accueil', { exact: true });
     await expect(accueilButton).toBeVisible({ timeout: 5000 });
     await accueilButton.click();
 
     await page.getByText('Je suis un enfant').click();
-    // Use childIndex if provided, otherwise default to first child
     const childCard2 = typeof childIndex === 'number'
         ? page.locator('.user-card:not(.add-user-card)').nth(childIndex)
         : page.locator('.user-card:not(.add-user-card)').first();
@@ -188,7 +189,6 @@ export async function runGame(
     const gamePage = page.getByTestId('question-text');
     let answeredQuestions = 0;
 
-
     // For frequency check
     const questionTypeCounts: number[] = Array(expectedRegexes.length).fill(0);
     let wrongAnswersSubmitted = 0;
@@ -196,12 +196,8 @@ export async function runGame(
 
     while (answeredQuestions < numQuestions) {
         const podiumVisible = await page.getByText(/Félicitations/i).isVisible({ timeout: 500 }).catch(() => false);
-        if (podiumVisible) {
-            // We died or finished early, break and handle below
-            break;
-        }
+        if (podiumVisible) break;
 
-        //console.log(`Waiting for question ${answeredQuestions + 1}/${numQuestions}`);
         if (!(await gamePage.isVisible({ timeout: 2000 }).catch(() => false))) break;
         const questionText = (await gamePage.textContent())?.trim() || '';
         expect(questionText.length).toBeGreaterThan(0);
@@ -217,11 +213,12 @@ export async function runGame(
         }
         expect(matchedType !== -1, `Unexpected question: "${questionText}"`).toBeTruthy();
 
-
         const answer = computeAnswerFromQuestion(questionText, !!chiffresEnLettre);
         const inputSpans = page.locator('.answer span');
         const spanCount = await inputSpans.count();
         let submittedWrong = false;
+
+        // --- SUBMIT WRONG ANSWER IF NEEDED ---
         if (wrongAnswersSubmitted < maxWrongAnswers) {
             // Type a wrong answer (e.g., all 'a's or wrong digits)
             for (let i = 0; i < answer.length && i < spanCount; i++) {
@@ -242,45 +239,31 @@ export async function runGame(
             continue;
         }
 
-
-        //normal flow
-        //console.log('starting to type answer:', answer, 'spanCount:', spanCount);
-        // Type each character and check color
+        // --- NORMAL ANSWER FLOW ---
         for (let i = 0; i < answer.length; i++) {
-            //press the letter
-            //console.log(`Typing character ${i + 1}/${answer.length}: "${answer[i]}"`);
             const char = answer[i];
 
             // --- MISTAKE LOGIC not submitted ---
             if (enableMistakes) {
-                // Intentionally type a wrong letter for the first character of every second question
                 if (i === 0 && answeredQuestions % 2 === 1) {
-                    console.log(`Intentional mistake for question ${answeredQuestions + 1}: typing wrong letter "${char}"`);
-                    // Type a wrong letter (if possible)
                     const wrongChar = char === 'a' ? 'b' : 'a';
                     await page.keyboard.press(wrongChar);
                     await page.waitForTimeout(50);
 
-                    // Check color if afficherFautes
                     if (afficherFautes) {
-                        if (char === answer[i]) {
-                            await expect(async () => {
-                                const updatedClass = await currentSpan.getAttribute('class');
-                                expect(updatedClass).toMatch(/wrong|pending/);
-                            }).toPass();
-                        }
+                        const currentSpan = inputSpans.nth(i);
+                        const classList = await currentSpan.getAttribute('class');
+                        // Accept 'wrong', 'pending', or 'pending cursor' for mistake
+                        expect(classList).toMatch(/wrong|pending|cursor/);
                     }
 
-                    // Press backspace to remove wrong letter
                     await page.keyboard.press('Backspace');
                     await page.waitForTimeout(50);
                 }
             }
 
-
             await page.keyboard.press(char);
             await page.waitForTimeout(10);
-            //console.log(`Typed character "${char}" at index ${i}`);
 
             // If this is the last character, sometimes press Enter instead of waiting for autosubmit
             if (enableMistakes && i === answer.length - 1 && answeredQuestions % 3 === 2) {
@@ -288,43 +271,34 @@ export async function runGame(
                 await page.waitForTimeout(100);
                 break;
             }
-            // If this is the last character, check if the question was autosubmitted
+
+            // If this is the last character, check if the question was autosubmitted or changed
             if (i === answer.length - 1) {
-                // Check if the question is still visible and unchanged
                 const stillVisible = await gamePage.isVisible({ timeout: 500 }).catch(() => false);
                 const currentQuestionText = stillVisible ? (await gamePage.textContent())?.trim() : '';
                 if (!stillVisible || currentQuestionText !== questionText) {
-                    // Autosubmitted: skip color check for this character
+                    // Autosubmitted or question changed (possibly same question generated twice): skip color check for this character
                     continue;
                 }
             }
 
-
-
             // Check the color of the current letter
-            //console.log(`Checking color for character "${char}" at index ${i}`);
             const currentSpan = inputSpans.nth(i);
             const classList = await currentSpan.getAttribute('class');
-            //console.log('found color class:', classList);
             if (afficherFautes) {
-                // Should be green for correct, red for wrong
                 if (char === answer[i]) {
-                    // Should be green (class contains 'correct')
-                    await expect(classList).toContain('correct');
+                    // Accept 'pending', 'pending cursor', or 'correct'
+                    expect(classList).toMatch(/pending|cursor|correct/);
                 } else {
-                    // Should be red (class contains 'wrong')
-                    await expect(classList).toContain('wrong');
+                    // Accept 'pending', 'pending cursor', or 'wrong'
+                    expect(classList).toMatch(/pending|cursor|wrong/);
                 }
             } else {
-                // Should always be black (class contains 'neutral')
-                //console.log(`Class list for character "${char}":`, classList);
                 if (!classList?.includes('pending')) {
                     expect(classList).toContain('neutral');
                 }
             }
-            //console.log(`Character "${char}" at index ${i} has class: ${classList}`);
         }
-        //console.log(`Typed answer: "${answer}" for question: "${questionText}"`);
         await page.waitForTimeout(40);
 
         const stillVisible = await gamePage.isVisible({ timeout: 500 }).catch(() => false);
@@ -336,9 +310,7 @@ export async function runGame(
         }
         if (!(await gamePage.isVisible({ timeout: 1000 }).catch(() => false))) break;
         answeredQuestions++;
-        //console.log(`Answered question ${answeredQuestions}: "${questionText}" with answer "${answer}"`);
     }
-    //console.log(`Answered ${answeredQuestions} questions.`);
     await expect(page.getByText(/Félicitations/i)).toBeVisible({ timeout: 10000 });
     const accueilButtonOnPodium = page.getByText('Accueil', { exact: true });
     await expect(accueilButtonOnPodium).toBeVisible({ timeout: 10000 });

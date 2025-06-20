@@ -330,12 +330,16 @@ export class GameComponent implements OnInit, OnDestroy {
 
 
     if (AnswerChecker.checkAnswer(this.proposed_answerInputs, this.expected_answerInputs, this.question.notion)) {
-      this.score += 10;
-      this.gameEngine.score = this.score;
+      //this.score += 10;
+      //this.score = Math.round((this.gameEngine.getCorrectAnswers() / this.gameEngine.getTotalQuestions()) * 100);
+      //this.gameEngine.score = this.score;
       this.gameEngine.answerCorrectly();
     } else {
       this.gameEngine.answerIncorrectly(this.proposed_answerInputs.join(''));
     }
+    this.score = this.gameEngine.getTotalQuestions() > 0
+      ? Math.round((this.gameEngine.getCorrectAnswers() / this.gameEngine.getTotalQuestions()) * 100)
+      : 0;
     //review logic
     this.loadNewQuestion();
     if (!this.question) {
