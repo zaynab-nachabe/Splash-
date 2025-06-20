@@ -79,6 +79,15 @@ export async function setupConfig(
     page: Page,
     { numQuestions, toggles, frequencies, afficherScore, afficherFautes, chiffresEnLettre, montrerLesReponses, childIndex }: ConfigParams
 ) {
+    const userCards = await page.locator('.user-card:not(.add-user-card)').count();
+    if (userCards < 3) {
+        await addChild(page, 'Eli', 'KOPTER', '9');
+        await addChild(page, 'Judas', 'BRICOT', '9');
+        await addChild(page, 'Lucie', 'FERT', '9');
+    }
+
+
+
     await page.goto(`${testUrl}/ergo-play`);
     // Use childIndex if provided, otherwise default to first child
     const childCard = typeof childIndex === 'number'
@@ -360,6 +369,20 @@ export async function runGame(
             }
         }
     }
+}
+async function addChild(page: Page, firstName: string, lastName: string, age: string) {
+    await page.goto(`${testUrl}/ergo-play`);
+    await page.locator('.add-user-card').click();
+    await page.fill('input#lastName', lastName);
+    await page.fill('input#firstName', firstName);
+    await page.fill('input#age', age);
+    // Select at least one condition if required by your form
+    await page.locator('.troubles-dropdown').selectOption({ index: 0 });
+    await page.getByText('Sauvegarder').click();
+    // Wait for navigation or confirmation
+    //await expect(page).toHaveURL(/ergo-stat-selected/);
+    // Go back to /ergo-play for next child
+    await page.goto(`${testUrl}/ergo-play`);
 }
 
 export async function setupAndRunGame(
